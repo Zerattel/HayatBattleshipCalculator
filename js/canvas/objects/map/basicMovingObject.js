@@ -1,6 +1,6 @@
 import { toRealDirection } from "../../../../libs/canvas.js";
 import BasicStepObject from "./basicStepObject.js";
-import { calc, vector } from "/libs/vector/vector.js";
+import { calc, vector } from "../../../../libs/vector/vector.js";
 
 export default class BasicMovingObject extends BasicStepObject {
   velocity = vector(0, 0);

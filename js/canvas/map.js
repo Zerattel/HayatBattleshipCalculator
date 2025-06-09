@@ -1,6 +1,6 @@
 import { toRealDirection } from "../../libs/canvas.js";
 import { EVENTS } from "../events.js";
-import { vector, calc } from "/libs/vector/vector.js";
+import { vector, calc } from "../../libs/vector/vector.js";
 
 export default function init() {
   const canvas = document.getElementById("map");
