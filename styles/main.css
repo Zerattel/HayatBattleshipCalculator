@@ -1,8 +1,8 @@
-@import url(/styles/map.css);
-@import url(/styles/tab-controls.css);
-@import url(/styles/main-controls.css);
-@import url(/styles/modals.css);
-@import url(/styles/relative.css);
+@import url(./map.css);
+@import url(./tab-controls.css);
+@import url(./main-controls.css);
+@import url(./modals.css);
+@import url(./relative.css);
 
 :root {
   --bg: black;
