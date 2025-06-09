@@ -1,0 +1,54 @@
+.modals {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+
+  left: 40px;
+  top: 50%;
+
+  transform: translate(0, -50%);
+
+  width: fit-content;
+  height: fit-content;
+
+  min-width: 0px;
+
+
+  .modal {
+    position: relative;
+    display: none;
+    transform: translate(-100vw, 50%);
+
+    transition: .15s;
+
+    width: 300px;
+    height: fit-content;
+
+    padding: 10px;
+
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+
+    &[data-active="true"] {
+      display: block;
+      transform: translate(0, 0);
+    }
+
+    input.small {
+      width: 50px;
+    }
+
+    button.inline {
+      display: inline;
+
+      padding: 0px;
+
+      height: 21px;
+      width: 21px;
+    }
+  }
+}

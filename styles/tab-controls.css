@@ -1,0 +1,38 @@
+.tab-controls {
+  width: 30px;
+  height: fit-content;
+
+  position: fixed;
+  bottom: 50%;
+  left: 0;
+  transform: translate(0, 50%);
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 30px;
+    height: 30px;
+
+    background-color: var(--bg-elem);
+    border: 1px solid var(--border);
+
+    color: var(--main);
+    font-size: 12px;
+
+    transition: .15s;
+
+    &:hover {
+      transform: translate(5px, 0);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hayat Battleship Calculator</title>
+
+    <link rel="stylesheet" href="/styles/main.css" />
+    <script type="module" src="/libs/jquery.js"></script>
+  </head>
+  <body>
+    <div class="map">
+      <canvas id="grid" width="10000" height="10000"></canvas>
+      <canvas id="map" width="10000" height="10000"></canvas>
+      <canvas id="overlay" width="10000" height="10000"></canvas>
+    </div>
+
+    <div class="tab-controls">
+      <button id="tab-map_set">✎</button>
+      <button id="tab-new_object">+</button>
+      <button id="tab-maneuver">M</button>
+    </div>
+
+    <div class="main-controls">
+      <button id="main_controls-step">STEP</button>
+    </div>
+
+    <div class="relative" id="relative" data-active="false">
+      <div>
+        <button>✖</button>
+        <pre>
+
+        </pre>
+      </div>
+    </div>
+
+    <div class="modals">
+      <div class="modal map-set" id="modal-map_set" data-active="false">
+        <div><label>Size: </label><input id="modal-map_set-size" placeholder="10000m" /></div>
+        <div><label>Grid: </label><input id="modal-map_set-grid" placeholder="500m" /></div>
+
+        <button id="modal-map_set-complete">Set</button>
+      </div>
+
+      <div class="modal new-object" id="modal-new_object" data-active="false">
+        <div>
+          <label>ID: </label><input id="modal-new_object-id" placeholder="random uuid" />
+        </div>
+
+        <div>
+          <label>X: </label><input class="small" id="modal-new_object-x" placeholder="500m" />
+          <label>Y: </label><input class="small" id="modal-new_object-y" placeholder="500m" />
+          <button class="inline" id="modal-new_object-aim">⊹</button>
+        </div>
+
+        <div>
+          <label>Vel: </label><input class="small" id="modal-new_object-vel" placeholder="0m/s" />
+          <label>Dir: </label><input class="small" id="modal-new_object-dir" placeholder="0deg" />
+        </div>
+
+        <button id="modal-new_object-complete">Set</button>
+      </div>
+
+      <div class="modal maneuver" id="modal-maneuver" data-active="false">
+        <div>
+          <label>ID: </label><input id="modal-maneuver-id" placeholder="" />
+        </div>
+
+        <div>
+          <label>Vel: </label><input class="small" id="modal-maneuver-vel" placeholder="0m/s" />
+          <label>Dir: </label><input class="small" id="modal-maneuver-dir" placeholder="0deg" />
+        </div>
+
+        <button id="modal-maneuver-complete">Set</button>
+      </div>
+    </div>
+
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>
