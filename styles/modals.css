@@ -33,13 +33,33 @@
     background-color: var(--bg);
     border: 1px solid var(--border);
 
+    flex-direction: column;
+    gap: 5px;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+
+      width: 100%;
+    }
+
+    div.gridded {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr 2fr 21px;
+    }
+
     &[data-active="true"] {
-      display: block;
+      display: flex;
       transform: translate(0, 0);
     }
 
     input.small {
       width: 50px;
+    }
+
+    input.fit {
+      width: calc( 100% - 10px );
     }
 
     button.inline {

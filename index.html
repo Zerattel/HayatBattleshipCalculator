@@ -36,26 +36,26 @@
 
     <div class="modals">
       <div class="modal map-set" id="modal-map_set" data-active="false">
-        <div><label>Size: </label><input id="modal-map_set-size" placeholder="10000m" /></div>
-        <div><label>Grid: </label><input id="modal-map_set-grid" placeholder="500m" /></div>
+        <div><label>Size: </label><input id="modal-map_set-size" class="fit" placeholder="10000m" /></div>
+        <div><label>Grid: </label><input id="modal-map_set-grid" class="fit" placeholder="500m" /></div>
 
         <button id="modal-map_set-complete">Set</button>
       </div>
 
       <div class="modal new-object" id="modal-new_object" data-active="false">
         <div>
-          <label>ID: </label><input id="modal-new_object-id" placeholder="random uuid" />
+          <label>ID: </label><input id="modal-new_object-id" class="fit" placeholder="random uuid" />
         </div>
 
-        <div>
-          <label>X: </label><input class="small" id="modal-new_object-x" placeholder="500m" />
-          <label>Y: </label><input class="small" id="modal-new_object-y" placeholder="500m" />
+        <div class="gridded">
+          <label>X: </label><input class="fit" id="modal-new_object-x" placeholder="500m" />
+          <label>Y: </label><input class="fit" id="modal-new_object-y" placeholder="500m" />
           <button class="inline" id="modal-new_object-aim">⊹</button>
         </div>
 
-        <div>
-          <label>Vel: </label><input class="small" id="modal-new_object-vel" placeholder="0m/s" />
-          <label>Dir: </label><input class="small" id="modal-new_object-dir" placeholder="0deg" />
+        <div class="gridded">
+          <label>Vel: </label><input class="fit" id="modal-new_object-vel" placeholder="0m/s" />
+          <label>Dir: </label><input class="fit" id="modal-new_object-dir" placeholder="0deg" />
         </div>
 
         <button id="modal-new_object-complete">Set</button>
@@ -63,10 +63,18 @@
 
       <div class="modal maneuver" id="modal-maneuver" data-active="false">
         <div>
-          <label>ID: </label><input id="modal-maneuver-id" placeholder="" />
+          <label>ID: </label><input id="modal-maneuver-id" class="fit" placeholder="" />
+          <button class="inline" id="modal-new_object-aim">⊹</button>
         </div>
 
-        <div>
+        <select id="modal-maneuver-type">
+          <option value="maneuver" selected>Maneuver</option> 
+          <option value="hud">HUD</option>
+          <option value="jump_calc">Jump Calculation</option>
+          <option value="override">Override</option>
+        </select>
+
+        <div class="gridded">
           <label>Vel: </label><input class="small" id="modal-maneuver-vel" placeholder="0m/s" />
           <label>Dir: </label><input class="small" id="modal-maneuver-dir" placeholder="0deg" />
         </div>
