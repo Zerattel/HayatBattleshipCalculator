@@ -1,9 +1,13 @@
 import { EVENTS } from '../events.js'
 
+let canvas;
+let ctx;
+let style;
+
 export default function init() {
-  const canvas = document.getElementById('grid');
-  const ctx = canvas.getContext("2d");
-  const style = window.getComputedStyle(canvas);
+  canvas = document.getElementById('grid');
+  ctx = canvas.getContext("2d");
+  style = window.getComputedStyle(canvas);
 
   let raito = 1;
 
@@ -52,3 +56,5 @@ export default function init() {
     drawGrid(size, grid);
   })
 }
+
+export { canvas, ctx, style }

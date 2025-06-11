@@ -16,6 +16,7 @@
     </div>
 
     <div class="tab-controls">
+      <button id="tab-save">💾</button>
       <button id="tab-map_set">✎</button>
       <button id="tab-new_object">+</button>
       <button id="tab-maneuver">M</button>
@@ -50,7 +51,7 @@
         <div class="gridded">
           <label>X: </label><input class="fit" id="modal-new_object-x" placeholder="500m" />
           <label>Y: </label><input class="fit" id="modal-new_object-y" placeholder="500m" />
-          <button class="inline" id="modal-new_object-aim">⊹</button>
+          <button class="inline aim" id="modal-new_object-aim">⊹</button>
         </div>
 
         <div class="gridded">
@@ -64,7 +65,7 @@
       <div class="modal maneuver" id="modal-maneuver" data-active="false">
         <div>
           <label>ID: </label><input id="modal-maneuver-id" class="fit" placeholder="" />
-          <button class="inline" id="modal-new_object-aim">⊹</button>
+          <button class="inline aim" id="modal-maneuver-aim">⊹</button>
         </div>
 
         <select id="modal-maneuver-type">
@@ -74,9 +75,21 @@
           <option value="override">Override</option>
         </select>
 
-        <div class="gridded">
-          <label>Vel: </label><input class="small" id="modal-maneuver-vel" placeholder="0m/s" />
-          <label>Dir: </label><input class="small" id="modal-maneuver-dir" placeholder="0deg" />
+        <div id="modal-maneuver-types" class="sub">
+          <div id="modal-maneuver-types-maneuver" class="gridded" data-active="true">
+            <label>Vel: </label><input class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
+            <label>Dir: </label><input class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
+          </div>
+          <div id="modal-maneuver-types-hud" data-active="false">
+            <p>ID should be selected to use HUD</p>
+          </div>
+          <div id="modal-maneuver-types-jump_calc" class="gridded" data-active="false">
+            <label>Dist: </label><input class="fit" id="modal-maneuver-types-jump_cal-vel" placeholder="0m" />
+          </div>
+          <div id="modal-maneuver-types-override" class="gridded" data-active="false">
+            <label>Vel: </label><input class="small" id="modal-maneuver-types-override-vel" placeholder="0m/s" />
+            <label>Dir: </label><input class="small" id="modal-maneuver-types-override-dir" placeholder="0deg" />
+          </div>
         </div>
 
         <button id="modal-maneuver-complete">Set</button>

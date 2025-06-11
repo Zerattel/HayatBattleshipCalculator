@@ -1,12 +1,17 @@
 import { getMousePos } from "../../libs/canvas.js";
 import { EVENTS } from "../events.js";
 
-export default function init() {
-  const canvas = document.getElementById("overlay");
-  const ctx = canvas.getContext("2d");
-  const style = window.getComputedStyle(canvas);
+let canvas;
+let ctx;
+let style;
+let objectsOnOverlay;
 
-  const objectsOnOverlay = {};
+export default function init() {
+  canvas = document.getElementById("overlay");
+  ctx = canvas.getContext("2d");
+  style = window.getComputedStyle(canvas);
+
+  objectsOnOverlay = {};
 
   let raito = 1;
 
@@ -63,3 +68,5 @@ export default function init() {
     if (redraw) redrawOverlay();
   });
 }
+
+export { ctx, canvas, style, objectsOnOverlay }

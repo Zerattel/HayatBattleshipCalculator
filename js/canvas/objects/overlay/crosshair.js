@@ -3,8 +3,10 @@ import StandartObject from "../standartObject.js";
 export default class CrosshairObject extends StandartObject {
   size = 100;
 
-  constructor(x, y) {
+  constructor(x, y, size=100) {
     super(x, y);
+
+    this.size = size;
   }
 
   draw(canvas, ctx, toCanvas, style) {

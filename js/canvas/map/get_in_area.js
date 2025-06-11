@@ -1,0 +1,27 @@
+import { vector, calc } from "../../../libs/vector/vector.js";
+
+export let getInArea = (x, y) => [];
+
+export default function (objects, toCanvas) {  
+  const CLICK_AREA = 200;
+
+  getInArea = (x, y) => {
+    const clicked = [];
+
+    for (let i of Object.keys(objects)) {
+      if (objects[i].visible) {
+        const length = vector(() =>
+          toCanvas(vector(objects[i]._x, objects[i]._y) - vector(x, y))
+        ).length;
+
+        if (length <= CLICK_AREA) {
+          clicked.push([objects[i], length]);
+        }
+      }
+    }
+
+    return clicked.sort((a, b) => a[1] - b[1]).map(v => v[0]);
+  }
+
+  return getInArea;
+}

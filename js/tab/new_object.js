@@ -13,6 +13,7 @@ export default function init() {
       modal.attr("data-active", "false");
 
       is_aiming = false;
+      $('#modal-new_object-aim').attr('data-active', "false")
       document.dispatchEvent(
         new CustomEvent(EVENTS.OVERLAY.DELETE, {
           detail: {
@@ -60,10 +61,14 @@ export default function init() {
   let is_aiming = false;
   $('#modal-new_object-aim').click(() => {
     is_aiming = !is_aiming;
+
+    $('#modal-new_object-aim').attr('data-active', is_aiming ? "true" : "false")
   })
 
   $('#overlay').click(() => {
     is_aiming = false;
+
+    $('#modal-new_object-aim').attr('data-active', "false")
   })
 
   $('#overlay').mousemove((e) => {
@@ -106,6 +111,7 @@ export default function init() {
 
     $("#modal-new_object").attr("data-active", "false");
     is_aiming = false;
+    $('#modal-new_object-aim').attr('data-active', "false")
     document.dispatchEvent(
       new CustomEvent(EVENTS.OVERLAY.DELETE, {
         detail: {

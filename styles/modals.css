@@ -16,6 +16,7 @@
   height: fit-content;
 
   min-width: 0px;
+  max-height: 800px;
 
 
   .modal {
@@ -36,6 +37,12 @@
     flex-direction: column;
     gap: 5px;
 
+    p {
+      margin: 0;
+
+      font-size: 14px;
+    }
+
     > div {
       display: flex;
       flex-direction: row;
@@ -49,6 +56,23 @@
       grid-template-columns: 1fr 2fr 1fr 2fr 21px;
     }
 
+    div.sub {
+      padding: 20px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+
+      display: flex;
+      flex-direction: column;
+
+      width: 258px;
+
+      margin: 10px 0;
+
+      > div[data-active="false"] {
+        display: none;
+      }
+    }
+
     &[data-active="true"] {
       display: flex;
       transform: translate(0, 0);
@@ -58,17 +82,26 @@
       width: 50px;
     }
 
-    input.fit {
+    .fit {
       width: calc( 100% - 10px );
     }
 
     button.inline {
       display: inline;
+    }
 
+    button.aim {
       padding: 0px;
 
       height: 21px;
       width: 21px;
+
+      border: none;
+
+      &[data-active="true"] {
+        transform: scale(1.3);
+        background-color: var(--accent);
+      }
     }
   }
 }
