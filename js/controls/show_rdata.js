@@ -1,6 +1,7 @@
 import { getInArea } from "../canvas/map/get_in_area.js";
 import { EVENTS } from "../events.js";
 import { objects } from "../canvas/map.js";
+import env from "../enviroments/env.js";
 
 export default function init() {
   $("#relative > div > button").click(() => {
@@ -78,7 +79,9 @@ export default function init() {
         text += `
 └ ${rid}
   ├ rspeed: ${Math.round(relSpeed * 100) / 100}m/s
-  ├ angvel: ${Math.round(angularVelocity * 10000) / 10000}
+  ├ rspeed (step): ${Math.round(relSpeed * env.STEP * 100) / 100}m/step
+  ├ angvel: ${Math.round(angularVelocity * 10000) / 10000}deg/s
+  ├ angvel (step): ${Math.round(angularVelocity  * env.STEP * 10000) / 10000}deg/step
   ├ adir: ${adir}deg
   ├ rdir: ${rdir}deg
   └ dist: ${Math.round(distance * 10) / 10}m`

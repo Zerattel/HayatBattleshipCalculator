@@ -1,6 +1,7 @@
 import { toRealDirection } from "../../../../libs/canvas.js";
 import BasicStepObject from "./basicStepObject.js";
 import { calc, vector } from "../../../../libs/vector/vector.js";
+import { registerClass } from "../../../save&load/objectCollector.js";
 
 export default class BasicMovingObject extends BasicStepObject {
   velocity = vector(0, 0);
@@ -63,4 +64,23 @@ export default class BasicMovingObject extends BasicStepObject {
 
     this.moveTo(this._x + this.velocity.x * this._step, this._y + this.velocity.y * this._step);
   }
+
+
+  save(realParent=null) {
+    return {
+      ...super.save(realParent),
+      velocity: [this.velocity.x, this.velocity.y],
+      direction: this._direction,
+    }
+  }
+
+  load(data, loadChildren=false) {
+    super.load(data, false);
+    this.velocity = vector(data.velocity[0], data.velocity[1]);
+    this._direction = data.direction;
+
+    loadChildren && super.loadChildren(data);
+  } 
 }
+
+registerClass(BasicMovingObject)

@@ -1,3 +1,5 @@
+import env from "../../../enviroments/env.js";
+import { registerClass } from "../../../save&load/objectCollector.js";
 import StandartObject from "../standartObject.js";
 
 export default class BasicStepObject extends StandartObject {
@@ -6,7 +8,7 @@ export default class BasicStepObject extends StandartObject {
 
   constructor(x, y, step) {
     super(x, y);
-    this._step = step || 6;
+    this._step = step || env.STEP;
   }
 
   next() {
@@ -16,4 +18,23 @@ export default class BasicStepObject extends StandartObject {
       this.children[i].next && this.children[i].next(this);
     }
   }
+
+
+  save(realParent=null) {
+    return {
+      ...super.save(realParent),
+      step: this._step,
+      livetime: this._livetime,
+    }
+  }
+
+  load(data, loadChildren=false) {
+    super.load(data, false);
+    this._step = data.step;
+    this._livetime = data.livetime;
+
+    loadChildren && super.loadChildren(data);
+  } 
 }
+
+registerClass(BasicStepObject)

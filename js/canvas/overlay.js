@@ -38,7 +38,7 @@ export default function init() {
 
     raito = canvas.width / size;
 
-    redrawMap();
+    redrawOverlay();
   });
 
   document.addEventListener(EVENTS.OVERLAY.NEW, (e) => {

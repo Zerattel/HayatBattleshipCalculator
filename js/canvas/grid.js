@@ -4,6 +4,14 @@ let canvas;
 let ctx;
 let style;
 
+let mapProps = {
+  size: 10000,
+  grid: 500
+};
+
+let toCanvas = (pos) => 0;
+let fromCanvas = (pos) => 0;
+
 export default function init() {
   canvas = document.getElementById('grid');
   ctx = canvas.getContext("2d");
@@ -11,7 +19,8 @@ export default function init() {
 
   let raito = 1;
 
-  const toCanvas = (pos) => pos * raito;
+  toCanvas = (pos) => pos * raito;
+  fromCanvas = (pos) => pos / raito
 
 
   const drawGrid = (size, grid) => { 
@@ -54,7 +63,8 @@ export default function init() {
     raito = canvas.width / size;
 
     drawGrid(size, grid);
+    mapProps = {...e.detail};
   })
 }
 
-export { canvas, ctx, style }
+export { canvas, ctx, style, mapProps, toCanvas, fromCanvas }

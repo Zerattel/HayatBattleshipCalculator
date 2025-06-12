@@ -1,4 +1,7 @@
 import StandartObject from "../standartObject.js";
+import { saveFunction } from "../../../save&load/save.js";
+import { loadFunction } from "../../../save&load/load.js";
+import { registerClass } from "../../../save&load/objectCollector.js";
 
 export default class BasicDataHud extends StandartObject {
   data = [];
@@ -7,11 +10,9 @@ export default class BasicDataHud extends StandartObject {
   direction = 45;
 
   constructor(data, length, padding, direction) {
-    if (!data) throw new Error("no data in hud");
-
     super()
 
-    this.data = data;
+    this.data = data || [];
     this.length = length || 400;
     this.padding = padding || 150;
     this.direction = direction || 60;
@@ -67,4 +68,26 @@ export default class BasicDataHud extends StandartObject {
       ctx.fillText(str, x, y + 80 * Number(i))
     }
   }
+
+  save(realParent=null) {
+    return {
+      ...super.save(realParent),
+      data: this.data.map(v => ({ func: saveFunction(v.func) })),
+      length: this.length,
+      padding: this.padding,
+      direction: this.direction,
+    }
+  }
+
+  load(data, loadChildren=false) {
+    super.load(data, false);
+    this.data = data.data.map(v => ({ func: loadFunction(v.func) }))
+    this.length = data.length;
+    this.padding = data.padding;
+    this.direction = data.direction;
+
+    loadChildren && super.loadChildren(data);
+  } 
 }
+
+registerClass(BasicDataHud)

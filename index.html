@@ -36,6 +36,25 @@
     </div>
 
     <div class="modals">
+      <div class="modal map-load" id="modal-map_load" data-active="false">
+        <select id="modal-map_load-type">
+          <option value="load" selected>Load</option>
+          <option value="save">Save</option>
+        </select>
+
+        <div id="modal-map_load-types" class="sub">
+          <div id="modal-map_load-types-load" data-active="true">
+            <input type="file" id="modal-map_load-types-load-file" />
+          </div>
+          <div id="modal-map_load-types-save" data-active="false">
+            <p>Press button to download the file</p>
+            <a style="display: none; " id="modal-map_load-types-load-anchor"></a>
+          </div>
+        </div>
+
+        <button id="modal-map_load-complete">Do</button>
+      </div>
+
       <div class="modal map-set" id="modal-map_set" data-active="false">
         <div><label>Size: </label><input id="modal-map_set-size" class="fit" placeholder="10000m" /></div>
         <div><label>Grid: </label><input id="modal-map_set-grid" class="fit" placeholder="500m" /></div>

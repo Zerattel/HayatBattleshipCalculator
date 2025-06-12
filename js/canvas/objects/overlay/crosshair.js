@@ -1,3 +1,4 @@
+import { registerClass } from "../../../save&load/objectCollector.js";
 import StandartObject from "../standartObject.js";
 
 export default class CrosshairObject extends StandartObject {
@@ -43,4 +44,18 @@ export default class CrosshairObject extends StandartObject {
     ctx.stroke();
     ctx.setLineDash([]);
   }
+
+  save(realParent=null) {
+    return {
+      ...super.save(realParent),
+      size: this.size,
+    }
+  }
+
+  load(data, loadChildren=false) {
+    super.load(data, loadChildren);
+    this.size = data.size;
+  } 
 }
+
+registerClass(CrosshairObject)
