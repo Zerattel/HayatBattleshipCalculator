@@ -19,20 +19,23 @@ export default class AccentPoint extends StandartObject {
     ctx.strokeStyle = style.getPropertyValue("--accent");
     ctx.lineWidth = 20;
 
+    const x = toCanvas(this._x);
+    const y = toCanvas(this._y);
+
     ctx.beginPath();
-    ctx.arc(this._x, this._y, this.radius, 0.05 * Math.PI, 0.45 * Math.PI, false);
+    ctx.arc(x, y, this.radius, 0.05 * Math.PI, 0.45 * Math.PI, false);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(this._x, this._y, this.radius, 0.55 * Math.PI, 0.95 * Math.PI, false);
+    ctx.arc(x, y, this.radius, 0.55 * Math.PI, 0.95 * Math.PI, false);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(this._x, this._y, this.radius, 1.05 * Math.PI, 1.45 * Math.PI, false);
+    ctx.arc(x, y, this.radius, 1.05 * Math.PI, 1.45 * Math.PI, false);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(this._x, this._y, this.radius, 1.55 * Math.PI, 1.95 * Math.PI, false);
+    ctx.arc(x, y, this.radius, 1.55 * Math.PI, 1.95 * Math.PI, false);
     ctx.stroke();
 
     const dir = point(this._x - this.oX, this._y - this.oY);
@@ -42,18 +45,18 @@ export default class AccentPoint extends StandartObject {
     ctx.beginPath();
     ctx.moveTo(this.oX, this.oY);
     ctx.lineTo(
-      this._x - dir_norm.x * this.radius,
-      this._y - dir_norm.y * this.radius
+      x - dir_norm.x * this.radius,
+      y - dir_norm.y * this.radius
     )
     ctx.stroke()
     ctx.setLineDash([])
 
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.moveTo(this._x - 20, this._y);
-    ctx.lineTo(this._x + 20, this._y);
-    ctx.moveTo(this._x, this._y - 20);
-    ctx.lineTo(this._x, this._y + 20);
+    ctx.moveTo(x - 20, y);
+    ctx.lineTo(x + 20, y);
+    ctx.moveTo(x, y - 20);
+    ctx.lineTo(x, y + 20);
     ctx.stroke();
   }
 

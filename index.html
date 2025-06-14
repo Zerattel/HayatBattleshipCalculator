@@ -88,6 +88,20 @@
         <div class="gridded">
           <label>Vel: </label><input type="number" class="fit" id="modal-new_object-vel" placeholder="0m/s" />
           <label>Dir: </label><input type="number" class="fit" id="modal-new_object-dir" placeholder="0deg" />
+        </div><br>
+
+        <div><label>Sprite</label></div>
+        <select id="modal-new_object-img"></select>
+        <div class="gridded">
+          <label>Color:</label>
+          <div>
+            <label>#</label><input placeholder="ffffff" id="modal-new_object-img-color" class="small" />
+          </div>
+          
+          <label>Size: </label>
+          <div>
+            <input placeholder="200" id="modal-new_object-img-size" class="small" /><label>px</label>
+          </div>
         </div>
 
         <button id="modal-new_object-complete">Set</button>

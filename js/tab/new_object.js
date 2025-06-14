@@ -2,10 +2,42 @@ import { getMousePos, toRealDirection } from "../../libs/canvas.js";
 import uuidv4 from "../../libs/uuid.js";
 import BasicDataHud from "../canvas/objects/map/basicDataHud.js";
 import BasicMovingObject from "../canvas/objects/map/basicMovingObject.js";
+import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
 import { EVENTS } from "../events.js";
 
+const SPRITES = [
+  "ADS.png",
+  "Asteroid_Station_Icon.png",
+  "Battlecruiser.png",
+  "Battleship.png",
+  "Covert_border.png",
+  "Cruiser.png",
+  "Dreadnought.png",
+  "Fortifying.png",
+  "Orbis.png",
+  "Outpost.png",
+  "Titan.png",
+  "assassin.png",
+  "barge.png",
+  "cfvoVs3.png",
+  "corvete.png",
+  "destroer.png",
+  "frigate.png",
+  "ind-ADS.png",
+  "ind-flagman.png",
+  "ind-frigate.png",
+  "mining.png",
+  "pirate-timed.png",
+  "planetary-data-unknown-mission.png",
+  "rescue-mission.png",
+  "shuttle.png",
+  "unknown-mission.png"
+];
+
 export default function init() {
+  $('#modal-new_object-img').html(SPRITES.map(v => `<option value='${v}'>${v.split('.').slice(undefined, -1).join('.')}</option>`))
+
   $("#tab-new_object").click(() => {
     let modal = $("#modal-new_object");
 
@@ -98,6 +130,14 @@ export default function init() {
       { func: (hud) => `dir: ${Math.round(hud.parent.direction)}deg` },
       { func: (hud) => `vdir: ${toRealDirection(Math.round(Math.atan2(hud.parent.velocity.x, hud.parent.velocity.y) / Math.PI * 180) || 0)}deg` }
     ]))
+    obj.setChildren(
+      "image", 
+      new SpriteShower(
+        './img/'+$('#modal-new_object-img').val(), 
+        '#'+($('#modal-new_object-img-color').val() || 'ffffff'),
+        $('#modal-new_object-img-size').val() || 200,
+      )
+    )
 
     document.dispatchEvent(
       new CustomEvent(EVENTS.MAP.NEW, {
