@@ -73,6 +73,7 @@ export default class SpriteShower extends StandartObject {
       ...super.save(realParent),
       image: this.image.src,
       size: this.size,
+      color: this.color,
     }
   }
 
@@ -81,6 +82,7 @@ export default class SpriteShower extends StandartObject {
     this.isloaded = false;
     this.image.src = data.image;
     this.size = data.size;
+    this.color = data.color;
 
     loadChildren && super.loadChildren(data);
   } 

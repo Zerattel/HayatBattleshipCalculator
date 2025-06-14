@@ -73,6 +73,10 @@
       }
     }
 
+    div.sub:disabled {
+      filter: brightness(0.5);
+    }
+
     div.sub:has(+ div.sub[data-active="true"]) {
       margin-bottom: 0;
     }

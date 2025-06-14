@@ -38,9 +38,12 @@ export default function init() {
         const dx = obj2._x - obj1._x;
         const dy = obj2._y - obj1._y;
 
+        const vel1 = obj1.velocity || {x: 0, y: 0};
+        const vel2 = obj2.velocity || {x: 0, y: 0};
+
         const relVel = {
-          x: obj2.velocity.x - obj1.velocity.x,
-          y: obj2.velocity.y - obj1.velocity.y,
+          x: vel2.x - vel1.x,
+          y: vel2.y - vel1.y,
         };
         const relSpeed = Math.sqrt(relVel.x ** 2 + relVel.y ** 2);
 
@@ -53,7 +56,7 @@ export default function init() {
           Math.round((Math.atan2(obj1._x - obj2._x, obj1._y - obj2._y) / Math.PI) * 180) ||
             0
         );
-        const rdir = adir - obj1.direction;
+        const rdir = adir - (obj1.direction || 0);
 
         a[obj2.id] = { relSpeed, angularVelocity, distance, adir, rdir };
       }

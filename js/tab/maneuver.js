@@ -188,7 +188,14 @@ export default function init() {
 
 
   const onChangeFunctions = {
-    maneuver: (state) => {},
+    maneuver: (state) => {
+      if (!state) return;
+
+      let id = $("#modal-maneuver-id").val();
+      if (!id && check_id(id)) return;
+
+      onIdChangeFunctions.maneuver(id);
+    },
     hud: (state) => {},
     jump_calc: (state) => {
       if (state) {
@@ -205,7 +212,7 @@ export default function init() {
         let id = $("#modal-maneuver-id").val();
         if (!id && check_id(id)) return;
 
-        setAccentPoint(id, +$("#modal-maneuver-types-jump_cal-dist").val() || 0);
+        onIdChangeFunctions.jump_calc(id);
       } else {
         document.dispatchEvent(
           new CustomEvent(EVENTS.OVERLAY.DELETE, {
@@ -233,9 +240,32 @@ export default function init() {
 
 
   const onIdChangeFunctions = {
-    maneuver: (id) => {},
+    maneuver: (id) => {
+      const isComp = isCompatableForManeuver(id);
+
+      $("#modal-maneuver-types-maneuver-vel").prop('disabled', !isComp);
+      $("#modal-maneuver-types-maneuver-dir").prop('disabled', !isComp);
+      $("#modal-maneuver-complete").prop('disabled', !isComp)
+    },
     hud: (id) => {},
     jump_calc: (id) => {
+      const isComp = isCompatableForJump(id);
+      $('#modal-maneuver-types-jump_cal-dist').prop('disabled', !isComp)
+      $("#modal-maneuver-complete").prop('disabled', !isComp)
+
+      document.dispatchEvent(
+        new CustomEvent(EVENTS.OVERLAY.FUNCTION, {
+          detail: {
+            id: "modal-maneuver-jump_calc-accent",
+            func: "setVisible",
+            attr: [ isComp ],
+            redraw: true,
+          },
+        })
+      );
+
+      if (!isComp) return;
+
       setAccentPoint(id, +$("#modal-maneuver-types-jump_cal-dist").val() || 0);
     },
     override: (id) => {
@@ -244,6 +274,11 @@ export default function init() {
       changeOverrideValues();
     },
   };
+
+
+  const isCompatableForManeuver = (id) => {
+    return objects[id] && ('direction' in objects[id] && 'applyForce' in objects[id]);
+  }
 
 
   let currentOverridableValues = [];
@@ -276,6 +311,10 @@ export default function init() {
   }
 
 
+  const isCompatableForJump = (id) => {
+    return objects[id] && '_direction' in objects[id];
+  }
+
   const calculateJump = (id, dist) => {
     const x = objects[id]._x + Math.sin((objects[id]._direction / 180) * Math.PI) * dist;
     const y = objects[id]._y + Math.cos((objects[id]._direction / 180) * Math.PI) * dist;
@@ -284,6 +323,8 @@ export default function init() {
   };
 
   const setAccentPoint = (id, dist) => {
+    if (!isCompatableForJump(id)) return;
+
     const pos = calculateJump(id, dist);
 
     $('#modal-maneuver-types-jump_cal-x').text(pos[0]);
@@ -315,6 +356,7 @@ export default function init() {
   let currentType = "maneuver";
   $("#modal-maneuver-type").on("change", (e) => {
     $("#modal-maneuver-types > *").attr("data-active", "false");
+    $("#modal-maneuver-complete").prop('disabled', false)
 
     onChangeFunctions[currentType](false);
 

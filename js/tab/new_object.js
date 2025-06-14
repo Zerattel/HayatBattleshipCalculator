@@ -2,6 +2,7 @@ import { getMousePos, toRealDirection } from "../../libs/canvas.js";
 import uuidv4 from "../../libs/uuid.js";
 import BasicDataHud from "../canvas/objects/map/basicDataHud.js";
 import BasicMovingObject from "../canvas/objects/map/basicMovingObject.js";
+import BasicStaticObject from "../canvas/objects/map/basicStaticObject.js";
 import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
 import { EVENTS } from "../events.js";
@@ -113,6 +114,13 @@ export default function init() {
     onPosChange();
   })
 
+  $('#modal-new_object-is_dynamic').on('change', () => {
+    const chk = $('#modal-new_object-is_dynamic').is(':checked');
+
+    $("#modal-new_object-vel").prop('disabled', !chk);
+    $("#modal-new_object-dir").prop('disabled', !chk);
+  })
+
 
   $('#modal-new_object-complete').click(() => {
     let x = +$("#modal-new_object-x").val() || 500;
@@ -120,16 +128,27 @@ export default function init() {
     let vel = +$("#modal-new_object-vel").val() || 0;
     let dir = +$("#modal-new_object-dir").val() || 0;
     let id = $('#modal-new_object-id').val() || uuidv4();
+    let isDynamic = $('#modal-new_object-is_dynamic').is(':checked');
 
-    let obj = new BasicMovingObject(x, y, dir, vel);
-    obj.setChildren("hud", new BasicDataHud([
-      { func: (hud) => `${hud.parent.id}` },
-      { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
-      { func: (hud) => `vel: ${Math.round(hud.parent.velocity.x)}m/s, ${Math.round(hud.parent.velocity.y)}m/s` },
-      { func: (hud) => `speed: ${Math.round(hud.parent.velocity.length)}m/s` },
-      { func: (hud) => `dir: ${Math.round(hud.parent.direction)}deg` },
-      { func: (hud) => `vdir: ${toRealDirection(Math.round(Math.atan2(hud.parent.velocity.x, hud.parent.velocity.y) / Math.PI * 180) || 0)}deg` }
-    ]))
+    let obj;
+    if (!isDynamic) {
+      obj = new BasicStaticObject(x, y);
+      obj.setChildren("hud", new BasicDataHud([
+        { func: (hud) => `${hud.parent.id}` },
+        { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
+      ]))
+    } else {
+      obj = new BasicMovingObject(x, y, dir, vel);
+      obj.setChildren("hud", new BasicDataHud([
+        { func: (hud) => `${hud.parent.id}` },
+        { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
+        { func: (hud) => `vel: ${Math.round(hud.parent.velocity.x)}m/s, ${Math.round(hud.parent.velocity.y)}m/s` },
+        { func: (hud) => `speed: ${Math.round(hud.parent.velocity.length)}m/s` },
+        { func: (hud) => `dir: ${Math.round(hud.parent.direction)}deg` },
+        { func: (hud) => `vdir: ${toRealDirection(Math.round(Math.atan2(hud.parent.velocity.x, hud.parent.velocity.y) / Math.PI * 180) || 0)}deg` }
+      ]))
+    }
+
     obj.setChildren(
       "image", 
       new SpriteShower(
