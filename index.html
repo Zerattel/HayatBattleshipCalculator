@@ -101,7 +101,6 @@
 
         <select id="modal-maneuver-type">
           <option value="maneuver" selected>Maneuver</option> 
-          <option value="hud">HUD</option>
           <option value="jump_calc">Jump Calculation</option>
           <option value="override">Override</option>
         </select>
@@ -112,7 +111,7 @@
             <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
           </div>
           <div id="modal-maneuver-types-hud" data-active="false">
-            <p>ID should be selected to use HUD</p>
+            
           </div>
           <div id="modal-maneuver-types-jump_calc" data-active="false">
             <label>Dist: </label><input type="number" class="fit" id="modal-maneuver-types-jump_cal-dist" placeholder="0m" />
@@ -123,9 +122,8 @@
               <span>Y: </span><span id="modal-maneuver-types-jump_cal-y">0</span>
             </div>
           </div>
-          <div id="modal-maneuver-types-override" class="gridded" data-active="false">
-            <label>Vel: </label><input type="number" class="small" id="modal-maneuver-types-override-vel" placeholder="0m/s" />
-            <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-override-dir" placeholder="0deg" />
+          <div id="modal-maneuver-types-override" data-active="false">
+            
           </div>
         </div>
 

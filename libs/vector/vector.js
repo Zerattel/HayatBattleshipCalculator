@@ -7,8 +7,10 @@ import {
   defineVectorLength,
   operatorCalc
 } from './operator.js';
-import { IPoint } from './point.js';
+import { IPoint, point } from './point.js';
 import { convertToCSSVars } from './utils/css.js';
+
+export { point };
 
 const X = 0;
 const Y = 1;

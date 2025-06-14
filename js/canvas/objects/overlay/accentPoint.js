@@ -1,4 +1,4 @@
-import { vector } from "../../../../libs/vector/vector.js";
+import { point } from "../../../../libs/vector/vector.js";
 import { registerClass } from "../../../save&load/objectCollector.js";
 import StandartObject from "../standartObject.js";
 
@@ -35,8 +35,8 @@ export default class AccentPoint extends StandartObject {
     ctx.arc(this._x, this._y, this.radius, 1.55 * Math.PI, 1.95 * Math.PI, false);
     ctx.stroke();
 
-    const dir = vector(this._x - this.oX, this._y - this.oY);
-    const dir_norm = vector(() => dir / dir.length);
+    const dir = point(this._x - this.oX, this._y - this.oY);
+    const dir_norm = point(() => dir / dir.length);
 
     ctx.setLineDash([140, 280])
     ctx.beginPath();

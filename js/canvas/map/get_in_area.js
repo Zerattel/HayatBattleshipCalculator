@@ -1,4 +1,4 @@
-import { vector, calc } from "../../../libs/vector/vector.js";
+import { point, calc } from "../../../libs/vector/vector.js";
 
 export let getInArea = (x, y) => [];
 
@@ -10,8 +10,8 @@ export default function (objects, toCanvas) {
 
     for (let i of Object.keys(objects)) {
       if (objects[i].visible) {
-        const length = vector(() =>
-          toCanvas(vector(objects[i]._x, objects[i]._y) - vector(x, y))
+        const length = point(() =>
+          toCanvas(point(objects[i]._x, objects[i]._y) - point(x, y))
         ).length;
 
         if (length <= CLICK_AREA) {

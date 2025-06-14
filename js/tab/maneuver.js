@@ -100,6 +100,8 @@ export default function init() {
     );
   };
 
+
+
   $("#modal-maneuver-complete").click(() => {
     let modal = $("#modal-maneuver");
     let id = $("#modal-maneuver-id").val();
@@ -109,12 +111,12 @@ export default function init() {
     onDoFunctions[currentType](modal, id);
   });
 
+
+
   const onDoFunctions = {
     maneuver: (modal, id) => {
       let vel = +$("#modal-maneuver-types-maneuver-vel").val();
       let dir = +$("#modal-maneuver-types-maneuver-dir").val();
-
-      disableModal(modal);
 
       document.dispatchEvent(
         new CustomEvent(EVENTS.MAP.FUNCTION, {
@@ -144,19 +146,46 @@ export default function init() {
       );
 
       document.dispatchEvent(
-      new CustomEvent(EVENTS.OVERLAY.FUNCTION, {
-        detail: {
-          id: "modal-maneuver-crosshair",
-          func: "moveTo",
-          attr: [objects[id]._x, objects[id]._y],
-          redraw: false,
-        },
-      })
-    );
+        new CustomEvent(EVENTS.OVERLAY.FUNCTION, {
+          detail: {
+            id: "modal-maneuver-crosshair",
+            func: "moveTo",
+            attr: [objects[id]._x, objects[id]._y],
+            redraw: false,
+          },
+        })
+      );
 
       setAccentPoint(id, dist);
     },
+    override: (modal, id) => {
+      for (let data of currentOverridableValues) {
+        const elem = $('#modal-maneuver-types-override-'+data.name+' > input')[0];
+        let val = elem.value;
+
+        if (data.type == 'checkbox') val = !!elem.checked;
+        else if (!val) continue;
+
+        data.func(val);
+      }
+
+      document.dispatchEvent(
+        new CustomEvent(EVENTS.OVERLAY.FUNCTION, {
+          detail: {
+            id: "modal-maneuver-crosshair",
+            func: "moveTo",
+            attr: [objects[id]._x, objects[id]._y],
+            redraw: true,
+          },
+        })
+      );
+
+      document.dispatchEvent(new Event(EVENTS.MAP.REDRAW));
+
+      changeOverrideValues();
+    }
   };
+
 
   const onChangeFunctions = {
     maneuver: (state) => {},
@@ -188,8 +217,20 @@ export default function init() {
         );
       }
     },
-    override: (state) => {},
+    override: (state) => {
+      if (state) {
+        console.log('a')
+
+        let id = $("#modal-maneuver-id").val();
+        if (!id && check_id(id)) return;
+
+        onIdChangeFunctions.override(id);
+      } else {
+        $('#modal-maneuver-types-override').html("")
+      }
+    },
   };
+
 
   const onIdChangeFunctions = {
     maneuver: (id) => {},
@@ -197,8 +238,43 @@ export default function init() {
     jump_calc: (id) => {
       setAccentPoint(id, +$("#modal-maneuver-types-jump_cal-dist").val() || 0);
     },
-    override: (id) => {},
+    override: (id) => {
+      currentOverridableValues = objects[id].getOverridableValues();
+
+      changeOverrideValues();
+    },
   };
+
+
+  let currentOverridableValues = [];
+
+  const changeOverrideValues = () => {
+    const body = $('#modal-maneuver-types-override')[0];
+    body.innerHTML = "";
+
+    for (let data of currentOverridableValues) {
+      const containerDiv = document.createElement('div');
+      containerDiv.id = 'modal-maneuver-types-override-' + data.name;
+
+      const label = document.createElement('p');
+      label.textContent = data.name + ': ';
+
+      const input = document.createElement('input');
+      input.type = data.type;
+      input.placeholder = data.current();
+      input.classList = 'fit';
+
+      if (data.type == 'checkbox') {
+        input.checked = data.current();
+      }
+
+      containerDiv.appendChild(label);
+      containerDiv.appendChild(input);
+
+      body.appendChild(containerDiv);
+    }
+  }
+
 
   const calculateJump = (id, dist) => {
     const x = objects[id]._x + Math.sin((objects[id]._direction / 180) * Math.PI) * dist;
@@ -224,6 +300,8 @@ export default function init() {
       })
     );
   };
+
+
 
   $("#modal-maneuver-types-jump_cal-dist").on("input", (e) => {
     let id = $("#modal-maneuver-id").val();

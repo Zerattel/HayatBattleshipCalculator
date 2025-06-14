@@ -19,22 +19,36 @@ export default class BasicStepObject extends StandartObject {
     }
   }
 
+  getOverridableValues() {
+    return [
+      ...super.getOverridableValues(),
+      {
+        name: "step",
+        type: "number",
+        current: () => this._step,
+        func: (val) => {
+          this._y = val;
+        },
+      },
+    ];
+  }
+  
 
-  save(realParent=null) {
+  save(realParent = null) {
     return {
       ...super.save(realParent),
       step: this._step,
       livetime: this._livetime,
-    }
+    };
   }
 
-  load(data, loadChildren=false) {
+  load(data, loadChildren = false) {
     super.load(data, false);
     this._step = data.step;
     this._livetime = data.livetime;
 
     loadChildren && super.loadChildren(data);
-  } 
+  }
 }
 
-registerClass(BasicStepObject)
+registerClass(BasicStepObject);

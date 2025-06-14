@@ -45,23 +45,53 @@ export default class StandartObject {
     this.visible = v;
   }
 
-  save(realParent=null) {
+  getOverridableValues() {
+    return [
+      {
+        name: "x",
+        type: "number",
+        current: () => Math.round(this._x * 100) / 100,
+        func: (val) => {
+          this._x = val;
+        },
+      },
+      {
+        name: "y",
+        type: "number",
+        current: () => Math.round(this._y * 100) / 100,
+        func: (val) => {
+          this._y = val;
+        },
+      },
+      {
+        name: "visible",
+        type: "checkbox",
+        current: () => this.visible,
+        func: (val) => {
+          this.visible = val;
+        },
+      },
+    ];
+  }
+
+
+  save(realParent = null) {
     return {
       class: this.constructor.name,
       x: this._x,
       y: this._y,
       visible: this.visible,
       id: this.id,
-      parent: realParent == null ? null : this.parent == realParent ? 'inherted' : this.parent.id,
+      parent: realParent == null ? null : this.parent == realParent ? "inherted" : this.parent.id,
       children: Object.keys(this.children).reduce((acc, v) => {
         acc[v] = this.children[v].save(this);
 
         return acc;
-      }, {})
-    }
+      }, {}),
+    };
   }
 
-  load(data, loadChildren=true) {
+  load(data, loadChildren = true) {
     this._x = data.x;
     this._y = data.y;
     this.visible = data.visible;
@@ -72,9 +102,9 @@ export default class StandartObject {
   // Рекурсивно загружаем детей
   loadChildren(data) {
     for (let i of Object.keys(data.children)) {
-      load(i, data.children[i], this)
+      load(i, data.children[i], this);
     }
   }
 }
 
-registerClass(StandartObject)
+registerClass(StandartObject);
