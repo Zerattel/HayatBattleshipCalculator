@@ -18,11 +18,13 @@ export default function init() {
   const toCanvas = (pos) => pos * raito;
 
   const redrawOverlay = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    requestAnimationFrame(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i of Object.keys(objectsOnOverlay)) {
-      objectsOnOverlay[i].visible && objectsOnOverlay[i].draw(canvas, ctx, toCanvas, style);
-    }
+      for (let i of Object.keys(objectsOnOverlay)) {
+        objectsOnOverlay[i].visible && objectsOnOverlay[i].draw(canvas, ctx, toCanvas, style);
+      }
+    })
   };
 
   canvas.onclick = (e) => {

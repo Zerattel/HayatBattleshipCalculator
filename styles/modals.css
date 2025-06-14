@@ -68,9 +68,13 @@
 
       margin: 10px 0;
 
-      > div[data-active="false"] {
+      &[data-active="false"], > div[data-active="false"] {
         display: none;
       }
+    }
+
+    div.sub:has(+ div.sub[data-active="true"]) {
+      margin-bottom: 0;
     }
 
     &[data-active="true"] {

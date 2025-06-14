@@ -44,12 +44,24 @@
 
         <div id="modal-map_load-types" class="sub">
           <div id="modal-map_load-types-load" data-active="true">
-            <input type="file" id="modal-map_load-types-load-file" />
+            <label for="modal-map_load-types-load-file">
+              <input type="file" id="modal-map_load-types-load-file" />
+              Upload
+            </label>
+            <div class="loading" id="modal-map_load-file_load" data-active="false">
+              <span class="l1"></span>
+              <span class="l2"></span>
+              <span class="l3"></span>
+              <span class="l4"></span>
+            </div>
           </div>
           <div id="modal-map_load-types-save" data-active="false">
             <p>Press button to download the file</p>
             <a style="display: none; " id="modal-map_load-types-load-anchor"></a>
           </div>
+        </div>
+        <div id="modal-map_load-file_info" class="sub" data-active="false">
+
         </div>
 
         <button id="modal-map_load-complete">Do</button>

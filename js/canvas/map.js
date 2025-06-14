@@ -20,11 +20,13 @@ export default function init() {
   const toCanvas = (pos) => pos * raito;
 
   const redrawMap = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    requestAnimationFrame(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i of Object.keys(objects)) {
-      objects[i].visible && objects[i].draw(canvas, ctx, toCanvas, style);
-    }
+      for (let i of Object.keys(objects)) {
+        objects[i].visible && objects[i].draw(canvas, ctx, toCanvas, style);
+      }
+    })
   };
 
   get_in_area(objects, toCanvas);
