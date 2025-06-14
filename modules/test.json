@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Дополнительные РСУ / test",
+    "type": "Мобильность",
+    "category": "Маневровые ускорители",
+
+    "size": 1,
+    "position": "internal",
+    "tags": []
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -8,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.body.signature",
+        "modificationType": "percent",
+        "modificator": 0.8,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.01,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.maneuverability",
+        "modificationType": "number",
+        "modificator": 2,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

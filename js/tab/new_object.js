@@ -1,8 +1,12 @@
+import { battleships } from "../../battleships/battleships.js";
 import { getMousePos, toRealDirection } from "../../libs/canvas.js";
 import uuidv4 from "../../libs/uuid.js";
+import { modules } from "../../modules/modules.js";
 import BasicDataHud from "../canvas/objects/map/basicDataHud.js";
 import BasicMovingObject from "../canvas/objects/map/basicMovingObject.js";
 import BasicStaticObject from "../canvas/objects/map/basicStaticObject.js";
+import BaseModule from "../canvas/objects/map/module/baseModule.js";
+import ShipObject from "../canvas/objects/map/ship/shipObject.js";
 import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
 import { EVENTS } from "../events.js";
@@ -138,7 +142,8 @@ export default function init() {
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
       ]))
     } else {
-      obj = new BasicMovingObject(x, y, dir, vel);
+      obj = new ShipObject(x, y, dir, vel, battleships['Эсминец SSS-«Шило»']);
+      obj.addModule(new BaseModule(modules['test']))
       obj.setChildren("hud", new BasicDataHud([
         { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },

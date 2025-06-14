@@ -16,6 +16,8 @@ export function load(id, data, parent = null) {
 
   object.load(data, true);
 
+  if (parent == "module") return object;
+
   if (data.parent == "inherted" && parent) {
     parent.setChildren(id, object);
   } else {
