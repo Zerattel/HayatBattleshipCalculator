@@ -68,8 +68,8 @@
       </div>
 
       <div class="modal map-set" id="modal-map_set" data-active="false">
-        <div><label>Size: </label><input id="modal-map_set-size" class="fit" placeholder="10000m" /></div>
-        <div><label>Grid: </label><input id="modal-map_set-grid" class="fit" placeholder="500m" /></div>
+        <div><label>Size: </label><input type="number" id="modal-map_set-size" class="fit" placeholder="10000m" /></div>
+        <div><label>Grid: </label><input type="number" id="modal-map_set-grid" class="fit" placeholder="500m" /></div>
 
         <button id="modal-map_set-complete">Set</button>
       </div>
@@ -80,14 +80,14 @@
         </div>
 
         <div class="gridded">
-          <label>X: </label><input class="fit" id="modal-new_object-x" placeholder="500m" />
-          <label>Y: </label><input class="fit" id="modal-new_object-y" placeholder="500m" />
+          <label>X: </label><input type="number" class="fit" id="modal-new_object-x" placeholder="500m" />
+          <label>Y: </label><input type="number" class="fit" id="modal-new_object-y" placeholder="500m" />
           <button class="inline aim" id="modal-new_object-aim">⊹</button>
         </div>
 
         <div class="gridded">
-          <label>Vel: </label><input class="fit" id="modal-new_object-vel" placeholder="0m/s" />
-          <label>Dir: </label><input class="fit" id="modal-new_object-dir" placeholder="0deg" />
+          <label>Vel: </label><input type="number" class="fit" id="modal-new_object-vel" placeholder="0m/s" />
+          <label>Dir: </label><input type="number" class="fit" id="modal-new_object-dir" placeholder="0deg" />
         </div>
 
         <button id="modal-new_object-complete">Set</button>
@@ -108,18 +108,24 @@
 
         <div id="modal-maneuver-types" class="sub">
           <div id="modal-maneuver-types-maneuver" class="gridded" data-active="true">
-            <label>Vel: </label><input class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
-            <label>Dir: </label><input class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
+            <label>Vel: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
+            <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
           </div>
           <div id="modal-maneuver-types-hud" data-active="false">
             <p>ID should be selected to use HUD</p>
           </div>
-          <div id="modal-maneuver-types-jump_calc" class="gridded" data-active="false">
-            <label>Dist: </label><input class="fit" id="modal-maneuver-types-jump_cal-vel" placeholder="0m" />
+          <div id="modal-maneuver-types-jump_calc" data-active="false">
+            <label>Dist: </label><input type="number" class="fit" id="modal-maneuver-types-jump_cal-dist" placeholder="0m" />
+            <div>
+              <span>X: </span><span id="modal-maneuver-types-jump_cal-x">0</span>
+            </div>
+            <div>
+              <span>Y: </span><span id="modal-maneuver-types-jump_cal-y">0</span>
+            </div>
           </div>
           <div id="modal-maneuver-types-override" class="gridded" data-active="false">
-            <label>Vel: </label><input class="small" id="modal-maneuver-types-override-vel" placeholder="0m/s" />
-            <label>Dir: </label><input class="small" id="modal-maneuver-types-override-dir" placeholder="0deg" />
+            <label>Vel: </label><input type="number" class="small" id="modal-maneuver-types-override-vel" placeholder="0m/s" />
+            <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-override-dir" placeholder="0deg" />
           </div>
         </div>
 

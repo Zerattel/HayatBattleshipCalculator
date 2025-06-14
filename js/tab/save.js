@@ -73,5 +73,15 @@ export default function init() {
 
     currentType = e.target.value;
     $(`#modal-map_load-types-${currentType}`).attr('data-active', 'true');
+
+    const infoBlock = $('#modal-map_load-file_info');
+    switch (currentType) {
+      case 'load':
+        infoBlock.html() != "" && infoBlock.attr('data-active', 'true')
+        break;
+      default:
+        infoBlock.attr('data-active', 'false')
+        break;
+    }
   })
 }
