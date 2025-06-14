@@ -82,8 +82,10 @@ export default function init() {
 
   const onIdChange = () => {
     let id = $("#modal-maneuver-id").val();
+    const isCorrect = !!check_id(id);
 
-    if (!check_id(id)) return;
+    $("#modal-maneuver-complete").prop('disabled', !isCorrect)
+    if (!isCorrect) return;
     const object = objects[id];
 
     onIdChangeFunctions[currentType](id);
@@ -183,6 +185,20 @@ export default function init() {
       document.dispatchEvent(new Event(EVENTS.MAP.REDRAW));
 
       changeOverrideValues();
+    },
+    delete: (modal, id) => {
+      document.dispatchEvent(
+        new CustomEvent(EVENTS.MAP.DELETE, {
+          detail: {
+            id: id,
+            redraw: true,
+          },
+        })
+      );
+
+      $("#modal-maneuver-id").val(Object.keys(objects)[0]);
+
+      onIdChange();
     }
   };
 
@@ -236,6 +252,7 @@ export default function init() {
         $('#modal-maneuver-types-override').html("")
       }
     },
+    delete: (state) => {},
   };
 
 
@@ -273,6 +290,7 @@ export default function init() {
 
       changeOverrideValues();
     },
+    delete: (id) => {},
   };
 
 
