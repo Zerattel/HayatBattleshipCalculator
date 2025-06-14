@@ -43,7 +43,7 @@ export default class AccentPoint extends StandartObject {
 
     ctx.setLineDash([140, 280])
     ctx.beginPath();
-    ctx.moveTo(this.oX, this.oY);
+    ctx.moveTo(toCanvas(this.oX), toCanvas(this.oY));
     ctx.lineTo(
       x - dir_norm.x * this.radius,
       y - dir_norm.y * this.radius
