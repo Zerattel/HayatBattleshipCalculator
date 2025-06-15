@@ -18,6 +18,12 @@
   --direction: rgb(255, 0, 0);
 
   --hud: rgb(255, 255, 255);
+
+  --hud-temperature: rgb(228, 0, 0);
+  --hud-power: rgb(70, 255, 70);
+  --hud-barrier: rgb(0, 255, 213);
+  --hud-armor: rgb(255, 145, 0);
+  --hud-hull: rgb(155, 155, 155);
 }
 
 body {

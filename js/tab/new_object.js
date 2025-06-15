@@ -6,6 +6,7 @@ import BasicDataHud from "../canvas/objects/map/basicDataHud.js";
 import BasicMovingObject from "../canvas/objects/map/basicMovingObject.js";
 import BasicStaticObject from "../canvas/objects/map/basicStaticObject.js";
 import BaseModule from "../canvas/objects/map/module/baseModule.js";
+import ShipStatsHUD from "../canvas/objects/map/ship/hud/shipStatsHud.js";
 import ShipObject from "../canvas/objects/map/ship/shipObject.js";
 import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
@@ -144,6 +145,7 @@ export default function init() {
     } else {
       obj = new ShipObject(x, y, dir, vel, battleships['Эсминец SSS-«Шило»']);
       obj.addModule(new BaseModule(modules['test']))
+      obj.setChildren("shipStatsHud", new ShipStatsHUD())
       obj.setChildren("hud", new BasicDataHud([
         { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },

@@ -1,3 +1,5 @@
+import { clamp } from "../clamp.js";
+
 const tonnage = [
   "Шаттл",
   "Корвет",
@@ -22,11 +24,10 @@ const tonnageToAcceleration = [900, 600, 420, 300, 180, 120, 90, 60, 30, 18];
 export { tonnage, tonnageToCaptureRange, tonnageToManeuverabilityBonus, tonnageToAcceleration };
 
 
-
 const baseBattleshipCharacteristics = {
   dynamic: {
     hp: {
-      /** текущая значение корпуса */
+      /** текущее значение корпуса */
       hull: 100,
       /** текущее значение брони */
       armor: 100,
@@ -122,10 +123,73 @@ const baseBattleshipCharacteristics = {
         /** тенденция к резонансу */
         tendency: 0.01,
         /** резонансный диапазон */
-        range: 0,
+        range: 0.4,
       },
     },
   },
 };
 
-export { baseBattleshipCharacteristics };
+const battleshipCharacteristicsClampRules = {
+  dynamic: {
+    hp: {
+      hull: (c, v) => clamp(v, 0, c.constant.hp.hull),
+      armor: (c, v) => clamp(v, 0, c.constant.hp.armor),
+      barrier: (c, v) => clamp(v, 0, c.constant.hp.barrier),
+    },
+    temperature: (c, v) => v < 0 ? 0 : v,
+    charge: (c, v) => clamp(v, 0, c.constant.capacitor.charge),
+  },
+  constant: {
+    capacitor: {
+      charge: (c, v) => v < 0 ? 0 : v,
+    },
+    resistance: {
+      kinetic: {
+        hull: [0, 1],
+        armor: [0, 1],
+        barrier: [0, 1],
+      },
+      high_explosive: {
+        hull: [0, 1],
+        armor: [0, 1],
+        barrier: [0, 1],
+      },
+      electro_magnetic: {
+        hull: [0, 1],
+        armor: [0, 1],
+        barrier: [0, 1],
+      },
+      thermal: {
+        hull: [0, 1],
+        armor: [0, 1],
+        barrier: [0, 1],
+      },
+    }
+  },
+};
+
+export { baseBattleshipCharacteristics, battleshipCharacteristicsClampRules };
+
+
+const overheatDamage = (maxHull, curTemp, maxTemp) => maxHull * ( curTemp - maxTemp ) / 400;
+
+const passiveBarrierRegeneration = (barrierStats, curBarrier, maxBarrier) => {
+  const curPer = curBarrier / maxBarrier;
+
+  const regenInPer = 
+    (barrierStats.resonance.tendency - barrierStats.passive_regeneration) 
+      *
+    (1 - barrierStats.resonance.range) 
+      ** 
+        (
+          -((curPer - barrierStats.resonance.range) ** 2)
+            /
+          (barrierStats.resonance.range + barrierStats.resonance.range * curPer)
+        ) 
+      +
+    barrierStats.passive_regeneration
+  
+  return regenInPer * maxBarrier;
+}
+
+export { overheatDamage, passiveBarrierRegeneration }
