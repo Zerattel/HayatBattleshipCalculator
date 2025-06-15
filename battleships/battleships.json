@@ -1,3 +1,25 @@
 {
-  "Эсминец SSS-«Шило»": "sss-shilo.json"
+  "NSB - «Gefest»": "industrial/ind-gefest.json",
+  "LRV - «Созерцатель»": "frigates/lrv-observer.json",
+  "SSS - «Dramiel»": "frigates/sss-dramiel.json",
+  "KR - MD-16": "frigates/md-16.json",
+  "KR - «Эмикар»": "frigates/kr-emikar.json",
+  "NF - «Gryphon»": "frigates/nc-gryphon.json",
+  "GC - «Mantis»": "frigates/gc-mantis.json",
+  "KR - «Пионер»": "frigates/kr-pioner.json",
+  "SSS - «Shilo»": "destroers/sss-shilo.json",
+  "FTLI - «Iku-Turso»": "destroers/nc-ikuturso.json",
+  "ARES- «Kettling»": "destroers/nc-kettling.json",
+  "A-405 - «Kikimora»": "destroers/precursor-kikimora.json",
+  "A-654 - «Полиморфный автоматон»": "destroers/precursor-polymorph.json",
+  "«Plague»": "cruisers/crimson-plague.json",
+  "ITP - «Peacekeeper»": "cruisers/itp-peacekeeper.json",
+  "NF - «Pilgrim»": "cruisers/nc-pilgrim.json",
+  "NF - «Valravn»": "cruisers/nc-valravn.json",
+  "KR - «Жнец»": "battlecruisers/kr-reaper.json",
+  "KR - «Албаст»": "battleships/kr-albast.json",
+  "NC - «Raven»": "battleships/nc-raven.json",
+  "A-288 «DOLON»": "battleships/precursor-dolon.json",
+  "KR - «Кузнец»": "capital/kr-kuznec.json",
+  "ARES - «LEVIATHAN»": "capital/nc-leviathan.json"
 }
