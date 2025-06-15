@@ -15,6 +15,8 @@ new ReadyFunctionsCombiner(() => {
   saveload();
   grid();
   overlay();
+
+  $('#loading-modals').attr('data-active', 'false')
 }, battleshipsReady, modulesReady)
 
 loadBattleships();

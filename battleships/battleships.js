@@ -7,10 +7,15 @@ let setReadyFunction = (func) => {
 
 export default function init() {
   const loadBattleships = async (list) => {
+    const len = Object.keys(list).length;
+    let amount = 0;
     for (let [name, path] of Object.entries(list)) {
       const data = await (await fetch("./battleships/" + path)).json();
 
       battleships[name] = data;
+
+      amount++;
+      $('#loading-inital-bar-battleships').css('--progress', amount / len)
     }
   };
 

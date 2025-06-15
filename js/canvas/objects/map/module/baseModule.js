@@ -77,6 +77,9 @@ export default class BaseModule {
       state: this.state,
       uuid: this.uuid,
       characteristics: this.characteristics,
+
+      previousState: this.previousState,
+      inOnlineSteps: this.inOnlineSteps,
     };
   }
 
@@ -84,6 +87,8 @@ export default class BaseModule {
     this.characteristics = data.characteristics;
     this.uuid = data.uuid;
     this.state = data.state;
+    this.previousState = data.previousState;
+    this.inOnlineSteps = data.inOnlineSteps;
   }
 }
 

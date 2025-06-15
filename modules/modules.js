@@ -7,10 +7,15 @@ let setReadyFunction = (func) => {
 
 export default function init() {
   const loadModules = async (list) => {
+    const len = Object.keys(list).length;
+    let amount = 0;
     for (let [name, path] of Object.entries(list)) {
       const data = await (await fetch("./modules/" + path)).json();
 
       modules[name] = data;
+
+      amount++;
+      $('#loading-inital-bar-modules').css('--progress', amount / len)
     }
   };
 
