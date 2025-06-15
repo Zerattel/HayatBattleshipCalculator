@@ -1,0 +1,35 @@
+{
+  "main": {
+    "name": "Дополнительный слой вольфрама",
+    "type": "Сопротивляемость",
+    "category": "Доп. Бронирование",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["armorextender", "maneuverpenalty"]
+  },
+  "activation": "passive",
+  "interference": -9,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.acceleration",
+        "modificationType": "percent",
+        "modificator": 0.9,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.hp.armor",
+        "modificationType": "percent",
+        "modificator": 1.3,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

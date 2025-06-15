@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Форсажная камера M",
+    "type": "Мобильность",
+    "category": "Форсажная камера",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["afterburner", "maneuverbuff"]
+  },
+  "activation": "active",
+  "interference": -100,
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+        {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -15,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.body.acceleration",
+        "modificationType": "percent",
+        "modificator": 1.8,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.06,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.maneuverability",
+        "modificationType": "number",
+        "modificator": 1,
+        "isAffectedByInterference": true
+      }
+    ],
+    "overload": []
+  }
+}

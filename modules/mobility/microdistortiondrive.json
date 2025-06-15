@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Микродисторционный привод M",
+    "type": "Мобильность",
+    "category": "Микродисторционный привод",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["microdistortiondrive", "signaturepenalty"]
+  },
+  "activation": "active",
+  "interference": -100,
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+        {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -20,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.acceleration",
+        "modificationType": "percent",
+        "modificator": 3.5,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.05,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.signature",
+        "modificationType": "percent",
+        "modificator": 4,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "«Drivedose»",
+    "type": "Наркотик",
+    "category": "Доза-2",
+
+    "size": 0,
+    "position": "internal",
+    "tags": ["psychoserocin"]
+  },
+  "activation": "passive",
+  "interference": -100,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.maneuverability",
+        "modificationType": "number",
+        "modificator": 1,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

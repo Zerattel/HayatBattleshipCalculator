@@ -1,3 +1,19 @@
 {
-  "test": "test.json"
+  "test": "test.json",
+  "Средний трюм M": "construction/cargohold.json",
+  "Малый ангар M": "construction/hangar.json",
+  "Золотая проточная катушка M": "energetics/golden-flowcoil.json",
+  "Продвинутая СУР M": "energetics/rcs.json",
+  "Форсажная камера M": "mobility/afterburner.json",
+  "Прыжковый двигатель L": "mobility/jumpdrive.json",
+  "Микродисторционный привод M": "mobility/microdistortiondrive.json",
+  "Дополнительные РСУ M": "mobility/rss.json",
+  "«Drivedose»": "pilot-drug-effects/drivedose.json",
+  "Интеллектуальная гибкость": "pilot-skills-perks/intellectualflexibility-skill.json",
+  "«Мультиспектралка из той самой»": "resistance/Multispectralfromthatveryone.json",
+  "Интерферентная ячейка щита": "resistance/shieldextender.json",
+  "Дополнительный слой вольфрама": "resistance/tunsgencoating.json",
+  "Внешний радиатор M": "thermodynamics/external-radiator.json",
+  "Внутренний радиатор M": "thermodynamics/internalradiator.json",
+  "Излучающая обшивка M": "thermodynamics/radiating-hull.json"
 }

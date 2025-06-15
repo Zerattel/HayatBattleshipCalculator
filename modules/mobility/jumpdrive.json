@@ -1,0 +1,42 @@
+{
+  "main": {
+    "name": "Прыжковый двигатель L",
+    "type": "Мобильность",
+    "category": "Прыжковый портал",
+
+    "size": 3,
+    "position": "internal",
+    "tags": ["jumpdrive"]
+  },
+  "activation": "active",
+  "interference": -100,
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+        {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -50,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.jumpdistance",
+        "modificationType": "number",
+        "modificator": 100000,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.1,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

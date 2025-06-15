@@ -1,0 +1,35 @@
+{
+  "main": {
+    "name": "Золотая проточная катушка M",
+    "type": "Энергетика",
+    "category": "Проточная катушка",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["flowcoil"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "percent",
+        "modificator": 1.25,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor",
+        "modificationType": "percent",
+        "modificator": 0.75,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

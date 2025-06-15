@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Интеллектуальная гибкость",
+    "type": "Навык",
+    "category": "Интеллектуальная гибкость",
+
+    "size": 0,
+    "position": "internal",
+    "tags": ["skill"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.resistance.EW",
+        "modificationType": "percent",
+        "modificator": 1.1,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Продвинутая СУР M",
+    "type": "Энергетика",
+    "category": "Система контроля реактора",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["rcs"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "percent",
+        "modificator": 1.08,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}
