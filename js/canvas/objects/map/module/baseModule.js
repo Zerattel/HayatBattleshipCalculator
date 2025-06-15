@@ -2,20 +2,27 @@ import { clamp } from "../../../../../libs/clamp.js";
 import copy from "../../../../../libs/copy.js";
 import { mergeDeep } from "../../../../../libs/deepMerge.js";
 import { baseModuleCharacteristics } from "../../../../../libs/hayat/modules.js";
+import { registerClass } from "../../../../save&load/objectCollector.js";
 
 export default class BaseModule {
   characteristics = copy(baseModuleCharacteristics);
 
   /** offline / online / active / overload */
-  state = "online";
+  state = "offline";
+  previousState = "offline";
 
-  constructor(data) {
+  uuid = "";
+
+  inOnlineSteps = 0;
+
+  constructor(data={}) {
     this.characteristics = mergeDeep(this.characteristics, data)
   }
 
   get fullType() {
     return this.characteristics.main.type + " | " + this.characteristics.main.category;
   }
+
 
   applyModifiers(mods, activeModules) {
     const interference = this.characteristics.interference * (activeModules[this.fullType] - 1);
@@ -32,4 +39,52 @@ export default class BaseModule {
 
     return mods;
   }
+
+
+  next() {
+    if (this.previousState != this.state && this.state == "offline") {
+      this.inOnlineSteps = 0;
+    }
+
+    if (['online', 'active', 'overload'].includes(state)) {
+      this.inOnlineSteps++;
+    }
+
+    this.previousState = this.state;
+  }
+
+
+  setState(state) {
+    if (!['offline', 'online', 'active', 'overload'].includes(state)) {
+      if (this.previousState != "offline") {
+        this.previousState == this.state;
+      }
+
+      this.state = "offline";
+      return;
+    }
+
+    if (this.previousState != this.state) {
+      this.previousState == this.state;
+    }
+    this.state = state;
+  }
+
+
+  save() {
+    return {
+      class: this.constructor.name,
+      state: this.state,
+      uuid: this.uuid,
+      characteristics: this.characteristics,
+    };
+  }
+
+  load(data) {
+    this.characteristics = data.characteristics;
+    this.uuid = data.uuid;
+    this.state = data.state;
+  }
 }
+
+registerClass(BaseModule)
