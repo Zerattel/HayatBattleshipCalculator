@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Дополнительные РСУ M",
+    "type": "Мобильность",
+    "category": "Маневровые ускорители",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["rss", "maneuverbuff", "signaturesupressor"]
+  },
+  "activation": "active",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+        {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -8,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.body.signature",
+        "modificationType": "percent",
+        "modificator": 0.8,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.01,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.maneuverability",
+        "modificationType": "number",
+        "modificator": 2,
+        "isAffectedByInterference": true
+      }
+    ],
+    "overload": []
+  }
+}

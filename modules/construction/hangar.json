@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Малый ангар M",
+    "type": "Конструкция",
+    "category": "Ангар",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["hangar"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.hangar",
+        "modificationType": "number",
+        "modificator": 25,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

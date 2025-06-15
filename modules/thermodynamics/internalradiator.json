@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Внутренний радиатор M",
+    "type": "Термодинамика",
+    "category": "Система изоляции",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["internalradiator","temperatureextender","extender"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.temperature",
+        "modificationType": "percent",
+        "modificator": 1.5,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

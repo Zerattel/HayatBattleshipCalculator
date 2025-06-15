@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Средний трюм M",
+    "type": "Конструкция",
+    "category": "Трюм",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["storage"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.storage",
+        "modificationType": "number",
+        "modificator": 150,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

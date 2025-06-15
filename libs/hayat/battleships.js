@@ -58,6 +58,8 @@ const baseBattleshipCharacteristics = {
     },
     /** максимальное ускорение */
     acceleration: 0,
+    /** дальность прыжка (СДЕЛАЙ ЭТО ПЛЕЙСХОЛДЕРОМ JUMP CALCULATION!!!!) */
+    jumpdistance: 0,
     /** маневренность */
     maneuverability: 0,
     /** сила сенсоров */
@@ -113,6 +115,8 @@ const baseBattleshipCharacteristics = {
         armor: 0,
         barrier: 0,
       },
+      /** Сопротивляемость к РЭБ */
+      EW: 0,
     },
     barrier: {
       /** стабильная пассивная регенерация */
