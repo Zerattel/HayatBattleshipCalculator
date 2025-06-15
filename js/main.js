@@ -1,3 +1,4 @@
+import loading, { closeLoading } from './loading.js'
 import grid from './canvas/grid.js'
 import tab from './tab/tab.js'
 import map from './canvas/map.js'
@@ -8,6 +9,8 @@ import loadBattleships, { setReadyFunction as battleshipsReady } from '../battle
 import loadModules, { setReadyFunction as modulesReady } from '../modules/modules.js'
 import ReadyFunctionsCombiner from '../libs/combineReadyFunctions.js'
 
+loading();
+
 new ReadyFunctionsCombiner(() => {
   tab();
   controls();
@@ -16,7 +19,7 @@ new ReadyFunctionsCombiner(() => {
   grid();
   overlay();
 
-  $('#loading-modals').attr('data-active', 'false')
+  closeLoading();
 }, battleshipsReady, modulesReady)
 
 loadBattleships();

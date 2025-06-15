@@ -23,5 +23,13 @@ export const EVENTS = {
     /** id, func, attr, redraw */
     FUNCTION: 'overlayFunctionObject',
     REDRAW: 'overlayRedraw',
+  },
+  LOADING: {
+    /** */
+    CLOSE: 'loadingClose',
+    /** id */
+    OPEN: 'loadingOpen',
+    /** id, min, max, cur */
+    UPDATE: 'loadingUpdate'
   }
 }
