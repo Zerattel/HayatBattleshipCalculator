@@ -130,6 +130,117 @@ const baseBattleshipCharacteristics = {
         range: 0.4,
       },
     },
+
+    modulemodifier: {
+      /** Модификаторы для вооружения */
+      offence: {
+        /** Модификаторы для баллистики */
+        ballistic: {
+          effectivedistancemodifier: 1,
+          damagemodifier: 1,
+          trackingmodifier: 1,
+          capacitorconsumptionmodifier: 1,
+          heatingmodifier: 1,
+          targetheatingmodifier: 1
+        },
+        /** Модификаторы для лазеров */
+        laser: {
+          effectivedistancemodifier: 1,
+          damagemodifier: 1,
+          trackingmodifier: 1,
+          capacitorconsumptionmodifier: 1,
+          heatingmodifier: 1,
+          targetheatingmodifier: 1
+        },
+        /** Модификаторы для ПУ */
+        launcher: {
+          onhitdamagemodifier: 1,
+          fuelmodifier: 1,
+          accelerationmodifier: 1,
+          explosionsignaturemodifier: 1,
+          capacitorconsumptionmodifier: 1,
+          heatingmodifier: 1,
+          onhitheatingmodifier: 1
+        },
+        /** Модификаторы для АОЕ атак */
+        bomb: {
+          effectivedistancemodifier: 1,
+          damagemodifier: 1,
+          capacitorconsumptionmodifier: 1,
+          heatingmodifier: 1,
+        },
+        /** Модификаторы для дезинтеграторов */
+        desintegrator: {
+          effectivedistancemodifier: 1,
+          damagemodifier: 1,
+          trackingmodifier: 1,
+          capacitorconsumptionmodifier: 1,
+          heatingmodifier: 1,
+          targetheatingmodifier: 1,
+          /** Бонус урону от каждой атаки */
+          pershotbonusmodifier: 1,
+          /** Потолок бонуса */
+          maxstackmodifier: 1,
+        },
+        /** Модификаторы силы НАШИХ средств Радиоэлектронной Борьбы */
+        EW: {
+          effectivedistancemodifier: 1,
+          capacitorconsumptionmodifier: 1,
+          heatingmodifier: 1,
+          targetheatingmodifier: 1,
+          /** Основной бонус, накладывающийся на все последующие сверху */
+          EWstrenghtmodifier: 1,
+          /** Чисто для профильных особенностей и каких-то мега узкоспециализированных штуковин */
+          trackingdisruptionmodifier: 1,
+          stasismodifier: 1,
+          maneuverabilitydisruptionmodifier: 1,
+          contactqualitydisruptionmodifier: 1,
+          signaturepaintingmodifier: 1,
+          capacitordisruptionmodifier: 1
+        },
+        /** Модификаторы субтел этого тела */
+        vehicle: {
+          vehicledamagemodifier: 1,
+          vehicleaccelerationmodifier: 1,
+          vehicletargetheatingmodifier: 1,
+          vehicleeffectivedistancemodifier: 1,
+          vehiclesignaturemodifier: 1,
+          vehiclemaneuverabilitymodifier: 1,
+          vehiclehpmodifier: 1
+        }
+      },
+      /** Модификаторы работы инженерных модулей */
+      engineering: {
+        /** Бонус ремонта */
+        /** Барьера */
+        barrier: {
+          passiverechargemodifier: 1,
+          activerechargemodifier:1
+        },
+        /** Брони */
+        armor: {
+          activerepairmodifier: 1
+        }
+      },
+      /** Модификаторы работы модулей поддержки флота и дистанционного снабжения. */
+      /** Отсюда же берут баффы и аппараты снабжения и поддержки. */
+      support: {
+        effectivedistancemodifier: 1,
+        capacitorconsumptionmodifier: 1,
+        heatingmodifier: 1,
+        /** Основной бонус, накладывающийся на все последующие сверху */
+        supportstrenghtmodifier: 1,
+        /** Чисто для профильных особенностей и каких-то мега узкоспециализированных штуковин */
+        trackingsupportmodifier: 1,
+        accelerationsupportmodifier: 1,
+        maneuverabilitysupportmodifier: 1,
+        contactqualitysupportmodifier: 1,
+        signaturesuppressingmodifier: 1,
+        capacitorinjectionmodifier: 1,
+        shieldinjectionmodifier: 1,
+        armorrepairmodifier: 1,
+      }
+    }
   },
 };
 
