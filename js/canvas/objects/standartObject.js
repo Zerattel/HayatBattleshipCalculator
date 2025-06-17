@@ -74,6 +74,13 @@ export default class StandartObject {
     ];
   }
 
+  getChildrenWithOverridableValues(parent='this') {
+    return Object.keys(this.children).flatMap(v => ([{
+      id: parent+'.'+v,
+      getValues: () => this.children[v].getOverridableValues(),
+    }, ...this.children[v].getChildrenWithOverridableValues(parent+'.'+v)]))
+  }
+
 
   save(realParent = null) {
     return {

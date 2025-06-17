@@ -76,6 +76,10 @@ export default class ShipObject extends BasicMovingObject {
 
     c.dynamic.charge += c.constant.capacitor.generation;
 
+    for (let m of this.allModules) {
+      m.next();
+    }
+
     this.currentCharacteristics = clampCharacteristics(c, battleshipCharacteristicsClampRules);
   }
 
@@ -124,6 +128,24 @@ export default class ShipObject extends BasicMovingObject {
           this.currentCharacteristics.dynamic.charge = +val;
         },
       },
+    ]
+  }
+
+  getChildrenWithOverridableValues(parent='this') {
+    return [
+      ...super.getChildrenWithOverridableValues(),
+      ...this.externalModules.map(v => ({
+        id: parent+'.externalModules.'+v.characteristics.main.name,
+        getValues: () => v.getOverridableValues(),
+      })),
+      ...this.internalModules.map(v => ({
+        id: parent+'.internalModules.'+v.characteristics.main.name,
+        getValues: () => v.getOverridableValues(),
+      })),
+      ...this.otherModules.map(v => ({
+        id: parent+'.otherModules.'+v.characteristics.main.name,
+        getValues: () => v.getOverridableValues(),
+      }))
     ]
   }
 

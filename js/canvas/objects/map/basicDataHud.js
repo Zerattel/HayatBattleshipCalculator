@@ -69,6 +69,38 @@ export default class BasicDataHud extends StandartObject {
     }
   }
 
+
+  getOverridableValues() {
+    return [
+      ...super.getOverridableValues(),
+      {
+        name: "length",
+        type: "number",
+        current: () => this.length,
+        func: (val) => {
+          this.length = +val;
+        },
+      },
+      {
+        name: "padding",
+        type: "number",
+        current: () => this.padding,
+        func: (val) => {
+          this.padding = +val;
+        },
+      },
+      {
+        name: "direction",
+        type: "number",
+        current: () => this.direction,
+        func: (val) => {
+          this.direction = +val;
+        },
+      },
+    ];
+  }
+
+
   save(realParent=null) {
     return {
       ...super.save(realParent),

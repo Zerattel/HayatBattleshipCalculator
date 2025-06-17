@@ -46,8 +46,8 @@ export default class BaseModule {
       this.inOnlineSteps = 0;
     }
 
-    if (['online', 'active', 'overload'].includes(state)) {
-      this.inOnlineSteps++;
+    if (['online', 'active', 'overload'].includes(this.state)) {
+      this.inOnlineSteps += 1;
     }
 
     this.previousState = this.state;
@@ -68,6 +68,32 @@ export default class BaseModule {
       this.previousState == this.state;
     }
     this.state = state;
+  }
+
+
+  getOverridableValues() {
+    return [
+      {
+        name: "state",
+        type: "text",
+        current: () => this.state,
+        func: (val) => {
+          this.setState(val);
+        },
+      },
+      {
+        name: "inOnlineSteps",
+        type: "number",
+        current: () => this.inOnlineSteps,
+        func: (val) => {
+          this.inOnlineSteps = val;
+        },
+      },
+    ];
+  }
+
+  getChildrenWithOverridableValues(parent='this') {
+    return []
   }
 
 

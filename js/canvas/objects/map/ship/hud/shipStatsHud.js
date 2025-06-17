@@ -152,6 +152,62 @@ export default class ShipStatsHUD extends StandartObject {
     );
   }
 
+
+  getOverridableValues() {
+    return [
+      ...super.getOverridableValues(),
+      {
+        name: "distance",
+        type: "number",
+        current: () => this.distance,
+        func: (val) => {
+          this.distance = +val;
+        },
+      },
+      {
+        name: "bar-height",
+        type: "number",
+        current: () => this.bar.height,
+        func: (val) => {
+          this.bar.height = +val;
+        },
+      },
+      {
+        name: "bar-width",
+        type: "number",
+        current: () => this.bar.width,
+        func: (val) => {
+          this.bar.width = +val;
+        },
+      },
+      {
+        name: "bar-padding",
+        type: "number",
+        current: () => this.bar.padding,
+        func: (val) => {
+          this.bar.padding = +val;
+        },
+      },
+      {
+        name: "bar-border",
+        type: "number",
+        current: () => this.bar.border,
+        func: (val) => {
+          this.bar.border = +val;
+        },
+      },
+      {
+        name: "bar-gap",
+        type: "number",
+        current: () => this.bar.gap,
+        func: (val) => {
+          this.bar.gap = +val;
+        },
+    },
+    ];
+  }
+
+
   save(realParent = null) {
     return {
       ...super.save(realParent),

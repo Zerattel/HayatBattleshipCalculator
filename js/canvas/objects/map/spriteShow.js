@@ -68,6 +68,37 @@ export default class SpriteShower extends StandartObject {
   }
 
 
+  getOverridableValues() {
+    return [
+      ...super.getOverridableValues(),
+      {
+        name: "src",
+        type: "text",
+        current: () => this.image.src,
+        func: (val) => {
+          this.image.src = val;
+        },
+      },
+      {
+        name: "size",
+        type: "number",
+        current: () => this.size,
+        func: (val) => {
+          this.size = +val;
+        },
+      },
+      {
+        name: "color",
+        type: "text",
+        current: () => this.color,
+        func: (val) => {
+          this.color = val;
+        },
+      },
+    ];
+  }
+
+
   save(realParent=null) {
     return {
       ...super.save(realParent),

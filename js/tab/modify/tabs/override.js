@@ -4,11 +4,19 @@ import { EVENTS } from "../../../events.js";
 
 export default class {
   currentOverridableValues = [];
+  targets = [];
   
-  constructor() {}
+  constructor() {
+    $('#modal-maneuver-types-override-target').on('change', (e) => {
+      this.currentOverridableValues = this.targets.find(v => v.id == e.target.value).getValues();
+
+      this.changeOverrideValues();
+    })
+  }
 
   onSelectionEnded(nextSelection) {
-    $('#modal-maneuver-types-override').html("")
+    $('#modal-maneuver-types-override-container').html("");
+    $('#modal-maneuver-types-override-target').html("");
   }
 
   onSelectionStarted(prevSelection) {
@@ -20,6 +28,25 @@ export default class {
 
   onIdChange(id) {
     this.currentOverridableValues = objects[id].getOverridableValues();
+    this.targets = [
+      {
+        id: 'this',
+        getValues: () => objects[id].getOverridableValues(),
+      },
+      ...objects[id].getChildrenWithOverridableValues(),
+    ]
+
+    console.log(this.targets)
+
+    $('#modal-maneuver-types-override-target').html("");
+    let select = $('#modal-maneuver-types-override-target')[0];
+    for (let data of this.targets) {
+      const option = document.createElement('option');
+      option.value = data.id;
+      option.innerText = data.id;
+
+      select.appendChild(option);
+    }
 
     this.changeOverrideValues();
   }
@@ -53,7 +80,7 @@ export default class {
 
   
   changeOverrideValues() {
-    const body = $('#modal-maneuver-types-override')[0];
+    const body = $('#modal-maneuver-types-override-container')[0];
     body.innerHTML = "";
 
     for (let data of this.currentOverridableValues) {

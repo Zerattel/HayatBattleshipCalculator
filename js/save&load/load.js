@@ -1,4 +1,5 @@
 import { EVENTS } from "../events.js";
+import { closeLoading, openLoading, updateLoading } from "../loading.js";
 import classes from "./objectCollector.js";
 
 function Wrapper(constructorFunc) {
@@ -38,6 +39,10 @@ export function loadFunction(data) {
 }
 
 export function loadJSON(json) {
+  openLoading('loading-level');
+  const length = Object.keys(json).length+1;
+  updateLoading('level', length, 0, 0)
+
   document.dispatchEvent(
     new CustomEvent(EVENTS.MAP_SET_CHANGED, {
       detail: {
@@ -47,9 +52,17 @@ export function loadJSON(json) {
     })
   );
 
+  updateLoading('level', length, 0, 1)
+
+  let counter = 1;
   for (let [i, v] of Object.entries(json.objects)) {
     load(i, v);
+
+    counter++;
+    updateLoading('level', length, 0, counter)
   }
 
   document.dispatchEvent(new Event(EVENTS.MAP.REDRAW));
+  updateLoading('level', length, 0, counter+1)
+  closeLoading();
 }

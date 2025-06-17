@@ -13,6 +13,12 @@ let loadbars = {
     min: 0,
     cur: 0,
   },
+  level: {
+    id: "loading-level-bar",
+    max: 1,
+    min: 0,
+    cur: 0,
+  }
 };
 
 let openLoading = (id) => {};
@@ -47,7 +53,6 @@ export default function init() {
   updateLoading = (id, dmax, dmin, dcur) => {
     loadbars[id] = {...loadbars[id], ...{ max: dmax, min: dmin, cur: dcur }};
 
-    console.log(loadbars[id])
     const { max, min, cur } = loadbars[id];
     $('#'+loadbars[id].id).css('--progress', (cur - min) / (max - min));
   }

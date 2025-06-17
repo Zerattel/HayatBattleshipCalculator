@@ -148,7 +148,10 @@
             <select id="modal-maneuver-types-modules-all"></select><button class="aim">+</button>
           </div>
           <div id="modal-maneuver-types-override" data-active="false">
-            
+            <select id="modal-maneuver-types-override-target"></select>
+            <div id="modal-maneuver-types-override-container">
+
+            </div>
           </div>
           <div id="modal-maneuver-types-delete" data-active="false">
             <p>Press the button to delete</p>
@@ -167,6 +170,12 @@
         </div>
         <p class="points">Loading battleships</p>
         <div class="progress-bar" id="loading-inital-bar-battleships">
+          <div class="bar"></div>
+        </div>
+      </div>
+      <div id="loading-level" data-active="false">
+        <p class="points">Loading level</p>
+        <div class="progress-bar" id="loading-level-bar">
           <div class="bar"></div>
         </div>
       </div>
