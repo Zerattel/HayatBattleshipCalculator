@@ -136,77 +136,77 @@ const baseBattleshipCharacteristics = {
       offence: {
         /** Модификаторы для баллистики */
         ballistic: {
-          effectivedistancemodifier: 1,
-          damagemodifier: 1,
-          trackingmodifier: 1,
-          capacitorconsumptionmodifier: 1,
-          heatingmodifier: 1,
-          targetheatingmodifier: 1
+          effective_distance_modifier: 1,
+          damage_modifier: 1,
+          tracking_modifier: 1,
+          capacitor_consumption_modifier: 1,
+          heating_modifier: 1,
+          target_heating_modifier: 1
         },
         /** Модификаторы для лазеров */
         laser: {
-          effectivedistancemodifier: 1,
-          damagemodifier: 1,
-          trackingmodifier: 1,
-          capacitorconsumptionmodifier: 1,
-          heatingmodifier: 1,
-          targetheatingmodifier: 1
+          effective_distance_modifier: 1,
+          damage_modifier: 1,
+          tracking_modifier: 1,
+          capacitor_consumption_modifier: 1,
+          heating_modifier: 1,
+          target_heating_modifier: 1
         },
         /** Модификаторы для ПУ */
         launcher: {
-          onhitdamagemodifier: 1,
-          fuelmodifier: 1,
-          accelerationmodifier: 1,
-          explosionsignaturemodifier: 1,
-          capacitorconsumptionmodifier: 1,
-          heatingmodifier: 1,
-          onhitheatingmodifier: 1
+          on_hit_damage_modifier: 1,
+          fuel_modifier: 1,
+          acceleration_modifier: 1,
+          explosion_signature_modifier: 1,
+          capacitor_consumption_modifier: 1,
+          heating_modifier: 1,
+          on_hitheating_modifier: 1
         },
         /** Модификаторы для АОЕ атак */
         bomb: {
-          effectivedistancemodifier: 1,
-          damagemodifier: 1,
-          capacitorconsumptionmodifier: 1,
-          heatingmodifier: 1,
+          effective_distance_modifier: 1,
+          damage_modifier: 1,
+          capacitor_consumption_modifier: 1,
+          heating_modifier: 1,
         },
         /** Модификаторы для дезинтеграторов */
         desintegrator: {
-          effectivedistancemodifier: 1,
-          damagemodifier: 1,
-          trackingmodifier: 1,
-          capacitorconsumptionmodifier: 1,
-          heatingmodifier: 1,
-          targetheatingmodifier: 1,
+          effective_distance_modifier: 1,
+          damage_modifier: 1,
+          tracking_modifier: 1,
+          capacitor_consumption_modifier: 1,
+          heating_modifier: 1,
+          target_heating_modifier: 1,
           /** Бонус урону от каждой атаки */
-          pershotbonusmodifier: 1,
+          per_shot_bonus_modifier: 1,
           /** Потолок бонуса */
-          maxstackmodifier: 1,
+          max_stack_modifier: 1,
         },
         /** Модификаторы силы НАШИХ средств Радиоэлектронной Борьбы */
         EW: {
-          effectivedistancemodifier: 1,
-          capacitorconsumptionmodifier: 1,
-          heatingmodifier: 1,
-          targetheatingmodifier: 1,
+          effective_distance_modifier: 1,
+          capacitor_consumption_modifier: 1,
+          heating_modifier: 1,
+          target_heating_modifier: 1,
           /** Основной бонус, накладывающийся на все последующие сверху */
-          EWstrenghtmodifier: 1,
+          EW_strenght_modifier: 1,
           /** Чисто для профильных особенностей и каких-то мега узкоспециализированных штуковин */
-          trackingdisruptionmodifier: 1,
-          stasismodifier: 1,
-          maneuverabilitydisruptionmodifier: 1,
-          contactqualitydisruptionmodifier: 1,
-          signaturepaintingmodifier: 1,
-          capacitordisruptionmodifier: 1
+          tracking_disruption_modifier: 1,
+          stasis_modifier: 1,
+          maneuverability_disruption_modifier: 1,
+          contact_quality_disruption_modifier: 1,
+          signature_painting_modifier: 1,
+          capacitor_disruption_modifier: 1
         },
         /** Модификаторы субтел этого тела */
         vehicle: {
-          vehicledamagemodifier: 1,
-          vehicleaccelerationmodifier: 1,
-          vehicletargetheatingmodifier: 1,
-          vehicleeffectivedistancemodifier: 1,
-          vehiclesignaturemodifier: 1,
-          vehiclemaneuverabilitymodifier: 1,
-          vehiclehpmodifier: 1
+          vehicle_damage_modifier: 1,
+          vehicle_acceleration_modifier: 1,
+          vehicle_target_heating_modifier: 1,
+          vehicle_effective_distance_modifier: 1,
+          vehicle_signature_modifier: 1,
+          vehicle_maneuverability_modifier: 1,
+          vehicle_hp_modifier: 1
         }
       },
       /** Модификаторы работы инженерных модулей */
@@ -214,31 +214,31 @@ const baseBattleshipCharacteristics = {
         /** Бонус ремонта */
         /** Барьера */
         barrier: {
-          passiverechargemodifier: 1,
-          activerechargemodifier:1
+          passive_recharge_modifier: 1,
+          active_recharge_modifier:1
         },
         /** Брони */
         armor: {
-          activerepairmodifier: 1
+          active_repair_modifier: 1
         }
       },
       /** Модификаторы работы модулей поддержки флота и дистанционного снабжения. */
       /** Отсюда же берут баффы и аппараты снабжения и поддержки. */
       support: {
-        effectivedistancemodifier: 1,
-        capacitorconsumptionmodifier: 1,
-        heatingmodifier: 1,
+        effective_distance_modifier: 1,
+        capacitor_consumption_modifier: 1,
+        heating_modifier: 1,
         /** Основной бонус, накладывающийся на все последующие сверху */
-        supportstrenghtmodifier: 1,
+        support_strenght_modifier: 1,
         /** Чисто для профильных особенностей и каких-то мега узкоспециализированных штуковин */
-        trackingsupportmodifier: 1,
-        accelerationsupportmodifier: 1,
-        maneuverabilitysupportmodifier: 1,
-        contactqualitysupportmodifier: 1,
-        signaturesuppressingmodifier: 1,
-        capacitorinjectionmodifier: 1,
-        shieldinjectionmodifier: 1,
-        armorrepairmodifier: 1,
+        tracking_support_modifier: 1,
+        acceleration_support_modifier: 1,
+        maneuverability_support_modifier: 1,
+        contact_quality_support_modifier: 1,
+        signature_suppression_modifier: 1,
+        capacitor_injection_modifier: 1,
+        shield_injection_modifier: 1,
+        armor_repair_modifier: 1,
       }
     }
   },
