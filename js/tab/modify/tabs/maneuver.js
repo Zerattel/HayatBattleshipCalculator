@@ -41,7 +41,7 @@ export default class {
   }
 
 
-  isCompatableForManeuver = (id) => {
+  isCompatableForManeuver(id) {
     return objects[id] && ('direction' in objects[id] && 'applyForce' in objects[id]);
   }
 }
