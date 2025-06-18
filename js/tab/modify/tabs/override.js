@@ -36,8 +36,6 @@ export default class {
       ...objects[id].getChildrenWithOverridableValues(),
     ]
 
-    console.log(this.targets)
-
     $('#modal-maneuver-types-override-target').html("");
     let select = $('#modal-maneuver-types-override-target')[0];
     for (let data of this.targets) {

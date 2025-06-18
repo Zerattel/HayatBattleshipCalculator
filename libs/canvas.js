@@ -7,7 +7,6 @@ import { fromCanvas } from "../js/canvas/grid.js";
  * @returns {{x: number, y: number}}
  */
 export function getMousePos(canvas, evt) {
-  console.log(evt)
   var rect = canvas.getBoundingClientRect();
   return {
     x: fromCanvas(((evt.clientX - rect.left) / (rect.right - rect.left)) * canvas.width),

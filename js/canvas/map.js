@@ -46,7 +46,6 @@ export default function init() {
 
     object.id = id;
     objects[id] = object;
-    console.log(objects);
     if (redraw) redrawMap();
   });
 

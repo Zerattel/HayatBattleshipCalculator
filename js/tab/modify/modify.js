@@ -10,12 +10,14 @@ import __jump_calc from "./tabs/jump_calc.js";
 import __maneuver from "./tabs/maneuver.js";
 import __modules from "./tabs/modules.js";
 import __override from "./tabs/override.js";
+import __tasks from "./tabs/tasks.js";
 
 export default function init() {
   const tabs = {
     maneuver: new __maneuver(),
     jump_calc: new __jump_calc(),
     modules: new __modules(),
+    tasks: new __tasks(),
     override: new __override(),
     delete: new __delete(),
   }

@@ -180,6 +180,34 @@
         }
       }
     }
+
+    .task {
+      .name {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        label {
+          font-weight: 700;
+        }
+      }
+
+      .data {
+        padding-left: 40px;
+
+        display: grid;
+        grid-template-columns: 4fr 1fr;
+
+        label {
+          text-align: right;
+        }
+      }
+
+      margin-bottom: 5px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   .maneuver {

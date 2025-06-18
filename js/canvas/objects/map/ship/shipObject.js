@@ -197,8 +197,6 @@ export default class ShipObject extends BasicMovingObject {
       this.currentCharacteristics,
       battleshipCharacteristicsClampRules
     );
-
-    console.log(this.currentCharacteristics, mods, activeModules);
   }
 
   //region modules

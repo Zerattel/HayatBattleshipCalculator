@@ -1,5 +1,6 @@
 import { objects } from "../../../canvas/map.js";
 import { check_id } from "../../../canvas/map/check_id.js";
+import BasicTask from "../../../canvas/objects/map/tasks/basicTask.js";
 import AccentPoint from "../../../canvas/objects/overlay/accentPoint.js";
 import { EVENTS } from "../../../events.js";
 
@@ -70,9 +71,16 @@ export default class {
       new CustomEvent(EVENTS.MAP.FUNCTION, {
         detail: {
           id: id,
-          func: "moveTo",
-          attr: this.calculateJump(id, dist),
-          redraw: true,
+          func: "newTask",
+          attr: [ new BasicTask(
+            (target, origin) => {
+              const x = target._x + Math.sin((target._direction / 180) * Math.PI) * origin.data.distance;
+              const y = target._y + Math.cos((target._direction / 180) * Math.PI) * origin.data.distance;
+
+              target.moveTo(x, y);
+            }, { distance: dist }, "hyperjump"
+          ), true ],
+          redraw: false,
         },
       })
     );

@@ -1,5 +1,3 @@
-console.log('asdas')
-
 export const EVENTS = {
   MAP_SET_CHANGED: 'mapSetChanged',
   CALCULATION_ENDED: 'calculationEnded',
