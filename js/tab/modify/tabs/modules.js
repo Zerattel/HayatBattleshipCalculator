@@ -112,6 +112,22 @@ export default class {
     ))
   }
 
+  removeModuleStateUpdate(uuid) {
+    let id = $("#modal-maneuver-id").val();
+    if (!id && check_id(id)) return;
+
+    document.dispatchEvent(
+      new CustomEvent(EVENTS.MAP.FUNCTION, {
+        detail: {
+          id: id,
+          func: "deleteTask",
+          attr: [ "changeModuleState-"+uuid ],
+          redraw: false,
+        }
+      }
+    ))
+  }
+
   onModuleClick(e) {
     console.log(e)
 
@@ -133,9 +149,15 @@ export default class {
       .attr('data-active', '')
       .off('click')
       .on('click', (e) => {
-        if (['true', 'changeto'].includes($(e.currentTarget).attr('data-active'))) return;
+        const isactive = $(e.currentTarget).attr('data-active');
+        if (isactive == 'true') return;
+        
+        if (isactive == "changeto") {
+          this.removeModuleStateUpdate(uuid);
+        } else {
+          this.updateModuleState(uuid, e.currentTarget.id);
+        }
 
-        this.updateModuleState(uuid, e.currentTarget.id);
         this.updateModules(id);
       })
 
