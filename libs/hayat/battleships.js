@@ -286,8 +286,28 @@ const battleshipCharacteristicsClampRules = {
 export { baseBattleshipCharacteristics, battleshipCharacteristicsClampRules };
 
 
+/**
+ * 
+ * @param {number} maxHull maximum hull capacity value
+ * @param {number} curTemp current temperature
+ * @param {number} maxTemp maximum temperature
+ * @returns {number} temprature damage
+ */
 const overheatDamage = (maxHull, curTemp, maxTemp) => maxHull * ( curTemp - maxTemp ) / 400;
 
+/**
+ * 
+ * @param {{ 
+ *  passive_regeneration: number; 
+ *  resonance: { 
+ *    frequency: number; 
+ *    tendency: number; 
+ *    range: number; 
+ * }}} barrierStats 
+ * @param {number} curBarrier current barrier value
+ * @param {number} maxBarrier maximum barrier value
+ * @returns {number} barrier regeneration
+ */
 const passiveBarrierRegeneration = (barrierStats, curBarrier, maxBarrier) => {
   const curPer = curBarrier / maxBarrier;
 
