@@ -48,6 +48,7 @@ export default class ShipObject extends BasicMovingObject {
       'ext': this.externalModules,
       'int': this.internalModules,
       'otr': this.otherModules,
+      'all': this.allModules,
     }[type]
   }
 
@@ -55,6 +56,7 @@ export default class ShipObject extends BasicMovingObject {
 
   next() {
     super.next();
+    this.recalculateCharacteristics();
 
     const c = this.currentCharacteristics;
 
@@ -210,19 +212,31 @@ export default class ShipObject extends BasicMovingObject {
     return module.uuid;
   }
 
-  removeModule(id, type='int') {
+  removeModule(id, type='all') {
     if (typeof id === "number") {
       this.typeToModules(type).splice(id, 1);
     } else {
-      const _id = this.typeToModules(type).findIndex((v) => v.uuid == id);
+      if (type != 'all') {
+        const _id = this.typeToModules(type).findIndex((v) => v.uuid == id);
 
-      if (_id != -1) this.typeToModules(type).splice(_id, 1);
+        if (_id != -1) this.typeToModules(type).splice(_id, 1);
+        else return false;
+      } else {
+        return this.removeModule(id, 'int') 
+                ? true 
+                : this.removeModule(id, 'ext') 
+                  ? true
+                  : this.removeModule(id, 'otr')
+                    ? true
+                    : false
+      }
     }
 
     this.recalculateCharacteristics();
+    return true;
   }
 
-  getModule(id, type='int') {
+  getModule(id, type='all') {
     return this.typeToModules(type).find((v) => v.uuid == id);
   }
 
