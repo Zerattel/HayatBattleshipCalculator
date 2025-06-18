@@ -14,6 +14,7 @@ let loadbars = {
     cur: 0,
   },
   level: {
+    container_id: "loading-level",
     id: "loading-level-bar",
     max: 1,
     min: 0,
@@ -21,8 +22,24 @@ let loadbars = {
   }
 };
 
+/**
+ * Open loading modal
+ * @param {string} id loadbar id
+ */
 let openLoading = (id) => {};
+
+/**
+ * Close loading modal
+ */
 let closeLoading = () => {};
+
+/**
+ * Update loadbar
+ * @param {string} id loadbar id
+ * @param {number} max maximum loading value
+ * @param {number} min minimum loading value
+ * @param {number} cur current loading value
+ */
 let updateLoading = (id, max, min, cur) => {};
 
 export default function init() {
@@ -43,7 +60,7 @@ export default function init() {
     $('#loading-modals').attr('data-active', 'true');
     $('#loading-modals > *').attr('data-active', 'false');
 
-    $('#'+id).attr('data-active', 'true');
+    $('#'+loadbars[id].container_id).attr('data-active', 'true');
   }
 
   closeLoading = () => {

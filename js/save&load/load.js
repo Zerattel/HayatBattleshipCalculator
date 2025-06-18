@@ -10,6 +10,13 @@ function Wrapper(constructorFunc) {
   };
 }
 
+/**
+ * Load object from data
+ * @param {string} id 
+ * @param {object} data 
+ * @param {object | null} parent 
+ * @returns {object | undefined} if parent="module" returns loaded object
+ */
 export function load(id, data, parent = null) {
   const wrap = new Wrapper(classes[data.class]);
   const cfunc = wrap.constructorFunc();
@@ -34,12 +41,20 @@ export function load(id, data, parent = null) {
   }
 }
 
+/**
+ * 
+ * @param {{
+ *   args: string;
+ *   body: string;
+ * }} data 
+ * @returns {Function}
+ */
 export function loadFunction(data) {
   return new Function(data.args, data.body);
 }
 
 export function loadJSON(json) {
-  openLoading('loading-level');
+  openLoading('level');
   const length = Object.keys(json).length+1;
   updateLoading('level', length, 0, 0)
 
