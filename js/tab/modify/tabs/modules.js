@@ -1,10 +1,12 @@
 import format, { addPlus } from "../../../../libs/format.js";
+import { moduleSizeToSP } from "../../../../libs/hayat/modules.js";
 import { modules } from "../../../../modules/modules.js";
 import { objects } from "../../../canvas/map.js";
 import { check_id } from "../../../canvas/map/check_id.js";
 import BaseModule from "../../../canvas/objects/map/module/baseModule.js";
 import BasicTask from "../../../canvas/objects/map/tasks/basicTask.js";
 import { EVENTS } from "../../../events.js";
+import { groupHTMLTemplate, optionHTMLTemplate, registerSelect } from "../../../ui/multilayered-select/multilayered-select.js";
 
 const htmlTemplate = `<div class="module" id="{0}">
   <div class="statbar">
@@ -29,14 +31,35 @@ const states = {
 
 export default class {
   constructor() {
-    const select = $('#modal-maneuver-types-modules-all')[0];
-    for (let m in modules) {
-      const option = document.createElement('option');
-      option.value = m;
-      option.innerText = m;
+    $('#modal-maneuver-types-modules-all > .options').html(
+      Object.entries(
+        Object.entries(modules)
+          .reduce((acc, [n, v]) => {
+            if (v.main.type in acc) {
+              if (v.main.category in acc) {
+                acc[v.main.type][v.main.category].push(n);
+              } else {
+                acc[v.main.type][v.main.category] = [n];
+              }
+            } else {
+              acc[v.main.type] = {
+                [v.main.category]: [n],
+              }
+            }
 
-      select.appendChild(option);
-    }
+            return acc;
+          }, {})
+      ).map(([type, c]) => format(
+        groupHTMLTemplate,
+        type,
+        Object.entries(c).map(([category, names]) => format(
+          groupHTMLTemplate,
+          category,
+          names.map(n => format(optionHTMLTemplate, n, n))
+        )).join('\n')
+      )).join('\n')
+    )
+    registerSelect('#modal-maneuver-types-modules-all')
 
     $('#modal-maneuver-types-modules-add').on('click', (e) => this.onModuleAdd(e))
 
@@ -71,7 +94,7 @@ export default class {
     let id = $("#modal-maneuver-id").val();
     if (!id && check_id(id)) return;
 
-    const module = $('#modal-maneuver-types-modules-all').val();
+    const module = $('#modal-maneuver-types-modules-all').attr('value');
     const position = $('#modal-maneuver-types-modules-pos').val();
 
     document.dispatchEvent(
@@ -217,7 +240,7 @@ export default class {
                 v.characteristic.replace('constant.', '')
               }</div><label>${
                 v.modificationType == "percent" 
-                  ? addPlus(Math.round((1 - v.modificator)*100))+"%" 
+                  ? addPlus(Math.round((v.modificator - 1)*100))+"%" 
                   : addPlus(v.modificator)
               }</label>`
           ).join('\n')
@@ -226,12 +249,16 @@ export default class {
     }
     
     if (objects[id].internalModules.length != 0) {
-      text.push(`<p>Internal Modules</p>`);
+      text.push(`<p>Internal Modules ${
+        objects[id].internalModules.reduce((acc, v) => acc+moduleSizeToSP[v.characteristics.main.size], 0)
+      } / ${objects[id].currentCharacteristics.constant.slots.internal}</p>`);
       generate(objects[id].internalModules);
     }
     
     if (objects[id].externalModules.length != 0) {
-      text.push(`<p>External Modules</p>`);
+      text.push(`<p>External Modules ${
+        objects[id].externalModules.reduce((acc, v) => acc+moduleSizeToSP[v.characteristics.main.size], 0)
+      } / ${objects[id].currentCharacteristics.constant.slots.external}</p>`);
       generate(objects[id].externalModules);
     }
 

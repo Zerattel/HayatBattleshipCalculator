@@ -1,5 +1,7 @@
 import { battleships } from "../../battleships/battleships.js";
 import { getMousePos, toRealDirection } from "../../libs/canvas.js";
+import format from "../../libs/format.js";
+import { tonnage } from "../../libs/hayat/battleships.js";
 import uuidv4 from "../../libs/uuid.js";
 import { modules } from "../../modules/modules.js";
 import BasicDataHud from "../canvas/objects/map/basicDataHud.js";
@@ -11,6 +13,7 @@ import ShipObject from "../canvas/objects/map/ship/shipObject.js";
 import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
 import { EVENTS } from "../events.js";
+import { groupHTMLTemplate, optionHTMLTemplate, registerSelect } from "../ui/multilayered-select/multilayered-select.js";
 
 const SPRITES = [
   "ADS.png",
@@ -43,6 +46,34 @@ const SPRITES = [
 
 export default function init() {
   $('#modal-new_object-img').html(SPRITES.map(v => `<option value='${v}'>${v.split('.').slice(undefined, -1).join('.')}</option>`))
+  $('#modal-new_object-ships > .options').html(
+    Object.keys(battleships)
+      .reduce((acc, v) => {
+        const t = battleships[v].constant.body.tonnage;
+        const f = acc.find(v => v.tonnage == t)
+        if (f) {
+          f.battleships.push(v);
+        } else {
+          acc.push({
+            tonnage: t,
+            battleships: [v],
+          })
+        }
+
+        return acc;
+      }, [])
+      .sort((a, b) => a.tonnage - b.tonnage)
+      .map(r => 
+        format(
+          groupHTMLTemplate, 
+          tonnage[r.tonnage], 
+          r.battleships.map(v => 
+            format(optionHTMLTemplate, v, v)
+          ).join('\n')
+        )
+      ).join('\n')
+  )
+  registerSelect('#modal-new_object-ships');
 
   $("#tab-new_object").click(() => {
     let modal = $("#modal-new_object");
@@ -124,6 +155,7 @@ export default function init() {
 
     $("#modal-new_object-vel").prop('disabled', !chk);
     $("#modal-new_object-dir").prop('disabled', !chk);
+    $('#modal-new_object-ships').prop('disabled', !chk);
   })
 
 
@@ -143,7 +175,7 @@ export default function init() {
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
       ]))
     } else {
-      obj = new ShipObject(x, y, dir, vel, battleships['Эсминец SSS-«Шило»']);
+      obj = new ShipObject(x, y, dir, vel, battleships[$('#modal-new_object-ships').attr('value')] || {});
       obj.addModule(new BaseModule(modules['test']))
       obj.setChildren("shipStatsHud", new ShipStatsHUD())
       obj.setChildren("hud", new BasicDataHud([

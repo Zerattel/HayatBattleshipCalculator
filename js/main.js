@@ -8,6 +8,7 @@ import saveload from './save&load/main.js'
 import loadBattleships, { setReadyFunction as battleshipsReady } from '../battleships/battleships.js'
 import loadModules, { setReadyFunction as modulesReady } from '../modules/modules.js'
 import ReadyFunctionsCombiner from '../libs/combineReadyFunctions.js'
+import ui from './ui/ui.js'
 
 loading();
 
@@ -18,6 +19,7 @@ new ReadyFunctionsCombiner(() => {
   saveload();
   grid();
   overlay();
+  ui();
 
   closeLoading();
 }, battleshipsReady, modulesReady)
