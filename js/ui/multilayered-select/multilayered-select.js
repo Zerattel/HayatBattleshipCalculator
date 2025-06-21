@@ -12,8 +12,8 @@ const optionHTMLTemplate = `<label class="option" value="{0}">{1}</label>`
 export default function() {
   registerSelect = (jquery) => {
     const select = $(jquery);
-    const label = $(jquery + " > label");
-    const options = $(jquery + " .option");
+    const label = select.find(" > label");
+    const options = select.find(" .option");
 
     select
       .off('click')
@@ -33,11 +33,7 @@ export default function() {
   }
 
   $('.multilayered-select').each((index, element) => {
-    console.log(element)
-    
-    if (!element.id) return;
-    
-    registerSelect('#'+element.id);
+    registerSelect(element);
   })
 }
 

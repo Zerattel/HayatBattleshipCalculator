@@ -12,6 +12,8 @@ import __modules from "./tabs/modules.js";
 import __override from "./tabs/override.js";
 import __tasks from "./tabs/tasks.js";
 
+let enableModifyModal = (id) => {};
+
 export default function init() {
   const tabs = {
     maneuver: new __maneuver(),
@@ -38,6 +40,12 @@ export default function init() {
     );
   };
 
+  enableModifyModal = (id) => {
+    $("#modal-maneuver-id").val(id);
+
+    enableModal($("#modal-maneuver"));
+  }
+
   const enableModal = (modal) => {
     modal.attr("data-active", "true");
     tabs[currentType].onSelectionStarted('');
@@ -52,7 +60,7 @@ export default function init() {
       })
     );
 
-    $("#modal-maneuver-id").val(Object.keys(objects)[0]);
+    if ($("#modal-maneuver-id").val() == "") $("#modal-maneuver-id").val(Object.keys(objects)[0]);
 
     onIdChange();
   };
@@ -146,3 +154,5 @@ export default function init() {
     tabs[currentType].onSelectionStarted(b);
   });
 }
+
+export { enableModifyModal }
