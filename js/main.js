@@ -13,13 +13,13 @@ import ui from './ui/ui.js'
 loading();
 
 new ReadyFunctionsCombiner(() => {
+  ui();
   tab();
   controls();
   map();
   saveload();
   grid();
   overlay();
-  ui();
 
   closeLoading();
 }, battleshipsReady, modulesReady)
