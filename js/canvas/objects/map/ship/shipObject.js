@@ -133,21 +133,33 @@ export default class ShipObject extends BasicMovingObject {
     ]
   }
 
-  getChildrenWithOverridableValues(parent='this') {
+  getChildrenWithOverridableValues() {
     return [
       ...super.getChildrenWithOverridableValues(),
-      ...this.externalModules.map(v => ({
-        id: parent+'.externalModules.'+v.characteristics.main.name,
-        getValues: () => v.getOverridableValues(),
-      })),
-      ...this.internalModules.map(v => ({
-        id: parent+'.internalModules.'+v.characteristics.main.name,
-        getValues: () => v.getOverridableValues(),
-      })),
-      ...this.otherModules.map(v => ({
-        id: parent+'.otherModules.'+v.characteristics.main.name,
-        getValues: () => v.getOverridableValues(),
-      }))
+      {
+        id: 'externalModules',
+        children: this.externalModules.map(v => ({
+          id: v.characteristics.main.name,
+          getValues: () => v.getOverridableValues(),
+          children: [],
+        })),
+      },
+      {
+        id: 'internalModules',
+        children: this.internalModules.map(v => ({
+          id: v.characteristics.main.name,
+          getValues: () => v.getOverridableValues(),
+          children: [],
+        })),
+      },
+      {
+        id: 'otherModules',
+        children: this.otherModules.map(v => ({
+          id: v.characteristics.main.name,
+          getValues: () => v.getOverridableValues(),
+          children: [],
+        })),
+      },
     ]
   }
 

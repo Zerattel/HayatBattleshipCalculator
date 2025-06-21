@@ -1,7 +1,7 @@
-import StandartObject from "../standartObject.js";
-import { saveFunction } from "../../../save&load/save.js";
-import { loadFunction } from "../../../save&load/load.js";
-import { registerClass } from "../../../save&load/objectCollector.js";
+import StandartObject from "../../standartObject.js";
+import { saveFunction } from "../../../../save&load/save.js";
+import { loadFunction } from "../../../../save&load/load.js";
+import { registerClass } from "../../../../save&load/objectCollector.js";
 
 export default class BasicDataHud extends StandartObject {
   data = [];

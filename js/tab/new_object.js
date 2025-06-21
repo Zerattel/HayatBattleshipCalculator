@@ -4,7 +4,7 @@ import format from "../../libs/format.js";
 import { tonnage } from "../../libs/hayat/battleships.js";
 import uuidv4 from "../../libs/uuid.js";
 import { modules } from "../../modules/modules.js";
-import BasicDataHud from "../canvas/objects/map/basicDataHud.js";
+import BasicDataHud from "../canvas/objects/map/hud/basicDataHud.js";
 import BasicMovingObject from "../canvas/objects/map/basicMovingObject.js";
 import BasicStaticObject from "../canvas/objects/map/basicStaticObject.js";
 import BaseModule from "../canvas/objects/map/module/baseModule.js";
@@ -14,6 +14,7 @@ import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
 import { EVENTS } from "../events.js";
 import { groupHTMLTemplate, optionHTMLTemplate, registerSelect } from "../ui/multilayered-select/multilayered-select.js";
+import VectorHud from "../canvas/objects/map/hud/vectorHud.js";
 
 const SPRITES = [
   "ADS.png",
@@ -178,6 +179,7 @@ export default function init() {
       obj = new ShipObject(x, y, dir, vel, battleships[$('#modal-new_object-ships').attr('value')] || {});
       obj.addModule(new BaseModule(modules['test']))
       obj.setChildren("shipStatsHud", new ShipStatsHUD())
+      obj.setChildren("vectorHud", new VectorHud())
       obj.setChildren("hud", new BasicDataHud([
         { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },

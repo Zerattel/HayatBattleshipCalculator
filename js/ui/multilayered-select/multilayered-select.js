@@ -25,7 +25,10 @@ export default function() {
       .off('click')
       .on('click', (e) => {
         select.attr('value', $(e.target).attr('value'));
-        label.text(e.target.innerHTML);
+        if (label[0].innerHTML != e.target.innerHTML) {
+          label.text(e.target.innerHTML);
+          select.trigger("change");
+        }
       })
     
     select.attr('value', $(options[0]).attr('value'));

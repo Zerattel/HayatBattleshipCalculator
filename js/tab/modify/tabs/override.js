@@ -1,14 +1,28 @@
+import format from "../../../../libs/format.js";
 import { objects } from "../../../canvas/map.js";
 import { check_id } from "../../../canvas/map/check_id.js";
 import { EVENTS } from "../../../events.js";
+import { groupHTMLTemplate, optionHTMLTemplate, registerSelect } from "../../../ui/multilayered-select/multilayered-select.js";
 
 export default class {
   currentOverridableValues = [];
-  targets = [];
+  targets = {};
   
   constructor() {
     $('#modal-maneuver-types-override-target').on('change', (e) => {
-      this.currentOverridableValues = this.targets.find(v => v.id == e.target.value).getValues();
+      const path = $(e.target).attr('value')
+
+      if (path == ".this") {
+        this.currentOverridableValues = this.targets.getValues();
+      } else {
+        let curObj = this.targets;
+
+        for (let p of path.replace('.this.', '').split(".")) {
+          curObj = curObj.children.find(v => v.id == p);
+        }
+
+        this.currentOverridableValues = curObj.getValues();
+      }
 
       this.changeOverrideValues();
     })
@@ -16,7 +30,7 @@ export default class {
 
   onSelectionEnded(nextSelection) {
     $('#modal-maneuver-types-override-container').html("");
-    $('#modal-maneuver-types-override-target').html("");
+    $('#modal-maneuver-types-override-target > .options').html("");
   }
 
   onSelectionStarted(prevSelection) {
@@ -28,23 +42,38 @@ export default class {
 
   onIdChange(id) {
     this.currentOverridableValues = objects[id].getOverridableValues();
-    this.targets = [
-      {
-        id: 'this',
-        getValues: () => objects[id].getOverridableValues(),
-      },
-      ...objects[id].getChildrenWithOverridableValues(),
-    ]
-
-    $('#modal-maneuver-types-override-target').html("");
-    let select = $('#modal-maneuver-types-override-target')[0];
-    for (let data of this.targets) {
-      const option = document.createElement('option');
-      option.value = data.id;
-      option.innerText = data.id;
-
-      select.appendChild(option);
+    this.targets = {
+      id: 'this',
+      getValues: () => objects[id].getOverridableValues(),
+      children: objects[id].getChildrenWithOverridableValues()
     }
+
+    const parce = (obj, path="") => {
+      let text = "";
+
+      if ('getValues' in obj) {
+        text += format(optionHTMLTemplate, path+"."+obj.id, obj.id)
+      }
+
+      if (obj.children.length != 0) {
+        text += format(groupHTMLTemplate, obj.id, obj.children.map(v => parce(v, path+"."+obj.id)).join('\n'))
+      }
+
+      return text;
+    }
+
+    $('#modal-maneuver-types-override-target > .options').html(parce(this.targets));
+    registerSelect('#modal-maneuver-types-override-target');
+
+    // $('#modal-maneuver-types-override-target').html("");
+    // let select = $('#modal-maneuver-types-override-target')[0];
+    // for (let data of this.targets) {
+    //   const option = document.createElement('option');
+    //   option.value = data.id;
+    //   option.innerText = data.id;
+
+    //   select.appendChild(option);
+    // }
 
     this.changeOverrideValues();
   }
