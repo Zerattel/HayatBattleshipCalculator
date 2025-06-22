@@ -1,4 +1,7 @@
 import { EVENTS } from "../events.js";
+import { loadJSON } from "../save&load/load.js";
+import { settings } from "../settings/settings.js";
+import { mapProps } from "./grid.js";
 import check_id from "./map/check_id.js";
 
 import get_in_area from "./map/get_in_area.js";
@@ -15,7 +18,10 @@ export default function init() {
 
   objects = {};
 
-  let raito = 1;
+  canvas.width = settings.mapResolution;
+  canvas.height = settings.mapResolution;
+
+  let raito = canvas.width / mapProps.size;
 
   const toCanvas = (pos) => pos * raito;
 
@@ -36,6 +42,8 @@ export default function init() {
   document.addEventListener(EVENTS.MAP_SET_CHANGED, (e) => {
     const { size, grid } = e.detail;
 
+    canvas.width = settings.mapResolution;
+    canvas.height = settings.mapResolution;
     raito = canvas.width / size;
 
     redrawMap();
@@ -81,6 +89,28 @@ export default function init() {
 
     document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))
   });
+
+
+  if (settings.saveLastState && settings.lastState != "{}") {
+    try {
+      loadJSON(JSON.parse(settings.lastState));
+    } catch (e) {
+      console.log(e);
+      if (confirm("Error on loading last state, remove it?")) {
+        if (confirm("Save last state in file?")) {
+          var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(settings.lastState);
+          var dlAnchorElem = document.getElementById('modal-map_load-types-load-anchor');
+          dlAnchorElem.setAttribute("href", dataStr);
+          dlAnchorElem.setAttribute("download", `${uuidv4()}_${Date.now()}.json`);
+          dlAnchorElem.click();
+        }
+
+        settings.lastState = "{}";
+      }
+
+      objects = {};
+    }
+  }
 }
 
 export { ctx, canvas, style, objects }

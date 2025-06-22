@@ -1,5 +1,7 @@
 import { getMousePos } from "../../libs/canvas.js";
 import { EVENTS } from "../events.js";
+import { settings } from "../settings/settings.js";
+import { mapProps } from "./grid.js";
 
 let canvas;
 let ctx;
@@ -13,7 +15,10 @@ export default function init() {
 
   objectsOnOverlay = {};
 
-  let raito = 1;
+  canvas.width = settings.overlayResolution;
+  canvas.height = settings.overlayResolution;
+
+  let raito = canvas.width / mapProps.size;
 
   const toCanvas = (pos) => pos * raito;
 
@@ -38,6 +43,8 @@ export default function init() {
   document.addEventListener(EVENTS.MAP_SET_CHANGED, (e) => {
     const { size, grid } = e.detail;
 
+    canvas.width = settings.overlayResolution;
+    canvas.height = settings.overlayResolution;
     raito = canvas.width / size;
 
     redrawOverlay();

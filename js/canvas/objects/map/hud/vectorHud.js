@@ -1,3 +1,4 @@
+import { toCurrentCanvasSize } from "../../../../../libs/canvas.js";
 import { point } from "../../../../../libs/vector/point.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
 import StandartObject from "../../standartObject.js";
@@ -5,6 +6,7 @@ import StandartObject from "../../standartObject.js";
 export default class VectorHud extends StandartObject {
   settings = {
     directionLength: 500,
+    nextStepPointSize: 20,
     showRDirection: true,
     showVDirection: true,
     showNextSteps: true,
@@ -21,7 +23,7 @@ export default class VectorHud extends StandartObject {
 
     if (!this.parent || !("_direction" in this.parent && "velocity" in this.parent)) return;
 
-    ctx.lineWidth = 20;
+    ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
     const x = toCanvas(this.parent._x);
     const y = toCanvas(this.parent._y);
@@ -33,22 +35,26 @@ export default class VectorHud extends StandartObject {
         Math.cos((this.parent._direction / 180) * Math.PI)
       );
 
-      ctx.setLineDash([this.settings.directionLength / 10, this.settings.directionLength / 10]);
+      const directionLength = toCurrentCanvasSize(canvas, this.settings.directionLength)
+
+      ctx.setLineDash([directionLength / 10, directionLength / 10]);
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.lineTo(
-        x + direction.x * this.settings.directionLength,
-        y + direction.y * this.settings.directionLength
+        x + direction.x * directionLength,
+        y + direction.y * directionLength
       );
       ctx.stroke();
     }
 
     if (this.parent.velocity.length >= 1 && this.settings.showNextSteps) {
+      const rectSize = toCurrentCanvasSize(canvas, this.settings.nextStepPointSize)
+
       ctx.setLineDash([
         Math.abs((toCanvas(this.parent.velocity.length) * this.parent._step) / 16),
         Math.abs((toCanvas(this.parent.velocity.length) * this.parent._step) / 8),
       ]);
-      ctx.lineWidth = 7;
+      ctx.lineWidth = toCurrentCanvasSize(canvas, 7);
       ctx.strokeStyle = style.getPropertyValue("--direction");
       ctx.fillStyle = style.getPropertyValue("--direction");
       ctx.beginPath();
@@ -58,7 +64,7 @@ export default class VectorHud extends StandartObject {
         cury = y + toCanvas(this.parent.velocity.y) * this.parent._step;
 
       ctx.lineTo(curx, cury);
-      ctx.fillRect(curx - 10, cury - 10, 20, 20);
+      ctx.fillRect(curx - rectSize/2, cury - rectSize/2, rectSize, rectSize);
 
       let step = 1;
 
@@ -69,7 +75,7 @@ export default class VectorHud extends StandartObject {
         cury = y + toCanvas(this.parent.velocity.y) * this.parent._step * step;
 
         ctx.lineTo(curx, cury);
-        ctx.fillRect(curx - 10, cury - 10, 20, 20);
+        ctx.fillRect(curx - rectSize/2, cury - rectSize/2, rectSize, rectSize);
       }
       ctx.stroke();
     }
@@ -77,7 +83,7 @@ export default class VectorHud extends StandartObject {
     ctx.setLineDash([]);
 
     if (this.settings.showVDirection) {
-      ctx.lineWidth = 20;
+      ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
       ctx.strokeStyle = style.getPropertyValue("--velocity");
 
       ctx.beginPath();
@@ -100,6 +106,14 @@ export default class VectorHud extends StandartObject {
         current: () => this.settings.directionLength,
         func: (val) => {
           this.settings.directionLength = +val;
+        },
+      },
+      {
+        name: "settings-nextStepPointSize",
+        type: "number",
+        current: () => this.settings.nextStepPointSize,
+        func: (val) => {
+          this.settings.nextStepPointSize = +val;
         },
       },
       {

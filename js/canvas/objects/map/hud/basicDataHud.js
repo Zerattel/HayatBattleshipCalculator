@@ -2,6 +2,7 @@ import StandartObject from "../../standartObject.js";
 import { saveFunction } from "../../../../save&load/save.js";
 import { loadFunction } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
+import { toCurrentCanvasSize } from "../../../../../libs/canvas.js";
 
 export default class BasicDataHud extends StandartObject {
   data = [];
@@ -23,10 +24,13 @@ export default class BasicDataHud extends StandartObject {
 
     if (!this.parent) return;
 
-    ctx.strokeStyle = style.getPropertyValue("--hud");
-    ctx.lineWidth = 7;
+    const length = toCurrentCanvasSize(canvas, 300);
+    const padding = toCurrentCanvasSize(canvas, 100);
 
-    ctx.font = "70px Consolas";
+    ctx.strokeStyle = style.getPropertyValue("--hud");
+    ctx.lineWidth = toCurrentCanvasSize(canvas, 7);
+
+    ctx.font = toCurrentCanvasSize(canvas, 70) + "px Consolas";
     ctx.textAlign = "left";
     ctx.textBaseline = "hanging";
     ctx.fillStyle = style.getPropertyValue("--hud");
@@ -35,7 +39,7 @@ export default class BasicDataHud extends StandartObject {
     let height = 0
     for (let i of this.data) {
       text.push(i.func(this))
-      height += 80
+      height += toCurrentCanvasSize(canvas, 80)
     }
 
     const x_offset = Math.sin((this.direction / 180) * Math.PI);
@@ -46,26 +50,26 @@ export default class BasicDataHud extends StandartObject {
 
     ctx.beginPath();
 
-    ctx.moveTo(par_x + x_offset * this.padding, par_y + y_offset * this.padding);
+    ctx.moveTo(par_x + x_offset * padding, par_y + y_offset * padding);
     ctx.lineTo(
-      par_x + x_offset * this.padding + x_offset * this.length,
-      par_y + y_offset * this.padding + y_offset * this.length
+      par_x + x_offset * padding + x_offset * length,
+      par_y + y_offset * padding + y_offset * length
     );
     ctx.moveTo(
-      par_x + x_offset * this.padding + x_offset * this.length + x_offset * this.padding,
-      par_y + y_offset * this.padding + y_offset * this.length + y_offset * this.padding - height/2
+      par_x + x_offset * padding + x_offset * length + x_offset * padding,
+      par_y + y_offset * padding + y_offset * length + y_offset * padding - height/2
     );
     ctx.lineTo(
-      par_x + x_offset * this.padding + x_offset * this.length + x_offset * this.padding,
-      par_y + y_offset * this.padding + y_offset * this.length + y_offset * this.padding + height/2
+      par_x + x_offset * padding + x_offset * length + x_offset * padding,
+      par_y + y_offset * padding + y_offset * length + y_offset * padding + height/2
     );
 
     ctx.stroke()
 
-    let y = par_y + y_offset * this.padding + y_offset * this.length + y_offset * this.padding - height/2;
-    let x = par_x + x_offset * this.padding + x_offset * this.length + x_offset * this.padding + 50;
+    let y = par_y + y_offset * padding + y_offset * length + y_offset * padding - height/2;
+    let x = par_x + x_offset * padding + x_offset * length + x_offset * padding + toCurrentCanvasSize(canvas, 50);
     for (let [i, str] of Object.entries(text)) { 
-      ctx.fillText(str, x, y + 80 * Number(i))
+      ctx.fillText(str, x, y + toCurrentCanvasSize(canvas, 80) * Number(i))
     }
   }
 

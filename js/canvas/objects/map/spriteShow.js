@@ -1,3 +1,4 @@
+import { toCurrentCanvasSize } from "../../../../libs/canvas.js";
 import { registerClass } from "../../../save&load/objectCollector.js";
 import StandartObject from "../standartObject.js";
 
@@ -56,8 +57,8 @@ export default class SpriteShower extends StandartObject {
     var x = toCanvas(this.parent._x);
     var y = toCanvas(this.parent._y);
     var ratio = this.image.width / this.image.height;
-    var width = this.size * ratio;
-    var height = this.size / ratio;
+    var width = toCurrentCanvasSize(canvas, this.size) * ratio;
+    var height = toCurrentCanvasSize(canvas, this.size) / ratio;
     var angleInRadians = (this.parent.direction || 0) * Math.PI / 180;
 
     ctx.translate(x, y);

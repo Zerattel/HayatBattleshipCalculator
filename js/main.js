@@ -9,7 +9,9 @@ import loadBattleships, { setReadyFunction as battleshipsReady } from '../battle
 import loadModules, { setReadyFunction as modulesReady } from '../modules/modules.js'
 import ReadyFunctionsCombiner from '../libs/combineReadyFunctions.js'
 import ui from './ui/ui.js'
+import settings from './settings/settings.js'
 
+settings();
 loading();
 
 new ReadyFunctionsCombiner(() => {

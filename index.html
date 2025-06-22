@@ -10,12 +10,13 @@
   </head>
   <body>
     <div class="map">
-      <canvas id="grid" width="10000" height="10000"></canvas>
-      <canvas id="map" width="10000" height="10000"></canvas>
-      <canvas id="overlay" width="10000" height="10000"></canvas>
+      <canvas id="grid" width="2000" height="2000"></canvas>
+      <canvas id="map" width="8000" height="8000"></canvas>
+      <canvas id="overlay" width="2000" height="2000"></canvas>
     </div>
 
     <div class="tab-controls">
+      <button id="tab-settings">⚙️</button>
       <button id="tab-save">💾</button>
       <button id="tab-map_set">✎</button>
       <button id="tab-new_object">+</button>
@@ -36,6 +37,21 @@
     </div>
 
     <div class="modals">
+      <div class="modal map-settings" id="modal-settings" data-active="false">
+        <div style="
+          display: grid;
+          grid-template-columns: 1fr 60px 20px
+        ">
+          <label>Map Resolution: </label><input type="number" id="modal-settings-mapres" class="small" placeholder="8000" />px
+          <label>Grid Resolution: </label><input type="number" id="modal-settings-gridres" class="small" placeholder="2000" />px
+          <label>Overlay Resolution: </label><input type="number" id="modal-settings-overlayres" class="small" placeholder="2000" />px
+        </div>
+        <button id="modal-settings-updateres" class="fit">Update Resolutions</button>
+        <div style="margin-top: 20px;">
+          <label>Save state on exit?</label><input type="checkbox" id="modal-settings-savestate" />
+        </div>
+      </div>
+
       <div class="modal map-load" id="modal-map_load" data-active="false">
         <select id="modal-map_load-type">
           <option value="load" selected>Load</option>

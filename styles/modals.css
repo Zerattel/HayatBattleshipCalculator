@@ -92,7 +92,7 @@
       width: calc( 100% - 10px );
     }
 
-    button.inline {
+    .inline {
       display: inline;
     }
 
