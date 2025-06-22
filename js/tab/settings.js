@@ -33,4 +33,19 @@ export default function () {
   $('#modal-settings-savestate').on('change', (e) => {
     settings.saveLastState = $('#modal-settings-savestate').is(':checked');
   })
+
+  $('#modal-settings-hudsize').val(settings.hudSize);
+  $('#modal-settings-hudsize').on('change', (e) => {
+    settings.hudSize = e.target.value;
+
+    document.dispatchEvent(new CustomEvent(
+      EVENTS.MAP_SET_CHANGED,
+      {
+        detail: {
+          size: mapProps.size,
+          grid: mapProps.grid,
+        },
+      }
+    ))
+  })
 }

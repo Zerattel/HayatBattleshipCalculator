@@ -4,6 +4,9 @@ let settings = {
   gridResolution: 2000,
   mapResolution: 8000,
   overlayResolution: 2000,
+
+  hudSize: 1,
+
   saveLastState: true,
   lastState: "{}",
 }

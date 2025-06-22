@@ -1,5 +1,6 @@
 import { fromCanvas } from "../js/canvas/grid.js";
 import ENV from "../js/enviroments/env.js";
+import { settings } from "../js/settings/settings.js";
 
 /**
  * mouse position on MAP
@@ -22,7 +23,7 @@ export function getMousePos(canvas, evt) {
  * @returns {number}
  */
 export function toCurrentCanvasSize(canvas, origSize) {
-  return (canvas.width / ENV.DEFAULT_CANVAS_SIZE) * origSize
+  return (canvas.width / ENV.DEFAULT_CANVAS_SIZE) * origSize * settings.hudSize;
 }
 
 /**

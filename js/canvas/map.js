@@ -1,5 +1,5 @@
 import { EVENTS } from "../events.js";
-import { loadJSON } from "../save&load/load.js";
+import { DEFAULT_SAVE_FILE, loadJSON } from "../save&load/load.js";
 import { settings } from "../settings/settings.js";
 import { mapProps } from "./grid.js";
 import check_id from "./map/check_id.js";
@@ -91,6 +91,12 @@ export default function init() {
   });
 
 
+  document.addEventListener(EVENTS.RESET, () => {
+    objects = {};
+    redrawMap();
+  })
+
+
   if (settings.saveLastState && settings.lastState != "{}") {
     try {
       loadJSON(JSON.parse(settings.lastState));
@@ -105,7 +111,7 @@ export default function init() {
           dlAnchorElem.click();
         }
 
-        settings.lastState = "{}";
+        settings.lastState = JSON.stringify(DEFAULT_SAVE_FILE);
       }
 
       objects = {};

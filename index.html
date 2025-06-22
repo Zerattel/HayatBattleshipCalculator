@@ -50,6 +50,9 @@
         <div style="margin-top: 20px;">
           <label>Save state on exit?</label><input type="checkbox" id="modal-settings-savestate" />
         </div>
+        <div style="margin-top: 20px;">
+          <label>Hud Size: </label><input class="small" type="number" id="modal-settings-hudsize" />
+        </div>
       </div>
 
       <div class="modal map-load" id="modal-map_load" data-active="false">
@@ -90,6 +93,8 @@
         </div>
 
         <button id="modal-map_set-complete">Set</button>
+
+        <button style="margin-top: 20px;" id="modal-map_set-reset">Reset Map</button>
       </div>
 
       <div class="modal new-object" id="modal-new_object" data-active="false">

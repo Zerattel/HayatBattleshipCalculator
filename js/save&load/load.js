@@ -58,6 +58,8 @@ export function loadJSON(json) {
   const length = Object.keys(json).length+1;
   updateLoading('level', length, 0, 0)
 
+  document.dispatchEvent(new Event(EVENTS.RESET))
+
   document.dispatchEvent(
     new CustomEvent(EVENTS.MAP_SET_CHANGED, {
       detail: {
@@ -81,3 +83,13 @@ export function loadJSON(json) {
   updateLoading('level', length, 0, counter+1)
   closeLoading();
 }
+
+const DEFAULT_SAVE_FILE = {
+  map: {
+    size: 10000,
+    grid: 500,
+  },
+  objects: [],
+}
+
+export { DEFAULT_SAVE_FILE }
