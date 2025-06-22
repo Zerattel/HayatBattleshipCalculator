@@ -18,10 +18,10 @@ new ReadyFunctionsCombiner(() => {
   ui();
   tab();
   controls();
-  map();
   saveload();
   grid();
   overlay();
+  map();
 
   closeLoading();
 }, battleshipsReady, modulesReady)

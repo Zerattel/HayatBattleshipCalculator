@@ -1,4 +1,4 @@
-import { fromCanvas } from "../js/canvas/grid.js";
+import { fromCanvas } from "../js/canvas/overlay.js";
 import ENV from "../js/enviroments/env.js";
 import { settings } from "../js/settings/settings.js";
 
@@ -51,3 +51,12 @@ export function toRealDirection(dir) {
 }
 
 window.toRealDirection = toRealDirection;
+
+
+export function fromOverlayToMap(pos) {
+  return pos / settings.overlayResolution * settings.mapResolution
+}
+
+export function fromMapToOverlay(pos) {
+  return pos / settings.mapResolution * settings.overlayResolution
+}

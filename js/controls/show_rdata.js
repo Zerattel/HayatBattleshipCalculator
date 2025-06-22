@@ -5,6 +5,7 @@ import env from "../enviroments/env.js";
 import format from "../../libs/format.js";
 import { accordeonHTMLTemplate, registerInnerAccordeons } from "../ui/accordeon/accordeon.js";
 import { enableModifyModal } from "../tab/modify/modify.js";
+import { mapProps } from "../canvas/grid.js";
 
 export default function init() {
   $("#relative > div > button").click(() => {
@@ -20,7 +21,7 @@ export default function init() {
 
     if (Object.keys(objects).length <= 1) return;
 
-    const clicked = getInArea(x, y);
+    const clicked = getInArea(x * mapProps.size, y * mapProps.size);
 
     if (clicked.length == 0) return;
 

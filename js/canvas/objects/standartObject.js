@@ -52,7 +52,7 @@ export default class StandartObject {
         type: "number",
         current: () => Math.round(this._x * 100) / 100,
         func: (val) => {
-          this._x = val;
+          this._x = +val;
         },
       },
       {
@@ -60,7 +60,7 @@ export default class StandartObject {
         type: "number",
         current: () => Math.round(this._y * 100) / 100,
         func: (val) => {
-          this._y = val;
+          this._y = +val;
         },
       },
       {

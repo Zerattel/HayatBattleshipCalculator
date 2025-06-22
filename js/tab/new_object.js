@@ -1,5 +1,5 @@
 import { battleships } from "../../battleships/battleships.js";
-import { getMousePos, toRealDirection } from "../../libs/canvas.js";
+import { fromMapToOverlay, getMousePos, toRealDirection } from "../../libs/canvas.js";
 import format from "../../libs/format.js";
 import { tonnage } from "../../libs/hayat/battleships.js";
 import uuidv4 from "../../libs/uuid.js";
@@ -15,6 +15,9 @@ import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
 import { EVENTS } from "../events.js";
 import { groupHTMLTemplate, optionHTMLTemplate, registerSelect } from "../ui/multilayered-select/multilayered-select.js";
 import VectorHud from "../canvas/objects/map/hud/vectorHud.js";
+import SignatureShower from "../canvas/objects/map/ship/hud/signatureShower.js";
+import { settings } from "../settings/settings.js";
+import { mapProps } from "../canvas/grid.js";
 
 const SPRITES = [
   "ADS.png",
@@ -146,8 +149,8 @@ export default function init() {
 
     const { x, y } = getMousePos($('#overlay')[0], e);
 
-    $("#modal-new_object-x").val(x);
-    $("#modal-new_object-y").val(y);
+    $("#modal-new_object-x").val(x * mapProps.size);
+    $("#modal-new_object-y").val(y * mapProps.size);
     onPosChange();
   })
 
@@ -180,6 +183,7 @@ export default function init() {
       obj.addModule(new BaseModule(modules['test']))
       obj.setChildren("shipStatsHud", new ShipStatsHUD())
       obj.setChildren("vectorHud", new VectorHud())
+      obj.setChildren("signatureHud", new SignatureShower())
       obj.setChildren("hud", new BasicDataHud([
         { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },

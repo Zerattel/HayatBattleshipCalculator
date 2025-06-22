@@ -10,6 +10,7 @@ let canvas;
 let ctx;
 let style;
 let objects;
+let toCanvas;
 
 export default function init() {
   canvas = document.getElementById("map");
@@ -23,7 +24,7 @@ export default function init() {
 
   let raito = canvas.width / mapProps.size;
 
-  const toCanvas = (pos) => pos * raito;
+  toCanvas = (pos) => pos * raito;
 
   const redrawMap = () => {
     requestAnimationFrame(() => {
@@ -35,7 +36,7 @@ export default function init() {
     })
   };
 
-  get_in_area(objects, toCanvas);
+  get_in_area();
   check_id(objects);
 
 
@@ -119,4 +120,4 @@ export default function init() {
   }
 }
 
-export { ctx, canvas, style, objects }
+export { ctx, canvas, style, objects, toCanvas }

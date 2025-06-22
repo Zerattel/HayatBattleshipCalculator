@@ -8,6 +8,8 @@ let ctx;
 let style;
 let objectsOnOverlay;
 
+let fromCanvas;
+
 export default function init() {
   canvas = document.getElementById("overlay");
   ctx = canvas.getContext("2d");
@@ -21,6 +23,7 @@ export default function init() {
   let raito = canvas.width / mapProps.size;
 
   const toCanvas = (pos) => pos * raito;
+  fromCanvas = (pos) => pos / settings.overlayResolution;
 
   const redrawOverlay = () => {
     requestAnimationFrame(() => {
@@ -78,4 +81,4 @@ export default function init() {
   });
 }
 
-export { ctx, canvas, style, objectsOnOverlay }
+export { ctx, canvas, style, objectsOnOverlay, fromCanvas }

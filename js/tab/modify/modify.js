@@ -1,4 +1,5 @@
-import { getMousePos } from "../../../libs/canvas.js";
+import { fromMapToOverlay, getMousePos } from "../../../libs/canvas.js";
+import { mapProps } from "../../canvas/grid.js";
 import { objects } from "../../canvas/map.js";
 import { check_id } from "../../canvas/map/check_id.js";
 import { getInArea } from "../../canvas/map/get_in_area.js";
@@ -92,7 +93,7 @@ export default function init() {
     if (!is_aiming) return;
 
     const { x, y } = getMousePos($("#overlay")[0], e);
-    const clicked = getInArea(x, y);
+    const clicked = getInArea(x * mapProps.size, y * mapProps.size);
 
     if (clicked.length == 0) return;
 
