@@ -145,8 +145,12 @@
 
         <select id="modal-maneuver-type">
           <option value="maneuver" selected>Maneuver</option> 
+          <option disabled>────────────────────</option>
           <option value="jump_calc">Jump Calculation</option>
+          <option value="contact">Contact</option>
+          <option disabled>────────────────────</option>
           <option value="modules">Modules</option>
+          <option disabled>────────────────────</option>
           <option value="tasks">Tasks</option>
           <option value="override">Override</option>
           <option value="delete">Delete</option>
@@ -167,6 +171,18 @@
             </div>
             <div>
               <span>Y: </span><span id="modal-maneuver-types-jump_cal-y">0</span>
+            </div>
+          </div>
+          <div id="modal-maneuver-types-contact" data-active="false">
+            <div style="
+              display: grid;
+              grid-template-columns: 1fr 5fr 20px;
+            ">
+              <label>Target: </label><input id="modal-maneuver-types-contact-id" class="fit" placeholder="" />
+              <button class="inline aim" id="modal-maneuver-types-contact-aim">⊹</button>
+            </div>
+            <div id="modal-maneuver-types-contact-contains">
+
             </div>
           </div>
           <div id="modal-maneuver-types-modules" data-active="false">

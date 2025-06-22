@@ -5,8 +5,8 @@ export default class LongTask extends BasicTask {
   lifetime = 0;
   maxSteps = 0;
 
-  constructor(func=(target, origin) => {}, maxSteps=0, id) {
-    super(func, id);
+  constructor(func=(target, origin) => {}, data={}, maxSteps=0, id) {
+    super(func, data, id);
 
     this.maxSteps = maxSteps;
   }

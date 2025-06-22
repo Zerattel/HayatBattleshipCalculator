@@ -163,7 +163,8 @@ export default class ShipObject extends BasicMovingObject {
     ]
   }
 
-  recalculateCharacteristics() {
+
+  calculateModifiers() {
     const activeModules = this.allModules.reduce((acc, v) => {
       if (v.fullType in acc) {
         acc[v.fullType] += 1;
@@ -192,6 +193,12 @@ export default class ShipObject extends BasicMovingObject {
     for (let mod of this.allModules) {
       mods = mod.applyModifiers(mods, activeModules);
     }
+
+    return mods;
+  }
+
+  recalculateCharacteristics() {
+    const mods = this.calculateModifiers();
 
     this.currentCharacteristics = mergeDeep(copy(this.baseCharacteristics), {
       dynamic: this.currentCharacteristics.dynamic,

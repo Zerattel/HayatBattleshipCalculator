@@ -6,6 +6,7 @@ import { getInArea } from "../../canvas/map/get_in_area.js";
 import AccentPoint from "../../canvas/objects/overlay/accentPoint.js";
 import CrosshairObject from "../../canvas/objects/overlay/crosshair.js";
 import { EVENTS } from "../../events.js";
+import __contact from "./tabs/contact.js";
 import __delete from "./tabs/delete.js";
 import __jump_calc from "./tabs/jump_calc.js";
 import __maneuver from "./tabs/maneuver.js";
@@ -23,6 +24,7 @@ export default function init() {
     tasks: new __tasks(),
     override: new __override(),
     delete: new __delete(),
+    contact: new __contact(),
   }
 
   const disableModal = (modal) => {

@@ -16,6 +16,10 @@ export default class StandartObject {
     this._y = y || 0;
   }
 
+  get name() {
+    return this.id;
+  }
+
   draw(canvas, ctx, toCanvas, style) {
     for (let i of Object.keys(this.children)) {
       this.children[i].visible && this.children[i].draw(canvas, ctx, toCanvas, style);
