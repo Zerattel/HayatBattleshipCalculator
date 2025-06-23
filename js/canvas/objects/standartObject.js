@@ -37,7 +37,9 @@ export default class StandartObject {
   }
 
   callChildren(id, func) {
-    func(this.children[id], this);
+    if (!this.children[id]) return;
+
+    return func(this.children[id], this);
   }
 
   moveTo(x, y) {

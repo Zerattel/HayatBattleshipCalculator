@@ -86,9 +86,9 @@ export default function init() {
       objects[i].next();
     }
 
-    redrawMap();
-
     document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))
+
+    redrawMap();
   });
 
 

@@ -18,6 +18,8 @@ import VectorHud from "../canvas/objects/map/hud/vectorHud.js";
 import SignatureShower from "../canvas/objects/map/ship/hud/signatureShower.js";
 import { settings } from "../settings/settings.js";
 import { mapProps } from "../canvas/grid.js";
+import { ContactController } from "../canvas/objects/map/ship/hud/contactController.js";
+import MAP_OBJECTS_IDS from "../canvas/objects/map/mapObjectsIds.constant.js";
 
 const SPRITES = [
   "ADS.png",
@@ -174,17 +176,18 @@ export default function init() {
     let obj;
     if (!isDynamic) {
       obj = new BasicStaticObject(x, y);
-      obj.setChildren("hud", new BasicDataHud([
+      obj.setChildren(MAP_OBJECTS_IDS.DATA_HUD, new BasicDataHud([
         { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
       ]))
     } else {
       obj = new ShipObject(x, y, dir, vel, battleships[$('#modal-new_object-ships').attr('value')] || {});
       obj.addModule(new BaseModule(modules['test']))
-      obj.setChildren("shipStatsHud", new ShipStatsHUD())
-      obj.setChildren("vectorHud", new VectorHud())
-      obj.setChildren("signatureHud", new SignatureShower())
-      obj.setChildren("hud", new BasicDataHud([
+      obj.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())
+      obj.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
+      obj.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud())
+      obj.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
+      obj.setChildren(MAP_OBJECTS_IDS.DATA_HUD,           new BasicDataHud([
         { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
         { func: (hud) => `vel: ${Math.round(hud.parent.velocity.x)}m/s, ${Math.round(hud.parent.velocity.y)}m/s` },
@@ -195,7 +198,7 @@ export default function init() {
     }
 
     obj.setChildren(
-      "image", 
+      MAP_OBJECTS_IDS.SPRITE, 
       new SpriteShower(
         './img/'+$('#modal-new_object-img').val(), 
         '#'+($('#modal-new_object-img-color').val() || 'ffffff'),

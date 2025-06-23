@@ -4,7 +4,9 @@ import { mapProps } from "../../../canvas/grid.js";
 import { objects } from "../../../canvas/map.js";
 import { check_id } from "../../../canvas/map/check_id.js";
 import { getInArea } from "../../../canvas/map/get_in_area.js";
+import MAP_OBJECTS_IDS from "../../../canvas/objects/map/mapObjectsIds.constant.js";
 import LongTask from "../../../canvas/objects/map/tasks/longTask.js";
+import TASKS from "../../../canvas/objects/map/tasks/tasks.constant.js";
 import TargetPoint from "../../../canvas/objects/overlay/target.js";
 import { EVENTS } from "../../../events.js";
 
@@ -151,6 +153,14 @@ export default class {
 
   onComplete(modal, id) {
     if (this.id.val() && check_id(this.id.val())) {
+      const capRange = objects[id].currentCharacteristics.constant.capture_range;
+      const range = Math.round(
+        point(() => point(objects[this.id.val()]._x, objects[this.id.val()]._y) - point(objects[id]._x, objects[id]._y))
+          .length
+      );
+
+      if (range > capRange) return;
+
       document.dispatchEvent(
         new CustomEvent(EVENTS.MAP.FUNCTION, {
           detail: {
@@ -159,7 +169,9 @@ export default class {
             attr: [
               new LongTask(
                 (target, origin) => {
-                  target.target = origin.data.id;
+                  target.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (cntrl) => {
+                    cntrl.capturedTarget = origin.data.id;
+                  });
                 },
                 { id: this.id.val() },
                 Math.round(
@@ -168,7 +180,7 @@ export default class {
                       objects[this.id.val()].currentCharacteristics.constant.body.signature
                   )
                 ),
-                "capture"
+                TASKS.CONTACT
               ),
               true,
             ],

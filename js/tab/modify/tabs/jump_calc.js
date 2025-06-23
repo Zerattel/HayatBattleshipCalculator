@@ -1,6 +1,7 @@
 import { objects } from "../../../canvas/map.js";
 import { check_id } from "../../../canvas/map/check_id.js";
 import BasicTask from "../../../canvas/objects/map/tasks/basicTask.js";
+import TASKS from "../../../canvas/objects/map/tasks/tasks.constant.js";
 import AccentPoint from "../../../canvas/objects/overlay/accentPoint.js";
 import { EVENTS } from "../../../events.js";
 
@@ -78,7 +79,7 @@ export default class {
               const y = target._y + Math.cos((target._direction / 180) * Math.PI) * origin.data.distance;
 
               target.moveTo(x, y);
-            }, { distance: dist }, "hyperjump"
+            }, { distance: dist }, TASKS.HYPERJUMP
           ), true ],
           redraw: false,
         },

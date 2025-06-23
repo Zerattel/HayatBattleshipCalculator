@@ -17,14 +17,14 @@ export default class BasicStepObject extends StandartObject {
   next() {
     this._livetime += this._step;
 
-    for (let i of Object.keys(this.children)) {
-      this.children[i].next && this.children[i].next(this);
-    }
-
     for (let i in this.tasks) {
       if (!this.tasks[i].do(this)) delete this.tasks[i];
     }
     this.tasks = this.tasks.filter(v => v);
+
+    for (let i of Object.keys(this.children)) {
+      ('next' in this.children[i]) && this.children[i].next(this);
+    }
   }
 
   getOverridableValues() {
@@ -50,6 +50,10 @@ export default class BasicStepObject extends StandartObject {
     }
 
     this.tasks.push(task);
+  }
+
+  getTask(id) {
+    return this.tasks.find(v => v.id == id);
   }
 
   deleteTask(id) {

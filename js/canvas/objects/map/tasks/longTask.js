@@ -12,9 +12,9 @@ export default class LongTask extends BasicTask {
   }
 
   do(target) {
-    this.function(target, this);
+    (++this.lifetime) >= this.maxSteps && this.function(target, this);
 
-    return (++this.lifetime) < this.maxSteps;
+    return this.lifetime < this.maxSteps;
   }
 
   save() {
