@@ -16,6 +16,12 @@ export default class {
     this.aimButton = $("#modal-maneuver-types-contact-aim");
     this.contains = $("#modal-maneuver-types-contact-contains");
 
+    this.currentTargetContainer = $('#modal-maneuver-types-contact-data');
+    this.currentTargetLabel = $('#modal-maneuver-types-contact-data-target');
+    this.currentTargetProgress = $('#modal-maneuver-types-contact-data-progress');
+    this.stopCapturingButton = $('#modal-maneuver-types-contact-data-stop');
+
+
     this.isAiming = false;
     this.aimButton.attr("data-active", "false");
 
@@ -56,11 +62,19 @@ export default class {
         this.isAiming = false;
       }
     });
+
+    document.addEventListener(EVENTS.CALCULATION_ENDED, () => {
+      let id = $("#modal-maneuver-id").val();
+      if (!id || !check_id(id)) return;
+
+      this.onIdChange(id);
+    })
   }
 
   onSelectionEnded(nextSelection) {
     this.isAiming = false;
     this.aimButton.attr("data-active", "false");
+    this.currentTargetContainer.attr("data-active", "false")
 
     document.dispatchEvent(
       new CustomEvent(EVENTS.OVERLAY.DELETE, {
@@ -91,6 +105,8 @@ export default class {
       return;
     }
 
+    this.updateCurrentTarget(id);
+
     document.dispatchEvent(
       new CustomEvent(EVENTS.OVERLAY.NEW, {
         detail: {
@@ -107,9 +123,78 @@ export default class {
   }
 
   onIdChange(id) {
+    this.updateCurrentTarget(id);
+
     if (this.id.val() && check_id(this.id.val())) {
       this.onBothIdsRight(id, this.id.val());
     }
+  }
+
+  updateCurrentTarget(id) {
+    const task = objects[id].getTask(TASKS.CONTACT);
+
+    let progress = 1;
+    let target;
+
+    if (task) {
+      progress = task.lifetime / task.maxSteps;
+      target = objects[task.data.id];
+
+      if (!target) {
+        this.currentTargetContainer.attr('data-active', 'false')
+        
+        return;
+      }
+
+      this.currentTargetProgress.attr('data-active', 'true');
+      this.currentTargetProgress.css('--progress', (progress*100)+"%");
+      this.currentTargetProgress.css('--progress-content', `"${task.lifetime} / ${task.maxSteps}"`);
+
+      this.stopCapturingButton.off('click').on('click', () => {
+        document.dispatchEvent(new CustomEvent(
+          EVENTS.MAP.FUNCTION,
+          {
+            detail: {
+              id: id,
+              func: "deleteTask",
+              attr: [ TASKS.CONTACT ],
+              redraw: true,
+            }
+          }
+        ))
+
+        this.updateCurrentTarget(id);
+      })
+    } else {
+      target = objects[id].callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (ctr) => ctr.target)
+
+      if (!target) {
+        this.currentTargetContainer.attr('data-active', 'false')
+        
+        return;
+      }
+
+      this.currentTargetProgress.attr('data-active', 'false');
+      this.stopCapturingButton.off('click').on('click', () => {
+        document.dispatchEvent(new CustomEvent(
+          EVENTS.MAP.FUNCTION,
+          {
+            detail: {
+              id: id,
+              func: (obj) => {
+                obj.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (ctr) => { ctr.capturedTarget = null })
+              },
+              redraw: true,
+            }
+          }
+        ))
+
+        this.updateCurrentTarget(id);
+      })
+    }
+
+    this.currentTargetLabel.text(target.name);
+    this.currentTargetContainer.attr('data-active', 'true');
   }
 
   onBothIdsRight(id, tid) {
@@ -184,10 +269,12 @@ export default class {
               ),
               true,
             ],
-            redraw: false,
+            redraw: true,
           },
         })
       );
+
+      this.updateCurrentTarget(id);
     }
   }
 }

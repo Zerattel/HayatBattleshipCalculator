@@ -71,16 +71,18 @@ export class ContactController extends BasicStepObject {
 
     let target;
     let progress = 1;
-    if (this.target) {
-      target = this.target;
-    } else {
-      const task = this.parent.getTask(TASKS.CONTACT);
-      if (!task) return;
 
+    const task = this.parent.getTask(TASKS.CONTACT);
+
+    if (task) {
       progress = task.lifetime / task.maxSteps;
       target = objects[task.data.id];
 
       if (!target) return;
+    } else {
+      if (!this.target) return;
+
+      target = this.target;
     }
 
     const lines = getExternalTangentPoints(
@@ -94,14 +96,16 @@ export class ContactController extends BasicStepObject {
 
     if (!lines) return;
 
+    const biCapture =
+      target.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (cnt) => {
+        return cnt.target && cnt.target.id == this.parent.id;
+      }) || (target.getTask(TASKS.CONTACT) || { data: { id: null } }).data.id == this.parent.id;
+
     let posl1, posl2;
     if (
-      (target.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (cnt) => {
-        return cnt.target && cnt.target.id == this.parent.id;
-      }) ||
-        (target.getTask(TASKS.CONTACT) || {data: {id: null}}).data.id == this.parent.id) &&
       this.parent.currentCharacteristics.constant.body.signature <
-        target.currentCharacteristics.constant.body.signature
+        target.currentCharacteristics.constant.body.signature &&
+      biCapture
     ) {
       const dist = toCurrentCanvasSize(canvas, 40);
 
@@ -164,6 +168,34 @@ export class ContactController extends BasicStepObject {
       ctx.moveTo(lerp(posl2[0], posl2[2], progress), lerp(posl2[1], posl2[3], progress));
       ctx.lineTo(posl2[2], posl2[3]);
       ctx.stroke();
+    }
+
+    if (!biCapture) {
+      const drawArrow = (x1, y1, x2, y2) => {
+        const arrowSize = toCurrentCanvasSize(canvas, 100);
+
+        const x = lerp(x1, x2, 0.5);
+        const y = lerp(y1, y2, 0.5);
+
+        const dir = point(() => point(x2, y2) - point(x1, y1)).normalize();
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+          x - dir.x * (arrowSize / 2) - dir.y * (arrowSize / 3),
+          y - dir.y * (arrowSize / 2) + dir.x * (arrowSize / 3)
+        );
+        ctx.lineTo(x + dir.x * (arrowSize / 2), y + dir.y * (arrowSize / 2));
+        ctx.lineTo(
+          x - dir.x * (arrowSize / 2) + dir.y * (arrowSize / 3),
+          y - dir.y * (arrowSize / 2) - dir.x * (arrowSize / 3)
+        );
+
+        ctx.stroke();
+      };
+
+      drawArrow(...posl1);
+      drawArrow(...posl2);
     }
 
     ctx.setLineDash([]);

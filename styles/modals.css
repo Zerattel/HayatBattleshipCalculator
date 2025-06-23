@@ -291,3 +291,54 @@
 #modal-maneuver-types-contact-contains {
   margin-top: 20px;
 }
+
+#modal-maneuver-types-contact-data {
+  margin-bottom: 20px;
+
+  > div {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+
+    margin-bottom: 5px;
+  }
+
+  > button {
+    width: 100%;
+  }
+
+  .progress {
+    height: 30px;
+    width: 100%;
+
+    position: relative;
+
+    --progress-content: "1 / 4";
+    --progress: 25%;
+
+    background-color: var(--bg-elem);
+
+    &::before {
+      content: var(--progress-content);
+
+      position: absolute;
+
+      left: 5px;
+      top: 5px;
+
+      height: 20px;
+      width: calc( var(--progress) - 10px );
+
+      text-align: center;
+
+      background-color: var(--accent);
+    }
+
+    &[data-active="false"] {
+      display: none;
+    }
+  }
+
+  &[data-active="false"] {
+    display: none;
+  }
+}
