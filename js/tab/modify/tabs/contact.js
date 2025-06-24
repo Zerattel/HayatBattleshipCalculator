@@ -79,7 +79,8 @@ export default class {
       let id = $("#modal-maneuver-id").val();
       if (!id || !check_id(id)) return;
 
-      if ($("#modal-maneuver-types-contact").attr('data-active') == "false") return;
+      if ($("#modal-maneuver-types-contact").attr('data-active') == "false" ||
+          $("#modal-maneuver").attr('data-active') == "false") return;
 
       this.onIdChange(id);
     })

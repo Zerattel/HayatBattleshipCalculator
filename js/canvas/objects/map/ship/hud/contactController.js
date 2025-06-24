@@ -205,6 +205,12 @@ export class ContactController extends BasicStepObject {
         ctx.stroke();
       };
 
+      if (progress < 0.5) {
+        ctx.strokeStyle = style.getPropertyValue("--target");
+      } else {
+        ctx.strokeStyle = isMain ? style.getPropertyValue("--accent") : style.getPropertyValue("--target-non-active")
+      }
+
       drawArrow(...posl1);
       drawArrow(...posl2);
     }
