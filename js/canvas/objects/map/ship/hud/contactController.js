@@ -9,40 +9,69 @@ import MAP_OBJECTS_IDS from "../../mapObjectsIds.constant.js";
 import TASKS from "../../tasks/tasks.constant.js";
 
 export class ContactController extends BasicStepObject {
-  capturedTarget = null;
+  capturedTargets = [];
+  currentTarget = null;
 
   constructor() {
     super();
 
     document.addEventListener(EVENTS.CALCULATION_ENDED, () => {
-      if (!this.parent || !this.capturedTarget) return;
+      if (!this.parent) return;
 
       const capRange = this.parent.currentCharacteristics.constant.capture_range;
-      const range = Math.round(
-        point(
-          () =>
-            point(this.capturedTarget._x, this.capturedTarget._y) -
-            point(this.parent._x, this.parent._y)
-        ).length
-      );
 
-      if (range > capRange) {
-        this.capturedTarget = null;
-      }
+      this.capturedTargets = this.capturedTargets.filter(v => {
+        if (!objects[v]) return false;
+
+        const range = Math.round(
+          point(
+            () =>
+              point(objects[v]._x, objects[v]._y) -
+              point(this.parent._x, this.parent._y)
+          ).length
+        );
+
+        return range <= capRange;
+      })
+
+      
     });
   }
 
+  addTarget(id) {
+    if (this.capturedTargets.indexOf(id) == -1) {
+      this.capturedTargets.push(id);
+
+      if (this.currentTarget === null) {
+        this.currentTarget = 0;
+      }
+    }
+  }
+
+  setMainTarget(id) {
+    this.filterTargets();
+    const index = this.capturedTargets.indexOf(id);
+
+    if (index != -1) this.currentTarget = index;
+  }
+
+  removeTarget(id) {
+    this.capturedTargets = this.capturedTargets.filter(v => v != id);
+  }
+
+  filterTargets() {
+    this.capturedTargets = this.capturedTargets.filter(v => objects[v])
+  }
+
   get target() {
-    if (this.capturedTarget) {
-      if (typeof this.capturedTarget == "string") {
-        if (objects[this.capturedTarget]) {
-          this.capturedTarget = objects[this.capturedTarget];
-        } else {
-          this.capturedTarget = null;
-        }
+    this.filterTargets();
+
+    if (this.capturedTargets.length != 0) {
+      if (this.currentTarget === null || !this.capturedTargets[this.currentTarget]) {
+        this.currentTarget = 0;
       }
 
-      return this.capturedTarget;
+      return objects[this.capturedTargets[this.currentTarget]];
     }
 
     return null;
@@ -52,39 +81,21 @@ export class ContactController extends BasicStepObject {
     if (!this.parent) return;
     if (this.target) return;
 
-    const task = this.parent.getTask(TASKS.CONTACT);
-    if (!task) return;
+    const tasks = this.parent.getAllTasks(TASKS.CONTACT);
+    if (tasks.length == 0) return;
 
-    const target = objects[task.data.id];
+    for (let i of tasks) {
+      const target = objects[i.data.id];
 
-    if (!target) {
-      this.parent.deleteTask(TASKS.CONTACT);
+      if (!target) {
+        this.parent.deleteTask(TASKS.CONTACT, { id: i.data.id });
 
-      return;
+        return;
+      }
     }
   }
 
-  draw(canvas, ctx, toCanvas, style) {
-    super.draw(canvas, ctx, toCanvas, style);
-
-    if (!this.parent) return;
-
-    let target;
-    let progress = 1;
-
-    const task = this.parent.getTask(TASKS.CONTACT);
-
-    if (task) {
-      progress = task.lifetime / task.maxSteps;
-      target = objects[task.data.id];
-
-      if (!target) return;
-    } else {
-      if (!this.target) return;
-
-      target = this.target;
-    }
-
+  drawContact(canvas, ctx, toCanvas, style, target, progress, isMain) {
     const lines = getExternalTangentPoints(
       this.parent._x,
       this.parent._y,
@@ -98,8 +109,8 @@ export class ContactController extends BasicStepObject {
 
     const biCapture =
       target.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (cnt) => {
-        return cnt.target && cnt.target.id == this.parent.id;
-      }) || (target.getTask(TASKS.CONTACT) || { data: { id: null } }).data.id == this.parent.id;
+        return cnt.capturedTargets.includes(this.parent.id);
+      }) || target.getTask(TASKS.CONTACT, { id: this.parent.id });
 
     let posl1, posl2;
     if (
@@ -116,7 +127,7 @@ export class ContactController extends BasicStepObject {
         toCanvas(point(lines[1].p1.x, lines[1].p1.y) - point(this.parent._x, this.parent._y))
       ).normalize();
 
-      ctx.strokeStyle = style.getPropertyValue("--accent");
+      ctx.strokeStyle = isMain ? style.getPropertyValue("--accent") : style.getPropertyValue("--target-non-active");
       ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
       ctx.setLineDash([toCurrentCanvasSize(canvas, 60), toCurrentCanvasSize(canvas, 60)]);
 
@@ -133,7 +144,7 @@ export class ContactController extends BasicStepObject {
         toCanvas(lines[1].p2.y) + l2_offset.y * dist,
       ];
     } else {
-      ctx.strokeStyle = style.getPropertyValue("--accent");
+      ctx.strokeStyle = isMain ? style.getPropertyValue("--accent") : style.getPropertyValue("--target-non-active");
       ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
       posl1 = [
@@ -201,16 +212,44 @@ export class ContactController extends BasicStepObject {
     ctx.setLineDash([]);
   }
 
+  draw(canvas, ctx, toCanvas, style) {
+    super.draw(canvas, ctx, toCanvas, style);
+
+    if (!this.parent) return;
+
+    const tasks = this.parent.getAllTasks(TASKS.CONTACT).filter(v => objects[v.data.id]);
+
+    for (let i in tasks) {
+      if (i == 0 && !this.target) {
+        this.drawContact(canvas, ctx, toCanvas, style, objects[tasks[i].data.id], tasks[i].lifetime / tasks[i].maxSteps, true);
+      } else {
+        this.drawContact(canvas, ctx, toCanvas, style, objects[tasks[i].data.id], tasks[i].lifetime / tasks[i].maxSteps, false);
+      }
+    }
+
+    if (this.target) {
+      this.drawContact(canvas, ctx, toCanvas, style, this.target, 1, true);
+
+      for (let i in this.capturedTargets) {
+        if (i == this.currentTarget) continue;
+
+        this.drawContact(canvas, ctx, toCanvas, style, objects[this.capturedTargets[i]], 1, false);
+      }
+    }
+  }
+
   save(realParent = null) {
     return {
       ...super.save(realParent),
-      capturedTarget: this.target ? this.target.id : null,
+      capturedTargets: this.capturedTargets,
+      currentTarget: this.currentTarget,
     };
   }
 
   load(data, loadChildren = false) {
     super.load(data, false);
-    this.capturedTarget = data.capturedTarget;
+    this.capturedTargets = data.capturedTargets;
+    this.currentTarget = data.currentTarget;
 
     loadChildren && super.loadChildren(data);
   }

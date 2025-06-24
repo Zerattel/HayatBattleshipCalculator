@@ -20,10 +20,10 @@ export default class BasicStepObject extends StandartObject {
     for (let i in this.tasks) {
       if (!this.tasks[i].do(this)) delete this.tasks[i];
     }
-    this.tasks = this.tasks.filter(v => v);
+    this.tasks = this.tasks.filter((v) => v);
 
     for (let i of Object.keys(this.children)) {
-      ('next' in this.children[i]) && this.children[i].next(this);
+      "next" in this.children[i] && this.children[i].next(this);
     }
   }
 
@@ -41,10 +41,17 @@ export default class BasicStepObject extends StandartObject {
     ];
   }
 
-
-  newTask(task, overrideWithSameId=false) {
+  newTask(task, overrideWithSameId = false, overrideWithSameIdAndData = false) {
     if (overrideWithSameId) {
-      const index = this.tasks.findIndex(v => v.id == task.id);
+      const index = this.tasks.findIndex((v) => v.id == task.id);
+
+      if (index != -1) this.tasks.splice(index, 1);
+    }
+
+    if (overrideWithSameIdAndData) {
+      const index = this.tasks.findIndex(
+        (v) => v.id == task.id && Object.keys(task.data).every((r) => v.data[r] == task.data[r])
+      );
 
       if (index != -1) this.tasks.splice(index, 1);
     }
@@ -52,23 +59,32 @@ export default class BasicStepObject extends StandartObject {
     this.tasks.push(task);
   }
 
-  getTask(id) {
-    return this.tasks.find(v => v.id == id);
+  getTask(id, data = null) {
+    return this.tasks.find(
+      (v) => v.id == id && (data ? Object.keys(data).every((r) => v.data[r] == data[r]) : true)
+    );
   }
 
-  deleteTask(id) {
-    const index = this.tasks.findIndex(v => v.id == id);
+  getAllTasks(id, data = null) {
+    return this.tasks.filter(
+      (v) => v.id == id && (data ? Object.keys(data).every((r) => v.data[r] == data[r]) : true)
+    );
+  }
+
+  deleteTask(id, data = null) {
+    const index = this.tasks.findIndex(
+      (v) => v.id == id && (data ? Object.keys(data).every((r) => v.data[r] == data[r]) : true)
+    );
 
     if (index != -1) this.tasks.splice(index, 1);
   }
-  
 
   save(realParent = null) {
     return {
       ...super.save(realParent),
       step: this._step,
       livetime: this._livetime,
-      tasks: this.tasks.map(v => v.save()),
+      tasks: this.tasks.map((v) => v.save()),
     };
   }
 
@@ -76,7 +92,7 @@ export default class BasicStepObject extends StandartObject {
     super.load(data, false);
     this._step = data.step;
     this._livetime = data.livetime;
-    this.tasks = data.tasks.map(v => load('', v, "module"))
+    this.tasks = data.tasks.map((v) => load("", v, "module"));
 
     loadChildren && super.loadChildren(data);
   }

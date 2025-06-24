@@ -1,4 +1,5 @@
 import { getMousePos } from "../../../../libs/canvas.js";
+import format from "../../../../libs/format.js";
 import { point } from "../../../../libs/vector/point.js";
 import { mapProps } from "../../../canvas/grid.js";
 import { objects } from "../../../canvas/map.js";
@@ -10,6 +11,20 @@ import TASKS from "../../../canvas/objects/map/tasks/tasks.constant.js";
 import TargetPoint from "../../../canvas/objects/overlay/target.js";
 import { EVENTS } from "../../../events.js";
 
+const HTMLTemplate = `<div>
+  <label>{0}</label>
+  <label>{1}</label>
+</div>
+<div id="modal-maneuver-types-contact-data-progress" class="progress" 
+    style="--progress: {2}%; --progress-content: '{3} / {4}';"></div>
+<button id="modal-maneuver-types-contact-data-stop" class="fit">Stop capturing</button>`
+const HTMLTemplateWithoutProgress = `<div>
+  <label>{0}</label>
+  <label>{1}</label>
+</div>
+<button id="modal-maneuver-types-contact-data-stop" class="fit">Stop capturing</button>
+<button id="modal-maneuver-types-contact-data-set" class="fit">Set as current</button>`
+
 export default class {
   constructor() {
     this.id = $("#modal-maneuver-types-contact-id");
@@ -17,9 +32,6 @@ export default class {
     this.contains = $("#modal-maneuver-types-contact-contains");
 
     this.currentTargetContainer = $('#modal-maneuver-types-contact-data');
-    this.currentTargetLabel = $('#modal-maneuver-types-contact-data-target');
-    this.currentTargetProgress = $('#modal-maneuver-types-contact-data-progress');
-    this.stopCapturingButton = $('#modal-maneuver-types-contact-data-stop');
 
 
     this.isAiming = false;
@@ -67,6 +79,8 @@ export default class {
       let id = $("#modal-maneuver-id").val();
       if (!id || !check_id(id)) return;
 
+      if ($("#modal-maneuver-types-contact").attr('data-active') == "false") return;
+
       this.onIdChange(id);
     })
   }
@@ -74,7 +88,6 @@ export default class {
   onSelectionEnded(nextSelection) {
     this.isAiming = false;
     this.aimButton.attr("data-active", "false");
-    this.currentTargetContainer.attr("data-active", "false")
 
     document.dispatchEvent(
       new CustomEvent(EVENTS.OVERLAY.DELETE, {
@@ -130,71 +143,115 @@ export default class {
     }
   }
 
-  updateCurrentTarget(id) {
-    const task = objects[id].getTask(TASKS.CONTACT);
 
-    let progress = 1;
-    let target;
+  showTargetTemplate(object) {
+    if (typeof object == "object" && 'maxSteps' in object) {
+      let progress = object.lifetime / object.maxSteps;
+      let target = objects[object.data.id];
 
-    if (task) {
-      progress = task.lifetime / task.maxSteps;
-      target = objects[task.data.id];
+      if (!target) return;
 
-      if (!target) {
-        this.currentTargetContainer.attr('data-active', 'false')
-        
-        return;
-      }
+      const div = document.createElement('div');
+      div.innerHTML = format(
+        HTMLTemplate, 
+        'Capturing target: ', 
+        object.data.id,
+        progress * 100,
+        object.lifetime,
+        object.maxSteps
+      )
+      this.currentTargetContainer[0].appendChild(div);
+      let _id = $("#modal-maneuver-id").val();
 
-      this.currentTargetProgress.attr('data-active', 'true');
-      this.currentTargetProgress.css('--progress', (progress*100)+"%");
-      this.currentTargetProgress.css('--progress-content', `"${task.lifetime} / ${task.maxSteps}"`);
-
-      this.stopCapturingButton.off('click').on('click', () => {
+      $(div).find('button').on('click', () => {
         document.dispatchEvent(new CustomEvent(
           EVENTS.MAP.FUNCTION,
           {
             detail: {
-              id: id,
+              id: _id,
               func: "deleteTask",
-              attr: [ TASKS.CONTACT ],
+              attr: [ TASKS.CONTACT, { id: object.data.id } ],
               redraw: true,
             }
           }
         ))
 
-        this.updateCurrentTarget(id);
+        this.updateCurrentTarget(_id);
       })
+
+      return;
+    }
+
+    let target, isMain=false;
+    if (typeof object == "string") {
+      target = objects[object];
+
+      if (!target) return;
     } else {
-      target = objects[id].callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (ctr) => ctr.target)
+      isMain = true;
+      target = object;
+    }
 
-      if (!target) {
-        this.currentTargetContainer.attr('data-active', 'false')
-        
-        return;
-      }
+    const div = document.createElement('div');
+    div.innerHTML = format(
+      HTMLTemplateWithoutProgress, 
+      isMain ? 'Current target: ' : 'Captured target: ', 
+      target.id,
+    )
+    this.currentTargetContainer[0].appendChild(div);
+    let _id = $("#modal-maneuver-id").val();
 
-      this.currentTargetProgress.attr('data-active', 'false');
-      this.stopCapturingButton.off('click').on('click', () => {
+    $(div).find('button#modal-maneuver-types-contact-data-stop').on('click', () => {
+      document.dispatchEvent(new CustomEvent(
+        EVENTS.MAP.FUNCTION,
+        {
+          detail: {
+            id: _id,
+            func: (obj) => {
+              obj.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (ctr) => { ctr.removeTarget(target.id) })
+            },
+            redraw: true,
+          }
+        }
+      ))
+
+      this.updateCurrentTarget(_id);
+    })
+
+    $(div).find('button#modal-maneuver-types-contact-data-set')
+      .attr('data-active', isMain ? 'false' : 'true')
+      .on('click', () => {
         document.dispatchEvent(new CustomEvent(
           EVENTS.MAP.FUNCTION,
           {
             detail: {
-              id: id,
+              id: _id,
               func: (obj) => {
-                obj.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (ctr) => { ctr.capturedTarget = null })
+                obj.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (ctr) => { ctr.setMainTarget(target.id) })
               },
               redraw: true,
             }
           }
         ))
 
-        this.updateCurrentTarget(id);
+        this.updateCurrentTarget(_id);
       })
-    }
+  }
 
-    this.currentTargetLabel.text(target.name);
-    this.currentTargetContainer.attr('data-active', 'true');
+  updateCurrentTarget(id) {
+    const tasks = objects[id].getAllTasks(TASKS.CONTACT);
+    const controller = objects[id].children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER];
+
+    if (!controller) return;
+
+    const mainTarget = controller.target;
+    const targets = controller.capturedTargets.filter(v => v != mainTarget.id);
+
+    let overall = [...targets, ...tasks];
+    if (mainTarget) overall = [mainTarget, ...overall];
+
+    this.currentTargetContainer.html('')
+    overall.forEach(v => this.showTargetTemplate(v));
   }
 
   onBothIdsRight(id, tid) {
@@ -255,7 +312,7 @@ export default class {
               new LongTask(
                 (target, origin) => {
                   target.callChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, (cntrl) => {
-                    cntrl.capturedTarget = origin.data.id;
+                    cntrl.addTarget(origin.data.id);
                   });
                 },
                 { id: this.id.val() },
@@ -267,7 +324,7 @@ export default class {
                 ),
                 TASKS.CONTACT
               ),
-              true,
+              false, true
             ],
             redraw: true,
           },

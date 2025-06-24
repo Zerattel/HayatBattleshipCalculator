@@ -296,14 +296,23 @@
   margin-bottom: 20px;
 
   > div {
+    margin-bottom: 10px;
+  }
+
+  > div > div {
     display: grid;
-    grid-template-columns: 140px 1fr;
+    grid-template-columns: 160px 1fr;
 
     margin-bottom: 5px;
   }
 
-  > button {
+  > div > button {
     width: 100%;
+    margin-bottom: 5px;
+  }
+
+  button#modal-maneuver-types-contact-data-set[data-active="false"] {
+    display: none;
   }
 
   .progress {
@@ -316,9 +325,13 @@
     --progress: 25%;
 
     background-color: var(--bg-elem);
+    overflow-y: visible;
 
     &::before {
       content: var(--progress-content);
+      color: var(--main);
+      white-space: nowrap;
+      font-weight: 700;
 
       position: absolute;
 
@@ -332,13 +345,5 @@
 
       background-color: var(--accent);
     }
-
-    &[data-active="false"] {
-      display: none;
-    }
-  }
-
-  &[data-active="false"] {
-    display: none;
   }
 }
