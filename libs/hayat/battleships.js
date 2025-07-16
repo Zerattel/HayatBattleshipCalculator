@@ -215,12 +215,49 @@ const baseBattleshipCharacteristics = {
         /** Барьера */
         barrier: {
           passive_recharge_modifier: 1,
-          active_recharge_modifier:1
+          active_recharge_modifier: 1
         },
         /** Брони */
         armor: {
           active_repair_modifier: 1
+        },
+
+        hardener: {
+          active: {
+            barrier: {
+              effectiveness_modifier: 1,
+              capacitor_consumption_modifier: 1,
+              heating_modifier: 1
+            },
+            armor: {
+              effectiveness_modifier: 1,
+              capacitor_consumption_modifier: 1,
+              heating_modifier: 1
+            }
+          },
+          passive: {
+            barrier: {
+              effectiveness_modifier: 1
+            },
+            armor: {
+              effectiveness_modifier: 1
+            }
+          }
+        },
+        mobility: {
+          micro_distortion_drive: {
+            effectiveness_modifier: 1,
+            capacitor_consumption_modifier: 1,
+            heating_modifier: 1,
+            signature_penalty_modifier: 1
+          },
+          afterburner: {
+            effectiveness_modifier: 1,
+            capacitor_consumption_modifier: 1,
+            heating_modifier: 1
+          }
         }
+
       },
       /** Модификаторы работы модулей поддержки флота и дистанционного снабжения. */
       /** Отсюда же берут баффы и аппараты снабжения и поддержки. */
