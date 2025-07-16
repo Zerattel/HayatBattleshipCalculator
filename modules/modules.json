@@ -15,5 +15,7 @@
   "Дополнительный слой вольфрама": "resistance/tunsgencoating.json",
   "Внешний радиатор M": "thermodynamics/external-radiator.json",
   "Внутренний радиатор M": "thermodynamics/internalradiator.json",
-  "Излучающая обшивка M": "thermodynamics/radiating-hull.json"
+  "Излучающая обшивка M": "thermodynamics/radiating-hull.json",
+  "RES Vampire M": "EW/res-vampire.json",
+  "Система целеуказания M": "target-painter.json"
 }

@@ -1,0 +1,35 @@
+{
+  "main": {
+    "name": "RES Vampire",
+    "type": "РЭБ",
+    "category": "Система нейтрализации накопителя",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["capacitorew,ew"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": 5,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -5,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}
