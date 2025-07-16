@@ -1,7 +1,8 @@
-import { toRealDirection } from "../../../../libs/canvas.js";
+import { toRealDirection } from "../../../../../libs/canvas.js";
 import BasicStepObject from "./basicStepObject.js";
-import { calc, point } from "../../../../libs/vector/vector.js";
-import { registerClass } from "../../../save&load/objectCollector.js";
+import { calc, point } from "../../../../../libs/vector/vector.js";
+import { registerClass } from "../../../../save&load/objectCollector.js";
+import { registerSteps } from "./stepInfoCollector.js";
 
 export default class BasicMovingObject extends BasicStepObject {
   velocity = point(0, 0);
@@ -102,3 +103,4 @@ export default class BasicMovingObject extends BasicStepObject {
 }
 
 registerClass(BasicMovingObject);
+registerSteps(BasicMovingObject, 0, []);

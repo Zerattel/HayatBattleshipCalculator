@@ -1,7 +1,8 @@
-import env from "../../../enviroments/env.js";
-import { load } from "../../../save&load/load.js";
-import { registerClass } from "../../../save&load/objectCollector.js";
-import StandartObject from "../standartObject.js";
+import env from "../../../../enviroments/env.js";
+import { load } from "../../../../save&load/load.js";
+import { registerClass } from "../../../../save&load/objectCollector.js";
+import StandartObject from "../../standartObject.js";
+import { registerSteps } from "./stepInfoCollector.js";
 
 export default class BasicStepObject extends StandartObject {
   _step = 6;
@@ -22,10 +23,49 @@ export default class BasicStepObject extends StandartObject {
     }
     this.tasks = this.tasks.filter((v) => v);
 
+    let data = {};
     for (let i of Object.keys(this.children)) {
-      "next" in this.children[i] && this.children[i].next(this);
+      if ("next" in this.children[i]) {
+        const out = this.children[i].next();
+
+        if (typeof out === 'boolean') continue;
+
+        data = {
+          ...data,
+          ...out,
+        }
+      }
+    }
+
+    return {
+      lifetime: this._livetime,
+      ...data,
+    };
+  }
+
+  step(index, objectsData) {
+    let data = {};
+
+    for (let i of Object.keys(this.children)) {
+      if ("step" in this.children[i]) {
+        const out = this.children[i].step(index, objectsData);
+
+        data = {
+          ...data,
+          ...out,
+        }
+      }
+    }
+
+    return data;
+  }
+
+  finalize(objectsData) {
+    for (let i of Object.keys(this.children)) {
+      "finalize" in this.children[i] && this.children[i].finalize(objectsData);
     }
   }
+
 
   getOverridableValues() {
     return [
@@ -99,3 +139,4 @@ export default class BasicStepObject extends StandartObject {
 }
 
 registerClass(BasicStepObject);
+registerSteps(BasicStepObject, 0, []);

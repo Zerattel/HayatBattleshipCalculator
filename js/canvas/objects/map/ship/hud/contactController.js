@@ -4,39 +4,53 @@ import { point } from "../../../../../../libs/vector/point.js";
 import { EVENTS } from "../../../../../events.js";
 import { registerClass } from "../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../map.js";
-import BasicStepObject from "../../basicStepObject.js";
+import BasicStepObject from "../../step/basicStepObject.js";
 import MAP_OBJECTS_IDS from "../../mapObjectsIds.constant.js";
 import TASKS from "../../tasks/tasks.constant.js";
+import { registerSteps } from "../../step/stepInfoCollector.js";
 
 export class ContactController extends BasicStepObject {
   capturedTargets = [];
   currentTarget = null;
 
+  isListenerSetUp = false;
+
   constructor() {
     super();
-
-    document.addEventListener(EVENTS.CALCULATION_ENDED, () => {
-      if (!this.parent) return;
-
-      const capRange = this.parent.currentCharacteristics.constant.capture_range;
-
-      this.capturedTargets = this.capturedTargets.filter(v => {
-        if (!objects[v]) return false;
-
-        const range = Math.round(
-          point(
-            () =>
-              point(objects[v]._x, objects[v]._y) -
-              point(this.parent._x, this.parent._y)
-          ).length
-        );
-
-        return range <= capRange;
-      })
-
-      
-    });
   }
+
+  listenForModifiers() {
+    if (this.isListenerSetUp) return;
+
+    this.isListenerSetUp = true;
+
+    document.addEventListener('calculateModifiers', (event) => {
+      if (this.target && event.detail.ship.id == this.target.id) {
+        if (!this.parent || !('calculateModifiers' in this.parent)) return;
+
+        const mods = this.parent.calculateModifiers(false).target;
+
+        for (let [m, v] of Object.entries(mods.number)) {
+          if (m in event.detail.mods.number) {
+            event.detail.mods.number[m] += v;
+          } else {
+            event.detail.mods.number[m] = v;
+          }
+        }
+
+        for (let [m, v] of Object.entries(mods.percent)) {
+          if (m in event.detail.mods.percent) {
+            event.detail.mods.percent[m] += v;
+          } else {
+            event.detail.mods.percent[m] = v;
+          }
+        }
+
+        console.log(this.path, event.detail.ship.path, event);
+      }
+    })
+  }
+
 
   addTarget(id) {
     if (this.capturedTargets.indexOf(id) == -1) {
@@ -78,19 +92,51 @@ export class ContactController extends BasicStepObject {
   }
 
   next() {
+    super.next()
+
+    this.listenForModifiers()
+  }
+
+  finalize(objectsData) {
+    super.finalize(objectsData);
+
     if (!this.parent) return;
-    if (this.target) return;
+
+    const capRange = this.parent.currentCharacteristics.constant.capture_range;
+
+    this.capturedTargets = this.capturedTargets.filter(v => {
+      if (!objects[v]) return false;
+
+      const range = Math.round(
+        point(
+          () =>
+            point(objects[v]._x, objects[v]._y) -
+            point(this.parent._x, this.parent._y)
+        ).length
+      );
+
+      return range <= capRange;
+    })
 
     const tasks = this.parent.getAllTasks(TASKS.CONTACT);
-    if (tasks.length == 0) return;
 
     for (let i of tasks) {
       const target = objects[i.data.id];
 
       if (!target) {
         this.parent.deleteTask(TASKS.CONTACT, { id: i.data.id });
+      } else {
+        const range = Math.round(
+          point(
+            () =>
+              point(target._x, target._y) -
+              point(this.parent._x, this.parent._y)
+          ).length
+        );
 
-        return;
+        if (range > capRange) {
+          this.parent.deleteTask(TASKS.CONTACT, { id: i.data.id });
+        }
       }
     }
   }
@@ -258,7 +304,12 @@ export class ContactController extends BasicStepObject {
     this.currentTarget = data.currentTarget;
 
     loadChildren && super.loadChildren(data);
+
+    document.addEventListener(EVENTS.LOAD_ENDED, () => {
+      this.listenForModifiers();
+    })
   }
 }
 
 registerClass(ContactController);
+registerSteps(ContactController, 0, []);

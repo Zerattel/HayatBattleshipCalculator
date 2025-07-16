@@ -181,7 +181,9 @@
 
       .modifiers-container {
         display: grid;
-        grid-template-columns: 33px 4fr 1fr;
+        grid-template-columns: 33px 40px 4fr 1fr 20px;
+
+        align-items: center;
 
         gap: 5px;
 
@@ -190,6 +192,8 @@
         }
 
         span {
+          text-align: center;
+
           font-size: 12px;
           filter: brightness(0.7);
         }

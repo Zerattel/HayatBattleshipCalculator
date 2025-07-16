@@ -3,6 +3,7 @@ import copy from "../../../../../libs/copy.js";
 import { mergeDeep } from "../../../../../libs/deepMerge.js";
 import { baseModuleCharacteristics } from "../../../../../libs/hayat/modules.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
+import { registerSteps } from "../step/stepInfoCollector.js";
 
 export default class BaseModule {
   characteristics = copy(baseModuleCharacteristics);
@@ -52,6 +53,10 @@ export default class BaseModule {
 
     this.previousState = this.state;
   }
+
+  step(index, objectsData) {}
+
+  finalize(objectsData) {}
 
 
   setState(state) {
@@ -118,4 +123,5 @@ export default class BaseModule {
   }
 }
 
-registerClass(BaseModule)
+registerClass(BaseModule);
+registerSteps(BaseModule, 0, []);

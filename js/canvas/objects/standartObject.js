@@ -20,6 +20,14 @@ export default class StandartObject {
     return this.id;
   }
 
+  get path() {
+    if (this.parent) {
+      return this.parent.path + " > " + this.name;
+    }
+
+    return this.name;
+  }
+
   draw(canvas, ctx, toCanvas, style) {
     for (let i of Object.keys(this.children)) {
       this.children[i].visible && this.children[i].draw(canvas, ctx, toCanvas, style);

@@ -5,6 +5,7 @@ import { mapProps } from "./grid.js";
 import check_id from "./map/check_id.js";
 
 import get_in_area from "./map/get_in_area.js";
+import { MAX_INTER_STEPS } from "./objects/map/step/stepInfoCollector.js";
 
 let canvas;
 let ctx;
@@ -82,8 +83,29 @@ export default function init() {
 
   document.addEventListener(EVENTS.MAP.STEP, (e) => {
     console.log(objects);
+
+    let data = {};
     for (let i of Object.keys(objects)) {
-      objects[i].next();
+      data[i] = { 
+        object: objects[i],
+        data: objects[i].next()
+      };
+    }
+
+    let prevData = {...data};
+    for (let step=0; step < MAX_INTER_STEPS(); step++) {
+      for (let i of Object.keys(objects)) {
+        data[i] = { 
+          object: objects[i],
+          data: objects[i].step(step, prevData)
+        };
+      }
+
+      prevData = {...data};
+    }
+
+    for (let i of Object.keys(objects)) {
+      objects[i].finalize(prevData);
     }
 
     document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))

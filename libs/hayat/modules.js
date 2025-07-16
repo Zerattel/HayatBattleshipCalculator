@@ -78,4 +78,20 @@ const baseModuleCharacteristics = {
   },
 }
 
-export { modulesCategories, moduleSizeToSP, baseModuleCharacteristics };
+const baseEffectApplyModuleCharacteristics = {
+  main: {
+    name: 'Сторонний эффект',
+    type: 'Сторонний эффект',
+    category: 'Эффекты',
+
+    size: 0,
+    tags: [],
+  },
+  activation: 'passive',
+
+  modificators: {
+    online: [],
+  },
+}
+
+export { modulesCategories, moduleSizeToSP, baseModuleCharacteristics, baseEffectApplyModuleCharacteristics };

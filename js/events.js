@@ -1,4 +1,5 @@
 export const EVENTS = {
+  LOAD_ENDED: 'loadEnded',
   MAP_SET_CHANGED: 'mapSetChanged',
   CALCULATION_ENDED: 'calculationEnded',
   ON_MAP_CLICK: 'onMapClick',

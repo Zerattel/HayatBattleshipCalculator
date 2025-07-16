@@ -252,7 +252,8 @@ export default class {
     if (mainTarget) overall = [mainTarget, ...overall];
 
     this.currentTargetContainer.html('')
-    overall.forEach(v => this.showTargetTemplate(v));
+    const getId = (a) => typeof a == "string" ? a : 'data' in a ? a.data.id : a.id;
+    overall.sort((a, b) => getId(a).localeCompare(getId(b))).forEach(v => this.showTargetTemplate(v));
   }
 
   onBothIdsRight(id, tid) {

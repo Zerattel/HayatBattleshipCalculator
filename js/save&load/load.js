@@ -79,6 +79,7 @@ export function loadJSON(json) {
     updateLoading('level', length, 0, counter)
   }
 
+  document.dispatchEvent(new Event(EVENTS.LOAD_ENDED));
   document.dispatchEvent(new Event(EVENTS.MAP.REDRAW));
   updateLoading('level', length, 0, counter+1)
   closeLoading();

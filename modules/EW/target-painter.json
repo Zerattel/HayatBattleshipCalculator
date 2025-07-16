@@ -6,7 +6,7 @@
 
     "size": 2,
     "position": "internal",
-    "tags": ["targetpainer,ew"]
+    "tags": ["targetpainer", "ew"]
   },
   "activation": "passive",
   "interference": 0,
@@ -18,7 +18,7 @@
         "target": "this",
         "characteristic": "constant.heating",
         "modificationType": "number",
-        "modificator": 1,
+        "modificator": 0.01,
         "isAffectedByInterference": false
       },
       {
@@ -30,7 +30,7 @@
       },
       {
         "target": "target",
-        "characteristic": "constant.signature",
+        "characteristic": "constant.body.signature",
         "modificationType": "percent",
         "modificator": 1.7,
         "isAffectedByInterference": false

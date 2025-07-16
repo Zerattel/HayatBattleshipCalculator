@@ -236,13 +236,17 @@ export default class {
           r.characteristics.modificators[r.state].map(
             v => `<span>${
                 v.characteristic.startsWith('constant.') ? 'const' : 'dnmc'
+              }</span><span>${
+                v.target
               }</span><div>${
                 v.characteristic.replace('constant.', '')
               }</div><label>${
                 v.modificationType == "percent" 
                   ? addPlus(Math.round((v.modificator - 1)*100))+"%" 
                   : addPlus(v.modificator)
-              }</label>`
+              }</label>${
+                v.isAffectedByInterference ? '♒︎' : '══'
+              }`
           ).join('\n')
         ))
       }

@@ -14,7 +14,8 @@ import {
 import { uuidv4 } from "../../../../../libs/uuid.js";
 import { load } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
-import BasicMovingObject from "../basicMovingObject.js";
+import BasicMovingObject from "../step/basicMovingObject.js";
+import { registerSteps } from "../step/stepInfoCollector.js";
 
 export default class ShipObject extends BasicMovingObject {
   baseCharacteristics = copy(baseBattleshipCharacteristics);
@@ -55,34 +56,68 @@ export default class ShipObject extends BasicMovingObject {
   //region step
 
   next() {
-    super.next();
-    this.recalculateCharacteristics();
-
-    const c = this.currentCharacteristics;
-
-    c.dynamic.temperature += c.constant.heating;
-
-    if (c.dynamic.temperature > c.constant.temperature) {
-      c.dynamic.hp.hull -= overheatDamage(
-        c.constant.hp.hull,
-        c.dynamic.temperature,
-        c.constant.temperature
-      );
-    }
-
-    c.dynamic.hp.barrier += passiveBarrierRegeneration(
-      c.constant.barrier,
-      c.dynamic.hp.barrier,
-      c.constant.hp.barrier
-    )
-
-    c.dynamic.charge += c.constant.capacitor.generation;
+    let data = super.next();
 
     for (let m of this.allModules) {
-      m.next();
+      data = {
+        ...data,
+        ...m.next()
+      }
     }
 
-    this.currentCharacteristics = clampCharacteristics(c, battleshipCharacteristicsClampRules);
+    return data;
+  }
+
+  step(index, objectsData) {
+    let data = super.step(index, objectsData);
+
+    for (let m of this.allModules) {
+      data = {
+        ...data,
+        ...m.step(index, objectsData)
+      }
+    }
+
+    if (index == 0) {
+      this.recalculateCharacteristics();
+
+      const c = this.currentCharacteristics;
+
+      c.dynamic.temperature += c.constant.heating;
+
+      if (c.dynamic.temperature > c.constant.temperature) {
+        c.dynamic.hp.hull -= overheatDamage(
+          c.constant.hp.hull,
+          c.dynamic.temperature,
+          c.constant.temperature
+        );
+      }
+
+      c.dynamic.hp.barrier += passiveBarrierRegeneration(
+        c.constant.barrier,
+        c.dynamic.hp.barrier,
+        c.constant.hp.barrier
+      )
+
+      c.dynamic.charge += c.constant.capacitor.generation;
+
+      this.currentCharacteristics = clampCharacteristics(c, battleshipCharacteristicsClampRules);
+    }
+
+    return data;
+  }
+
+  finalize(objectsData) {
+    let data = super.finalize(objectsData);
+
+    for (let m of this.allModules) {
+      data = {
+        ...data,
+        ...m.finalize(objectsData)
+      }
+    }
+
+    return data;
   }
 
   //region characteristics
@@ -164,7 +199,7 @@ export default class ShipObject extends BasicMovingObject {
   }
 
 
-  calculateModifiers() {
+  calculateModifiers(externalEffectCalculation=true) {
     const activeModules = this.allModules.reduce((acc, v) => {
       if (v.fullType in acc) {
         acc[v.fullType] += 1;
@@ -192,6 +227,35 @@ export default class ShipObject extends BasicMovingObject {
 
     for (let mod of this.allModules) {
       mods = mod.applyModifiers(mods, activeModules);
+    }
+
+    if (externalEffectCalculation) {
+      const event = new CustomEvent('calculateModifiers', {
+        detail: {
+          ship: this,
+          mods: {
+            number: {},
+            percent: {},
+          },
+        }
+      });
+      document.dispatchEvent(event);
+
+      for (let [m, v] of Object.entries(event.detail.mods.number)) {
+        if (m in mods.this.number) {
+          mods.this.number[m] += v;
+        } else {
+          mods.this.number[m] = v;
+        }
+      }
+
+      for (let [m, v] of Object.entries(event.detail.mods.percent)) {
+        if (m in mods.this.percent) {
+          mods.this.percent[m] += v;
+        } else {
+          mods.this.percent[m] = v;
+        }
+      }
     }
 
     return mods;
@@ -302,3 +366,4 @@ export default class ShipObject extends BasicMovingObject {
 }
 
 registerClass(ShipObject);
+registerSteps(ShipObject, 1, []);

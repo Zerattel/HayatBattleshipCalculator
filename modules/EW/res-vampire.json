@@ -6,7 +6,7 @@
 
     "size": 2,
     "position": "internal",
-    "tags": ["capacitorew,ew"]
+    "tags": ["capacitorew", "ew"]
   },
   "activation": "passive",
   "interference": 0,
