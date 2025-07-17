@@ -19,6 +19,12 @@ let loadbars = {
     max: 1,
     min: 0,
     cur: 0,
+  },
+  step: {
+    id: "step-process-bar",
+    max: 1,
+    min: 0,
+    cur: 0,
   }
 };
 
@@ -41,6 +47,13 @@ let closeLoading = () => {};
  * @param {number} cur current loading value
  */
 let updateLoading = (id, max, min, cur) => {};
+
+/**
+ * Update progress
+ * @param {string} id loadbar id
+ * @param {number} step number to add to current progress
+ */
+let stepLoading = (id, step) => {};
 
 export default function init() {
   document.addEventListener(EVENTS.LOADING.OPEN, (e) => {
@@ -73,6 +86,13 @@ export default function init() {
     const { max, min, cur } = loadbars[id];
     $('#'+loadbars[id].id).css('--progress', (cur - min) / (max - min));
   }
+
+  stepLoading = (id, step) => {
+    const { max, min } = loadbars[id];
+    loadbars[id].cur += step;
+    console.log(loadbars[id])
+    $('#'+loadbars[id].id).css('--progress', (loadbars[id].cur - min) / (max - min));
+  }
 }
 
-export { openLoading, closeLoading, updateLoading }
+export { openLoading, closeLoading, updateLoading, stepLoading }

@@ -1,4 +1,6 @@
+import { log } from "../controls/step-logs/log.js";
 import { EVENTS } from "../events.js";
+import { stepLoading, updateLoading } from "../loading.js";
 import { DEFAULT_SAVE_FILE, loadJSON } from "../save&load/load.js";
 import { settings } from "../settings/settings.js";
 import { mapProps } from "./grid.js";
@@ -84,33 +86,55 @@ export default function init() {
   document.addEventListener(EVENTS.MAP.STEP, (e) => {
     console.log(objects);
 
+    updateLoading(
+      'step', 
+      Object.keys(objects).length * (MAX_INTER_STEPS() + 2) + 4,
+      0,
+      0
+    );
+
     let data = {};
     for (let i of Object.keys(objects)) {
       data[i] = { 
         object: objects[i],
         data: objects[i].next()
       };
+      stepLoading('step', 1);
     }
+
+    stepLoading('step', 1);
 
     let prevData = {...data};
     for (let step=0; step < MAX_INTER_STEPS(); step++) {
+      log('system', `starting ${step} inter step`)
+
       for (let i of Object.keys(objects)) {
         data[i] = { 
           object: objects[i],
           data: objects[i].step(step, prevData)
         };
+        stepLoading('step', 1);
       }
 
       prevData = {...data};
     }
 
+    stepLoading('step', 1);
+
     for (let i of Object.keys(objects)) {
       objects[i].finalize(prevData);
+
+      stepLoading('step', 1);
     }
 
     document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))
 
+    stepLoading('step', 1);
+
+    log('sys', 'map redraw...')
     redrawMap();
+
+    stepLoading('step', 1);
   });
 
 

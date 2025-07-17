@@ -2,6 +2,7 @@ import { clamp } from "../../../../../libs/clamp.js";
 import copy from "../../../../../libs/copy.js";
 import { mergeDeep } from "../../../../../libs/deepMerge.js";
 import { baseModuleCharacteristics } from "../../../../../libs/hayat/modules.js";
+import { log } from "../../../../controls/step-logs/log.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
 import { registerSteps } from "../step/stepInfoCollector.js";
 
@@ -50,6 +51,9 @@ export default class BaseModule {
     if (['online', 'active', 'overload'].includes(this.state)) {
       this.inOnlineSteps += 1;
     }
+
+    this.inOnlineSteps != 0 && log('module '+this.uuid+' '+this.characteristics.main.name, `next | in online for ${this.inOnlineSteps}`);
+    this.previousState != this.state && log('module '+this.uuid+' '+this.characteristics.main.name, `next | state changed ${this.previousState} -> ${this.state}`);
 
     this.previousState = this.state;
   }

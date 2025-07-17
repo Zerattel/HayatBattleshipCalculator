@@ -3,6 +3,7 @@ import BasicStepObject from "./basicStepObject.js";
 import { calc, point } from "../../../../../libs/vector/vector.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
 import { registerSteps } from "./stepInfoCollector.js";
+import { log } from "../../../../controls/step-logs/log.js";
 
 export default class BasicMovingObject extends BasicStepObject {
   velocity = point(0, 0);
@@ -38,9 +39,19 @@ export default class BasicMovingObject extends BasicStepObject {
   }
 
   next() {
-    super.next();
+    let data = super.next();
 
-    this.moveTo(this._x + this.velocity.x * this._step, this._y + this.velocity.y * this._step);
+    const rx = this.velocity.x * this._step,
+      ry = this.velocity.y * this._step;
+
+    this.moveTo(this._x + rx, this._y + ry);
+    (rx != 0 || ry != 0) &&
+      log(
+        this.path,
+        `next | moved (${this._x - rx}, ${this._y - ry}) -> (${this._x}, ${this._y}) [${rx}, ${ry}]`
+      );
+
+    return data;
   }
 
   getOverridableValues() {
@@ -75,15 +86,17 @@ export default class BasicMovingObject extends BasicStepObject {
         type: "number",
         current: () => Math.round(this.velocity.length * 1000) / 1000,
         func: (val) => {
-          this.velocity = point(() => point(
-            Math.sin((this._direction / 180) * Math.PI),
-            Math.cos((this._direction / 180) * Math.PI)
-          ) * val);
+          this.velocity = point(
+            () =>
+              point(
+                Math.sin((this._direction / 180) * Math.PI),
+                Math.cos((this._direction / 180) * Math.PI)
+              ) * val
+          );
         },
       },
     ];
   }
-
 
   save(realParent = null) {
     return {

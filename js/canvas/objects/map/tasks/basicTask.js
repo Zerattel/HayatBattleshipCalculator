@@ -1,4 +1,5 @@
 import { uuidv4 } from "../../../../../libs/uuid.js";
+import { log } from "../../../../controls/step-logs/log.js";
 import { loadFunction } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
 import { saveFunction } from "../../../../save&load/save.js";
@@ -16,6 +17,7 @@ export default class BasicTask {
 
   do(target) {
     this.function(target, this);
+    log(target.path, `completed task ${this.id} `, this.data)
   }
 
 

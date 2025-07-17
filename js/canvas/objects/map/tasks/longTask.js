@@ -1,3 +1,4 @@
+import { log } from "../../../../controls/step-logs/log.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
 import BasicTask from "./basicTask.js";
 
@@ -14,7 +15,10 @@ export default class LongTask extends BasicTask {
   do(target) {
     (++this.lifetime) >= this.maxSteps && this.function(target, this);
 
-    return this.lifetime < this.maxSteps;
+    const isRunning = this.lifetime < this.maxSteps;
+
+    !isRunning && log(target.path, `completed task ${this.id} `, this.data)
+    return isRunning;
   }
 
   save() {

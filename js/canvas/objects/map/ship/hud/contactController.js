@@ -8,6 +8,7 @@ import BasicStepObject from "../../step/basicStepObject.js";
 import MAP_OBJECTS_IDS from "../../mapObjectsIds.constant.js";
 import TASKS from "../../tasks/tasks.constant.js";
 import { registerSteps } from "../../step/stepInfoCollector.js";
+import { log } from "../../../../../controls/step-logs/log.js";
 
 export class ContactController extends BasicStepObject {
   capturedTargets = [];
@@ -104,7 +105,7 @@ export class ContactController extends BasicStepObject {
 
     const capRange = this.parent.currentCharacteristics.constant.capture_range;
 
-    this.capturedTargets = this.capturedTargets.filter(v => {
+    const filteredTargets = this.capturedTargets.filter(v => {
       if (!objects[v]) return false;
 
       const range = Math.round(
@@ -118,12 +119,17 @@ export class ContactController extends BasicStepObject {
       return range <= capRange;
     })
 
+    const deletedTargets = this.capturedTargets.filter(x => !filteredTargets.includes(x));
+    deletedTargets.length && log(this.path, `finalize | deleted targets: `, deletedTargets);
+    this.capturedTargets = filteredTargets;
+
     const tasks = this.parent.getAllTasks(TASKS.CONTACT);
 
     for (let i of tasks) {
       const target = objects[i.data.id];
 
       if (!target) {
+        log(this.path, `finalize | deleted task ${TASKS.CONTACT} id: ${i.data.id}`)
         this.parent.deleteTask(TASKS.CONTACT, { id: i.data.id });
       } else {
         const range = Math.round(
@@ -135,6 +141,7 @@ export class ContactController extends BasicStepObject {
         );
 
         if (range > capRange) {
+          log(this.path, `finalize | deleted task ${TASKS.CONTACT} id: ${i.data.id}`)
           this.parent.deleteTask(TASKS.CONTACT, { id: i.data.id });
         }
       }

@@ -1,3 +1,4 @@
+import { log } from "../../../../controls/step-logs/log.js";
 import env from "../../../../enviroments/env.js";
 import { load } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
@@ -16,10 +17,14 @@ export default class BasicStepObject extends StandartObject {
   }
 
   next() {
+    log(this.path, `next | function call`)
+
     this._livetime += this._step;
 
     for (let i in this.tasks) {
-      if (!this.tasks[i].do(this)) delete this.tasks[i];
+      if (!this.tasks[i].do(this)) {
+        delete this.tasks[i];
+      }
     }
     this.tasks = this.tasks.filter((v) => v);
 
@@ -37,13 +42,18 @@ export default class BasicStepObject extends StandartObject {
       }
     }
 
-    return {
+    const d = {
       lifetime: this._livetime,
       ...data,
     };
+    log(this.path, `next | children processed: `, data)
+
+    return d;
   }
 
   step(index, objectsData) {
+    log(this.path, `step ${index} | function call`)
+
     let data = {};
 
     for (let i of Object.keys(this.children)) {
@@ -57,10 +67,12 @@ export default class BasicStepObject extends StandartObject {
       }
     }
 
+    log(this.path, `step ${index} | children processed: `, data)
     return data;
   }
 
   finalize(objectsData) {
+    log(this.path, `finalize | function call`)
     for (let i of Object.keys(this.children)) {
       "finalize" in this.children[i] && this.children[i].finalize(objectsData);
     }

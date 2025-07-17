@@ -12,6 +12,7 @@ import {
   tonnageToManeuverabilityBonus,
 } from "../../../../../libs/hayat/battleships.js";
 import { uuidv4 } from "../../../../../libs/uuid.js";
+import { log } from "../../../../controls/step-logs/log.js";
 import { load } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
 import BasicMovingObject from "../step/basicMovingObject.js";
@@ -58,6 +59,8 @@ export default class ShipObject extends BasicMovingObject {
   next() {
     let data = super.next();
 
+    log(this.path, `next | processing modules`);
+
     for (let m of this.allModules) {
       data = {
         ...data,
@@ -71,6 +74,8 @@ export default class ShipObject extends BasicMovingObject {
   step(index, objectsData) {
     let data = super.step(index, objectsData);
 
+    log(this.path, `step ${index} | processing modules`);
+
     for (let m of this.allModules) {
       data = {
         ...data,
@@ -83,23 +88,35 @@ export default class ShipObject extends BasicMovingObject {
 
       const c = this.currentCharacteristics;
 
-      c.dynamic.temperature += c.constant.heating;
+      let heating = c.constant.heating;
+      let ohDamage = 0;
 
       if (c.dynamic.temperature > c.constant.temperature) {
-        c.dynamic.hp.hull -= overheatDamage(
+        ohDamage = overheatDamage(
           c.constant.hp.hull,
           c.dynamic.temperature,
           c.constant.temperature
         );
       }
 
-      c.dynamic.hp.barrier += passiveBarrierRegeneration(
+      let barrierRegen = passiveBarrierRegeneration(
         c.constant.barrier,
         c.dynamic.hp.barrier,
         c.constant.hp.barrier
       )
 
-      c.dynamic.charge += c.constant.capacitor.generation;
+      let generation = c.constant.capacitor.generation;
+
+      c.dynamic.temperature += heating;
+      c.dynamic.hp.hull     -= ohDamage;
+      c.dynamic.hp.barrier  += barrierRegen;
+      c.dynamic.charge      += generation;
+
+      log(this.path, `step ${index} | statsChange (no clamp):<br>
+                       ------ | Heating: ${heating}<br>
+                       ------ | Overheat Damage: ${ohDamage}<br>
+                       ------ | Barrier Regen: ${barrierRegen}<br>
+                       ------ | Generation: ${generation}`);
 
       this.currentCharacteristics = clampCharacteristics(c, battleshipCharacteristicsClampRules);
     }
@@ -109,6 +126,8 @@ export default class ShipObject extends BasicMovingObject {
 
   finalize(objectsData) {
     let data = super.finalize(objectsData);
+
+    log(this.path, `finalize | processing modules`);
 
     for (let m of this.allModules) {
       data = {
