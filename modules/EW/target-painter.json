@@ -8,12 +8,13 @@
     "position": "internal",
     "tags": ["targetpainer,ew"]
   },
-  "activation": "passive",
+  "activation": "active",
   "interference": 0,
 
   "modificators": {
     "offline": [],
-    "online": [
+    "online": [],
+    "active": [
       {
         "target": "this",
         "characteristic": "constant.heating",
@@ -36,7 +37,6 @@
         "isAffectedByInterference": false
       }
     ],
-    "active": [],
     "overload": []
   }
 }
