@@ -11,6 +11,8 @@ export default class BasicStepObject extends StandartObject {
 
   tasks = [];
 
+  state = "finalize"
+
   constructor(x, y, step) {
     super(x, y);
     this._step = step || env.STEP;
@@ -18,6 +20,7 @@ export default class BasicStepObject extends StandartObject {
 
   next() {
     log(this.path, `next | function call`)
+    this.state = "next";
 
     this._livetime += this._step;
 
@@ -53,6 +56,7 @@ export default class BasicStepObject extends StandartObject {
 
   step(index, objectsData) {
     log(this.path, `step ${index} | function call`)
+    this.state = "step "+index;
 
     let data = {};
 
@@ -73,6 +77,7 @@ export default class BasicStepObject extends StandartObject {
 
   finalize(objectsData) {
     log(this.path, `finalize | function call`)
+    this.state = "finalize";
     for (let i of Object.keys(this.children)) {
       "finalize" in this.children[i] && this.children[i].finalize(objectsData);
     }

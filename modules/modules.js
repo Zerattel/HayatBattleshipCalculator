@@ -80,6 +80,8 @@ const MODULES_CALCULATION_FUNCTIONS = {
     return num > 0 ? -num : 0;
   },
   LaserAttack: (modificator, module, parent, target) => {
+    if (module.functionsSharedData.perStep.processed) return 0;
+
     module.functionsSharedData.perStep.hit          = false;
     module.functionsSharedData.perStep.effectivness = 0;
     module.functionsSharedData.perStep.damage       = 0;
@@ -132,9 +134,12 @@ const MODULES_CALCULATION_FUNCTIONS = {
       );
     }
 
+    module.functionsSharedData.perStep.processed = true;
     return 0;
   },
   BallisticAttack: (modificator, module, parent, target) => {
+    if (parent.state != "step 0" || module.functionsSharedData.perStep.processed) return 0;
+
     module.functionsSharedData.perStep.hit     = false;
     module.functionsSharedData.perStep.damage  = 0;
     module.functionsSharedData.perStep.heating = 0;
@@ -166,7 +171,7 @@ const MODULES_CALCULATION_FUNCTIONS = {
         module.path,
         `function | (data applied only in step calculation)<br>
 -------- | ${random} <= ${chance}, hit calculated<br>
--------- | ${module.characteristics.additionalInfo.baseDamage}dmg`
+-------- | ${module.characteristics.additionalInfo.baseDamage}dmg ${module.functionsSharedData.perStep.heating}heat`
       );
 
       module.functionsSharedData.perStep.damage  = module.characteristics.additionalInfo.baseDamage;
@@ -180,6 +185,7 @@ const MODULES_CALCULATION_FUNCTIONS = {
       );
     }
 
+    module.functionsSharedData.perStep.processed = true;
     return 0;
   },
 };

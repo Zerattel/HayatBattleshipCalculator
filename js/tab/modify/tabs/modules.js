@@ -36,11 +36,13 @@ export default class {
         Object.entries(modules)
           .reduce((acc, [n, v]) => {
             if (v.main.type in acc) {
-              if (v.main.category in acc) {
+              console.log(v.main.category, acc[v.main.type][v.main.category])
+              if (v.main.category in acc[v.main.type]) {
                 acc[v.main.type][v.main.category].push(n);
               } else {
                 acc[v.main.type][v.main.category] = [n];
               }
+              console.log(v.main.category, acc[v.main.type][v.main.category])
             } else {
               acc[v.main.type] = {
                 [v.main.category]: [n],
@@ -55,7 +57,7 @@ export default class {
         Object.entries(c).map(([category, names]) => format(
           groupHTMLTemplate,
           category,
-          names.map(n => format(optionHTMLTemplate, n, n))
+          names.map(n => format(optionHTMLTemplate, n, n)).join('\n')
         )).join('\n')
       )).join('\n')
     )
