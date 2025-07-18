@@ -59,6 +59,8 @@ export default class ShipObject extends BasicMovingObject {
   next() {
     let data = super.next();
 
+    this.recalculateCharacteristics();
+
     log(this.path, `next | processing modules`);
 
     for (let m of this.allModules) {
@@ -84,7 +86,7 @@ export default class ShipObject extends BasicMovingObject {
     }
 
     if (index == 0) {
-      this.recalculateCharacteristics();
+      const mods = this.recalculateCharacteristics();
 
       const c = this.currentCharacteristics;
 
@@ -112,13 +114,17 @@ export default class ShipObject extends BasicMovingObject {
       c.dynamic.hp.barrier  += barrierRegen;
       c.dynamic.charge      += generation;
 
+      this.currentCharacteristics = clampCharacteristics(c, battleshipCharacteristicsClampRules);
+
+      const damage = Object.entries(this.applyDamage());
+
       log(this.path, `step ${index} | statsChange (no clamp):<br>
                        ------ | Heating: ${heating}<br>
                        ------ | Overheat Damage: ${ohDamage}<br>
                        ------ | Barrier Regen: ${barrierRegen}<br>
-                       ------ | Generation: ${generation}`);
-
-      this.currentCharacteristics = clampCharacteristics(c, battleshipCharacteristicsClampRules);
+                       ------ | Generation: ${generation}<br>
+                       ------ | Damage Recived:<br>${
+damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}`);
     }
 
     return data;
@@ -288,11 +294,15 @@ export default class ShipObject extends BasicMovingObject {
     });
 
     for (let [path, number] of Object.entries(mods.this.number)) {
+      if (path.startsWith('dynamic')) continue;
+
       const [a, l] = getByPath(this.currentCharacteristics, path);
       a[l] += number;
     }
 
     for (let [path, percent] of Object.entries(mods.this.percent)) {
+      if (path.startsWith('dynamic')) continue;
+
       const [a, l] = getByPath(this.currentCharacteristics, path);
       a[l] *= percent;
     }
@@ -301,12 +311,56 @@ export default class ShipObject extends BasicMovingObject {
       this.currentCharacteristics,
       battleshipCharacteristicsClampRules
     );
+
+    return mods;
   }
+
+  applyDamage() {
+    let receivedDamage = Object.entries(this.currentCharacteristics.dynamic.recived_damage);
+    let out = {};
+
+    for (let hp of ['barrier', 'armor', 'hull']) {
+      receivedDamage.sort((a, b) => this.currentCharacteristics.constant.resistance[a[0]][hp] 
+                                    - this.currentCharacteristics.constant.resistance[b[0]]);
+      if (!receivedDamage.some(v => v[1] > 0)) break;
+
+      let effectiveDamage = receivedDamage.reduce((acc, v) => {
+        const resistance = this.currentCharacteristics.constant.resistance[v[0]][hp];
+        const damageAfterResistance = v[1] * (1 - resistance);
+        
+        return acc + damageAfterResistance;
+      }, 0);
+
+      const damageToApply = Math.min(effectiveDamage, this.currentCharacteristics.dynamic.hp[hp]);
+      this.currentCharacteristics.dynamic.hp[hp] -= damageToApply;
+      out[hp] = damageToApply;
+
+      let remainingDamage = damageToApply;
+  
+      for (let i = 0; i < receivedDamage.length && remainingDamage > 0; i++) {
+        const resistance = this.currentCharacteristics.constant.resistance[receivedDamage[i][0]][hp];
+        const effectiveDamageFromThisSource = receivedDamage[i][1] * (1 - resistance);
+        const damageToDeduct = Math.min(remainingDamage, effectiveDamageFromThisSource);
+        
+        const rawDamageToDeduct = damageToDeduct * (1 + resistance);
+        receivedDamage[i][1] -= rawDamageToDeduct;
+        remainingDamage -= damageToDeduct;
+      }
+    }
+
+    this.currentCharacteristics.dynamic.recived_damage = receivedDamage.reduce((acc, v) => {
+      acc[v[0]] = v[1];
+      return acc;
+    }, {})
+
+    return out;
+}
 
   //region modules
 
   addModule(module, type='int') {
     module.uuid = uuidv4();
+    module.parent = this;
     this.typeToModules(type).push(module);
 
     this.recalculateCharacteristics();
@@ -374,9 +428,14 @@ export default class ShipObject extends BasicMovingObject {
       dynamic: data.dynamicCharacteristics,
     });
 
-    this.externalModules = data.externalModules.map((v) => load("", v, "module"));
-    this.internalModules = data.internalModules.map((v) => load("", v, "module"));
-    this.otherModules    = data.otherModules.map((v) => load("", v, "module"));
+    for (let md of ['externalModules', 'internalModules', 'otherModules']) {
+      this[md] = data[md].map((v) => {
+        const obj = load("", v, "module");
+        obj.parent = this;
+
+        return obj;
+      })
+    }
 
     this.recalculateCharacteristics();
 

@@ -1,0 +1,47 @@
+{
+  "main": {
+    "name": "REN-Contactor",
+    "type": "РЭБ",
+    "category": "Система нейтрализации накопителя",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["capacitorew","ew"]
+  },
+  "activation": "active",
+  "interference": 0,
+
+  "additionalInfo": {
+    "baseDraining": 12.5,
+    "effectiveRange": 2000,
+    "maxRange": 12000
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -5,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.03,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": "<[RENContactor]>",
+        "isAffectedByInterference": false
+      }],
+    "overload": []
+  }
+}

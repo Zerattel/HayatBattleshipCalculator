@@ -27,6 +27,13 @@ export { tonnage, tonnageToCaptureRange, tonnageToManeuverabilityBonus, tonnageT
 
 const baseBattleshipCharacteristics = {
   dynamic: {
+    /** характеристика для получения урона (корректный перенос урона между значениями) */
+    recived_damage: {
+      kinetic: 0,
+      high_explosive: 0,
+      electro_magnetic: 0,
+      thermal: 0,
+    },
     hp: {
       /** текущее значение корпуса */
       hull: 100,

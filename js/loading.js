@@ -90,7 +90,6 @@ export default function init() {
   stepLoading = (id, step) => {
     const { max, min } = loadbars[id];
     loadbars[id].cur += step;
-    console.log(loadbars[id])
     $('#'+loadbars[id].id).css('--progress', (loadbars[id].cur - min) / (max - min));
   }
 }
