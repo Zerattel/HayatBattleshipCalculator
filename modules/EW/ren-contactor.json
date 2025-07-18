@@ -14,7 +14,8 @@
   "additionalInfo": {
     "baseDraining": 12.5,
     "effectiveRange": 2000,
-    "maxRange": 12000
+    "maxRange": 12000,
+    "recharge": 1
   },
 
   "modificators": {

@@ -33,7 +33,7 @@
         "target": "this",
         "characteristic": "modulemodifier.engineering.hardener.active.armor.heating_modifier",
         "modificationType": "percent",
-        "modificator": 3.5,
+        "modificator": 0,
         "isAffectedByInterference": false
       },
       {

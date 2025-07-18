@@ -11,6 +11,10 @@
   "activation": "active",
   "interference": -1,
 
+  "additionalInfo": {
+    "recharge": 1
+  },
+
   "modificators": {
     "offline": [],
     "online": [],
