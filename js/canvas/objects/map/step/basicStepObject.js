@@ -51,6 +51,7 @@ export default class BasicStepObject extends StandartObject {
     };
     log(this.path, `next | children processed: `, data)
 
+    this.state = "step 0"
     return d;
   }
 
