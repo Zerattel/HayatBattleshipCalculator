@@ -32,29 +32,29 @@
       {
         "target": "this",
         "characteristic": "constant.resistance.kinetic.barrier",
-        "modificationType": "percent",
-        "modificator": 1.35,
+        "modificationType": "number",
+        "modificator": 0.35,
         "isAffectedByInterference": true
       },
       {
         "target": "this",
         "characteristic": "constant.resistance.high_explosive.barrier",
-        "modificationType": "percent",
-        "modificator": 1.35,
+        "modificationType": "number",
+        "modificator": 0.35,
         "isAffectedByInterference": true
       },
       {
         "target": "this",
         "characteristic": "constant.resistance.electro_magnetic.barrier",
-        "modificationType": "percent",
-        "modificator": 1.35,
+        "modificationType": "number",
+        "modificator": 0.35,
         "isAffectedByInterference": true
       },
       {
         "target": "this",
         "characteristic": "constant.resistance.thermal.barrier",
-        "modificationType": "percent",
-        "modificator": 1.35,
+        "modificationType": "number",
+        "modificator": 0.35,
         "isAffectedByInterference": true
       }
     ],
