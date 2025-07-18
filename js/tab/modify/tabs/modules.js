@@ -42,7 +42,6 @@ export default class {
               } else {
                 acc[v.main.type][v.main.category] = [n];
               }
-              console.log(v.main.category, acc[v.main.type][v.main.category])
             } else {
               acc[v.main.type] = {
                 [v.main.category]: [n],
