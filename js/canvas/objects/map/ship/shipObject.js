@@ -22,6 +22,11 @@ export default class ShipObject extends BasicMovingObject {
   baseCharacteristics = copy(baseBattleshipCharacteristics);
   currentCharacteristics = copy(baseBattleshipCharacteristics);
 
+  dices = {
+    contactQuality: 10,
+    maneuvering: 0,
+  }
+
   externalModules = [];
   internalModules = [];
   otherModules = [];
@@ -86,7 +91,7 @@ export default class ShipObject extends BasicMovingObject {
     }
 
     if (index == 0) {
-      const mods = this.recalculateCharacteristics();
+      const mods = this.recalculateCharacteristics(true);
 
       const c = this.currentCharacteristics;
 
@@ -150,6 +155,22 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}`);
   getOverridableValues() {
     return [
       ...super.getOverridableValues(),
+      {
+        name: "dice_contact-quality",
+        type: "number",
+        current: () => this.dices.contactQuality,
+        func: (val) => {
+          this.dices.contact_quality = +val;
+        },
+      },
+      {
+        name: "dice_maneuvering",
+        type: "number",
+        current: () => this.dices.maneuvering,
+        func: (val) => {
+          this.dices.maneuvering = +val;
+        },
+      },
       {
         name: "barrier",
         type: "number",
@@ -286,7 +307,7 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}`);
     return mods;
   }
 
-  recalculateCharacteristics() {
+  recalculateCharacteristics(applyDynamic=false) {
     const mods = this.calculateModifiers();
 
     this.currentCharacteristics = mergeDeep(copy(this.baseCharacteristics), {
@@ -294,14 +315,14 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}`);
     });
 
     for (let [path, number] of Object.entries(mods.this.number)) {
-      if (path.startsWith('dynamic')) continue;
+      if (!applyDynamic && path.startsWith('dynamic')) continue;
 
       const [a, l] = getByPath(this.currentCharacteristics, path);
       a[l] += number;
     }
 
     for (let [path, percent] of Object.entries(mods.this.percent)) {
-      if (path.startsWith('dynamic')) continue;
+      if (!applyDynamic && path.startsWith('dynamic')) continue;
 
       const [a, l] = getByPath(this.currentCharacteristics, path);
       a[l] *= percent;
@@ -418,6 +439,7 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}`);
       externalModules: this.externalModules.map((v) => v.save()),
       internalModules: this.internalModules.map((v) => v.save()),
       otherModules:    this.otherModules.map((v) => v.save()),
+      dices: this.dices,
     };
   }
 
@@ -427,6 +449,8 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}`);
     this.currentCharacteristics = mergeDeep(copy(this.baseCharacteristics), {
       dynamic: data.dynamicCharacteristics,
     });
+
+    this.dices = data.dices;
 
     for (let md of ['externalModules', 'internalModules', 'otherModules']) {
       this[md] = data[md].map((v) => {

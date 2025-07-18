@@ -372,4 +372,14 @@ const passiveBarrierRegeneration = (barrierStats, curBarrier, maxBarrier) => {
   return regenInPer * maxBarrier;
 }
 
-export { overheatDamage, passiveBarrierRegeneration }
+/**
+ * Calculate resulted maneuverability
+ * @param {object} characteristics ship's characteristics
+ * @param {object} maneuverDice number on maneuver d20
+ * @returns {number}
+ */
+const getFullManeuverability = (characteristics, maneuverDice) => {
+  return characteristics.constant.maneuverability + maneuverDice
+}
+
+export { overheatDamage, passiveBarrierRegeneration, getFullManeuverability }

@@ -9,6 +9,9 @@
     "tags": ["microdistortiondrive", "signaturepenalty"]
   },
   "activation": "active",
+  "cycle": 1,
+  "reload": 1,
+  
   "interference": -1,
 
   "modificators": {

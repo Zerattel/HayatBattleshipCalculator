@@ -9,6 +9,9 @@
     "tags": ["barrierresistanceextender", "omniresistextender"]
   },
   "activation": "active",
+  "cycle": 1,
+  "reload": 1,
+  
   "interference": -0.1225,
 
   "modificators": {

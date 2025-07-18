@@ -19,6 +19,13 @@ export default class BaseModule {
   parent = null;
 
   inOnlineSteps = 0;
+  inStageSteps = 0;
+
+  functionsSharedData = {
+    perStep: {},
+    perState: {},
+    uncleared: {},
+  };
 
   constructor(data = {}) {
     this.characteristics = mergeDeep(this.characteristics, data);
@@ -26,6 +33,10 @@ export default class BaseModule {
 
   get fullType() {
     return this.characteristics.main.type + " | " + this.characteristics.main.category;
+  }
+
+  get path() {
+    return (this.parent?.path || '') + " > " + "module " + this.uuid + " " + this.characteristics.main.name
   }
 
   applyModifiers(mods, activeModules) {
@@ -36,17 +47,18 @@ export default class BaseModule {
       if (typeof mod.modificator == "number") {
         modif = mod.modificator;
       } else {
-        const module = this,
+        const modificator = mod.modificator,
+          module = this,
           parent = this.parent,
           target = this.parent.children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER]?.target || null;
 
         let m = mod.modificator;
-        mod.modificator
-          .match(/<\[[^\]]+]>/g)
+        (mod.modificator
+          .match(/<\[[^\]]+]>/g) || [])
           .forEach((v) =>
-            m = m.replace(v, `MODULES_CALCULATION_FUNCTIONS["${v.slice(2, -2)}"](module, parent, target)`)
+            m = m.replace(v, `MODULES_CALCULATION_FUNCTIONS["${v.slice(2, -2)}"](modificator, module, parent, target)`)
           );
-        console.log(m, mod.modificator.match(/<\[[^\]]+]>/g))
+        
         modif = eval(m);
       }
       modif *= mod.isAffectedByInterference ? clamp(1 - interference, 0, 1) : 1;
@@ -62,6 +74,8 @@ export default class BaseModule {
   }
 
   next() {
+    this.functionsSharedData.perStep = {};
+
     if (this.previousState != this.state && this.state == "offline") {
       this.inOnlineSteps = 0;
     }
@@ -72,16 +86,42 @@ export default class BaseModule {
 
     this.inOnlineSteps != 0 &&
       log(
-        "module " + this.uuid + " " + this.characteristics.main.name,
+        this.path,
         `next | in online for ${this.inOnlineSteps}`
       );
-    this.previousState != this.state &&
+    if (this.previousState != this.state) {
       log(
-        "module " + this.uuid + " " + this.characteristics.main.name,
+        this.path,
         `next | state changed ${this.previousState} -> ${this.state}`
       );
 
+      this.functionsSharedData.perState = {};
+      this.inStageSteps = 0;
+    } else {
+      this.inStageSteps++;
+    }
+
     this.previousState = this.state;
+
+    if (this.characteristics.activation == "active") {
+      if (this.state == "active" && this.characteristics.cycle <= this.inStageSteps + 1 && this.characteristics.reload) {
+        this.setState("online");
+
+        log(
+          this.path,
+          `next | cycle ended, reloading (${this.characteristics.reload} steps)`
+        );
+        this.inStageSteps = 0;
+      } else if (this.state == "online" && this.characteristics.reload <= this.inStageSteps + 1 && this.characteristics.cycle) {
+        this.setState("active");
+
+        log(
+          this.path,
+          `next | reload ended, cycle (${this.characteristics.cycle} steps)`
+        );
+        this.inStageSteps = 0;
+      }
+    }
   }
 
   step(index, objectsData) {}
@@ -138,6 +178,8 @@ export default class BaseModule {
 
       previousState: this.previousState,
       inOnlineSteps: this.inOnlineSteps,
+
+      functionsSharedData: this.functionsSharedData,
     };
   }
 
@@ -147,6 +189,7 @@ export default class BaseModule {
     this.state = data.state;
     this.previousState = data.previousState;
     this.inOnlineSteps = data.inOnlineSteps;
+    this.functionsSharedData = data.functionsSharedData;
   }
 }
 
