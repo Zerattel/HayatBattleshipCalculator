@@ -7,7 +7,10 @@
   "Форсажная камера M": "mobility/afterburner.json",
   "Прыжковый двигатель L": "mobility/jumpdrive.json",
   "Микродисторционный привод M": "mobility/microdistortiondrive.json",
+  "Форсажная камера S": "mobility/afterburner-s.json",
+  "Микродисторционный привод S": "mobility/microdistortiondrive-s.json",
   "Дополнительные РСУ M": "mobility/rss.json",
+  "Дополнительные РСУ S": "mobility/rss-s.json",
   "«Drivedose»": "pilot-drug-effects/drivedose.json",
   "Интеллектуальная гибкость": "pilot-skills-perks/intellectualflexibility-skill.json",
   "«Мультиспектралка из той самой»": "resistance/Multispectralfromthatveryone.json",
@@ -16,9 +19,12 @@
   "Внешний радиатор M": "thermodynamics/external-radiator.json",
   "Внутренний радиатор M": "thermodynamics/internalradiator.json",
   "Излучающая обшивка M": "thermodynamics/radiating-hull.json",
+  "Внешний радиатор S": "thermodynamics/external-radiator-s.json",
+  "Внутренний радиатор S": "thermodynamics/internalradiator-s.json",
+  "Излучающая обшивка S": "thermodynamics/radiating-hull-s.json",
   "RES Vampire M": "EW/res-vampire.json",
   "Система целеуказания M": "EW/target-painter.json",
   "REN-Contactor": "EW/ren-contactor.json",
-  "note": "weapons/note.json",
-  "flashlight": "weapons/flashlight.json"
+  "Пулемёт гатлинга «Нота» S": "weapons/note.json",
+  "ИК Лазер «Фонарь»": "weapons/flashlight.json"
 }

@@ -1,35 +1,45 @@
 {
   "main": {
-    "name": "Излучающая обшивка M",
+    "name": "Внешний радиатор S",
     "type": "Термодинамика",
-    "category": "Излучающее покрытие",
+    "category": "Радиатор",
 
-    "size": 2,
+    "size": 1,
     "position": "internal",
-    "tags": ["radiatinghull","cooler"]
+    "tags": ["externalradiator","cooler"]
   },
-  "activation": "passive",
+  "activation": "active",
+  "cycle": 1,
+  "reload": 1,
+  
   "interference": 0,
 
   "modificators": {
     "offline": [],
-    "online": [
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -2,
+        "isAffectedByInterference": false
+      },
       {
         "target": "this",
         "characteristic": "constant.body.signature",
         "modificationType": "percent",
-        "modificator": 0.18,
+        "modificator": 0.08,
         "isAffectedByInterference": false
       },
       {
         "target": "this",
         "characteristic": "constant.heating",
         "modificationType": "number",
-        "modificator": -0.06,
+        "modificator": -0.04,
         "isAffectedByInterference": true
       }
     ],
-    "active": [],
     "overload": []
   }
 }

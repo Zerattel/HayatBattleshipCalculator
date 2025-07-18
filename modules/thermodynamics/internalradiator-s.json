@@ -1,10 +1,10 @@
 {
   "main": {
-    "name": "Внутренний радиатор M",
+    "name": "Внутренний радиатор S",
     "type": "Термодинамика",
     "category": "Система изоляции",
 
-    "size": 2,
+    "size": 1,
     "position": "internal",
     "tags": ["internalradiator","temperatureextender","extender"]
   },
@@ -18,7 +18,7 @@
         "target": "this",
         "characteristic": "constant.temperature",
         "modificationType": "percent",
-        "modificator": 0.5,
+        "modificator": 0.2,
         "isAffectedByInterference": true
       }
     ],

@@ -1,50 +1,43 @@
 {
   "main": {
-    "name": "Дополнительные РСУ M",
+    "name": "Форсажная камера S",
     "type": "Мобильность",
-    "category": "Маневровые ускорители",
+    "category": "Форсажная камера",
 
-    "size": 2,
+    "size": 1,
     "position": "internal",
-    "tags": ["rss", "maneuverbuff", "signaturesupressor"]
+    "tags": ["afterburner", "maneuverbuff"]
   },
   "activation": "active",
   "cycle": 1,
   "reload": 1,
   
-  "interference": 0,
+  "interference": -1,
 
   "modificators": {
     "offline": [],
     "online": [],
     "active": [
-        {
+      {
         "target": "this",
         "characteristic": "constant.capacitor.generation",
         "modificationType": "number",
-        "modificator": -8,
+        "modificator": -5,
         "isAffectedByInterference": false
       },
       {
         "target": "this",
-        "characteristic": "constant.body.signature",
+        "characteristic": "constant.acceleration",
         "modificationType": "percent",
-        "modificator": -0.2,
+        "modificator": 0.4,
         "isAffectedByInterference": true
       },
       {
         "target": "this",
         "characteristic": "constant.heating",
         "modificationType": "number",
-        "modificator": 0.01,
+        "modificator": 0.03,
         "isAffectedByInterference": false
-      },
-      {
-        "target": "this",
-        "characteristic": "constant.maneuverability",
-        "modificationType": "number",
-        "modificator": 2,
-        "isAffectedByInterference": true
       }
     ],
     "overload": []
