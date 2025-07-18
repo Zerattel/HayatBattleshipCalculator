@@ -1,5 +1,8 @@
+import { calculateRelativeData } from "../js/controls/show_rdata.js";
+import { log } from "../js/controls/step-logs/log.js";
 import { updateLoading } from "../js/loading.js";
 import { clamp } from "../libs/clamp.js";
+import { getFullManeuverability } from "../libs/hayat/battleships.js";
 import { point } from "../libs/vector/point.js";
 
 let isReady = false;
@@ -51,7 +54,7 @@ export default function init() {
 export { isReady, modules, setReadyFunction };
 
 const MODULES_CALCULATION_FUNCTIONS = {
-  RENContactor: (module, parent, target) => {
+  RENContactor: (modificator, module, parent, target) => {
     if (!target || !parent) return 0;
 
     const range = point(() => point(target._x, target._y) - point(parent._x, parent._y)).length;
@@ -75,6 +78,109 @@ const MODULES_CALCULATION_FUNCTIONS = {
       EWRes;
 
     return num > 0 ? -num : 0;
+  },
+  LaserAttack: (modificator, module, parent, target) => {
+    module.functionsSharedData.perStep.hit          = false;
+    module.functionsSharedData.perStep.effectivness = 0;
+    module.functionsSharedData.perStep.damage       = 0;
+    module.functionsSharedData.perStep.heating      = 0;
+
+    if (!target || !parent) return 0;
+
+    const contactQuality = parent.dices.contactQuality;
+    const resultAccuracy =
+      contactQuality -
+      getFullManeuverability(target.currentCharacteristics, target.dices.maneuvering);
+
+    const { angularVelocity } = calculateRelativeData(parent, target);
+    const angularPenalty =
+      clamp(angularVelocity / module.characteristics.additionalInfo.tracking - 0.75, 0, 0.3) / 0.3;
+
+    const chance = clamp(0.5 + resultAccuracy * 0.15, 0, 1) * (1 - angularPenalty);
+    const random = Math.random();
+
+    if (random <= chance) {
+      const range = point(() => point(target._x, target._y) - point(parent._x, parent._y)).length;
+      const effectivness =
+        1 -
+        clamp(
+          (range - module.characteristics.additionalInfo.effectiveRange) /
+            (module.characteristics.additionalInfo.maxRange -
+              module.characteristics.additionalInfo.effectiveRange),
+          0,
+          1
+        );
+
+      module.functionsSharedData.perStep.hit = true;
+      module.functionsSharedData.perStep.effectivness = effectivness;
+      module.functionsSharedData.perStep.damage =
+        module.characteristics.additionalInfo.baseDamage * effectivness;
+      module.functionsSharedData.perStep.heating =
+        module.characteristics.additionalInfo.targetHeating * effectivness;
+
+      log(
+        module.path,
+        `function | (data applied only in step calculation)<br>
+-------- | ${random} <= ${chance}, hit calculated<br>
+-------- | ${module.functionsSharedData.perStep.damage}dmg ${module.functionsSharedData.perStep.heating}heat`
+      );
+    } else {
+      log(
+        module.path,
+        `function | (data applied only in step calculation)<br>
+-------- | ${random} > ${chance}, missed`
+      );
+    }
+
+    return 0;
+  },
+  BallisticAttack: (modificator, module, parent, target) => {
+    module.functionsSharedData.perStep.hit     = false;
+    module.functionsSharedData.perStep.damage  = 0;
+    module.functionsSharedData.perStep.heating = 0;
+
+    if (!target || !parent) return 0;
+
+    const contactQuality = parent.dices.contactQuality;
+
+    const range = point(() => point(target._x, target._y) - point(parent._x, parent._y)).length;
+    const penalty =
+      ((range - module.characteristics.additionalInfo.effectiveRange) /
+        module.characteristics.additionalInfo.penaltyStep) *
+      module.characteristics.additionalInfo.penalty;
+
+    const resultAccuracy =
+      contactQuality -
+      getFullManeuverability(target.currentCharacteristics, target.dices.maneuvering) -
+      (penalty > 0 ? penalty : 0);
+
+    const { angularVelocity } = calculateRelativeData(parent, target);
+    const angularPenalty =
+      clamp(angularVelocity / module.characteristics.additionalInfo.tracking - 0.75, 0, 0.3) / 0.3;
+
+    const chance = clamp(0.5 + resultAccuracy * 0.15, 0, 1) * (1 - angularPenalty);
+    const random = Math.random();
+
+    if (random <= chance) {
+      log(
+        module.path,
+        `function | (data applied only in step calculation)<br>
+-------- | ${random} <= ${chance}, hit calculated<br>
+-------- | ${module.characteristics.additionalInfo.baseDamage}dmg`
+      );
+
+      module.functionsSharedData.perStep.damage  = module.characteristics.additionalInfo.baseDamage;
+      module.functionsSharedData.perStep.heating = module.characteristics.additionalInfo.targetHeating;
+      module.functionsSharedData.perStep.hit = true;
+    } else {
+      log(
+        module.path,
+        `function | (data applied only in step calculation)<br>
+-------- | ${random} > ${chance}, missed`
+      );
+    }
+
+    return 0;
   },
 };
 

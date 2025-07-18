@@ -7,6 +7,20 @@ import { accordeonHTMLTemplate, registerInnerAccordeons } from "../ui/accordeon/
 import { enableModifyModal } from "../tab/modify/modify.js";
 import { mapProps } from "../canvas/grid.js";
 
+/**
+ * 
+ * @param {object} obj1 
+ * @param {object} obj2 
+ * @returns {{ 
+ *    relSpeed: number, 
+ *    angularVelocity: number, 
+ *    distance: number, 
+ *    adir: number, 
+ *    rdir: number 
+ * }}
+ */
+let calculateRelativeData = (obj1, obj2) => {}
+
 export default function init() {
   $("#relative > div > button").click(() => {
     let modal = $("#relative");
@@ -25,13 +39,13 @@ export default function init() {
 
     if (clicked.length == 0) return;
 
-    showRelativeData(calculateRelativeData(clicked))
+    showRelativeData(calculateRelativeDataArray(clicked))
 
     lastClicked = clicked;
   });
 
 
-  const calculateRelativeData = (clicked) => {
+  const calculateRelativeDataArray = (clicked) => {
     const data = {};
     for (let obj1 of clicked) {
       const a = {};
@@ -39,30 +53,7 @@ export default function init() {
       for (let obj2 of Object.values(objects)) {
         if (obj1.id == obj2.id) continue;
 
-        const dx = obj2._x - obj1._x;
-        const dy = obj2._y - obj1._y;
-
-        const vel1 = obj1.velocity || {x: 0, y: 0};
-        const vel2 = obj2.velocity || {x: 0, y: 0};
-
-        const relVel = {
-          x: vel2.x - vel1.x,
-          y: vel2.y - vel1.y,
-        };
-        const relSpeed = Math.sqrt(relVel.x ** 2 + relVel.y ** 2);
-
-        const r_mag = Math.sqrt(dx * dx + dy * dy);
-        const cross = dx * relVel.y - dy * relVel.x;
-        const angularVelocity = (cross / (r_mag * r_mag)) / Math.PI * 180;
-
-        const distance = r_mag;
-        const adir = -(
-          Math.round((Math.atan2(obj1._x - obj2._x, obj1._y - obj2._y) / Math.PI) * 180) ||
-            0
-        );
-        const rdir = adir - (obj1.direction || 0);
-
-        a[obj2.id] = { relSpeed, angularVelocity, distance, adir, rdir };
+        a[obj2.id] = calculateRelativeData(obj1, obj2);
       }
 
       data[obj1.id] = a;
@@ -71,9 +62,36 @@ export default function init() {
     return data
   } 
 
+  calculateRelativeData = (obj1, obj2) => {
+    const dx = obj2._x - obj1._x;
+    const dy = obj2._y - obj1._y;
+
+    const vel1 = obj1.velocity || {x: 0, y: 0};
+    const vel2 = obj2.velocity || {x: 0, y: 0};
+
+    const relVel = {
+      x: vel2.x - vel1.x,
+      y: vel2.y - vel1.y,
+    };
+    const relSpeed = Math.sqrt(relVel.x ** 2 + relVel.y ** 2);
+
+    const r_mag = Math.sqrt(dx * dx + dy * dy);
+    const cross = dx * relVel.y - dy * relVel.x;
+    const angularVelocity = (cross / (r_mag * r_mag)) / Math.PI * 180;
+
+    const distance = r_mag;
+    const adir = -(
+      Math.round((Math.atan2(obj1._x - obj2._x, obj1._y - obj2._y) / Math.PI) * 180) ||
+        0
+    );
+    const rdir = adir - (obj1.direction || 0);
+
+    return { relSpeed, angularVelocity, distance, adir, rdir };
+  }
+
 
   document.addEventListener(EVENTS.CALCULATION_ENDED, (e) => {
-    showRelativeData(calculateRelativeData(lastClicked));
+    showRelativeData(calculateRelativeDataArray(lastClicked));
   })
 
   const showRelativeData = (data) => {
@@ -114,3 +132,5 @@ export default function init() {
       })
   }
 }
+
+export { calculateRelativeData }

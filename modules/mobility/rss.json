@@ -9,6 +9,9 @@
     "tags": ["rss", "maneuverbuff", "signaturesupressor"]
   },
   "activation": "active",
+  "cycle": 1,
+  "reload": 1,
+  
   "interference": 0,
 
   "additionalInfo": {

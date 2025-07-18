@@ -9,11 +9,10 @@
     "tags": ["capacitorew", "ew"]
   },
   "activation": "active",
+  "cycle": 1,
+  "reload": 1,
+  
   "interference": 0,
-
-  "additionalInfo": {
-    "recharge": 1
-  },
 
   "modificators": {
     "offline": [],

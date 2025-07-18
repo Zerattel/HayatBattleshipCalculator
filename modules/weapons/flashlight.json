@@ -9,17 +9,20 @@
     "tags": ["gun", "offencive", "laser"]
   },
   "activation": "active",
+  "cycle": 1,
+  "reload": 1,
+
   "interference": 0,
 
   "additionalInfo": {
     "baseDamage": 24,
-    "damageType": "thermal",
     "targetHeating": 0.02,
     "effectiveRange": 8000,
     "maxRange": 12000,
-    "tracking": 45,
-    "reload": 1
+    "tracking": 45
   },
+
+  "initFunctions": "<[LaserAttack]>",
 
   "modificators": {
     "offline": [],
@@ -41,16 +44,16 @@
       },
       {
         "target": "target",
-        "characteristic": "",
+        "characteristic": "dynamic.recived_damage.thermal",
         "modificationType": "number",
-        "modificator": "<[LaserAttack]>",
+        "modificator": "module.functionsSharedData.perStep.damage",
         "isAffectedByInterference": false
       },
       {
         "target": "target",
-        "characteristic": "constant.heating",
+        "characteristic": "dynamic.temperature",
         "modificationType": "number",
-        "modificator": "<[LaserAttack]>",
+        "modificator": "module.functionsSharedData.perStep.heating",
         "isAffectedByInterference": false
       }
     ],

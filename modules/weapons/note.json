@@ -9,18 +9,21 @@
     "tags": ["gun", "offencive", "ballistic"]
   },
   "activation": "active",
+  "cycle": 1,
+  "reload": 0,
+
   "interference": 0,
 
   "additionalInfo": {
     "baseDamage": 33,
-    "damageType": "kinetic",
     "targetHeating": 0,
     "effectiveRange": 3000,
     "penaltyStep": 1000,
     "penalty": 1,
-    "tracking": 40,
-    "reload": 1
+    "tracking": 40
   },
+
+  "initFunctions": "<[BallisticAttack]>",
 
   "modificators": {
     "offline": [],
@@ -35,9 +38,9 @@
       },
       {
         "target": "target",
-        "characteristic": "",
+        "characteristic": "dynamic.recived_damage.kinetic",
         "modificationType": "number",
-        "modificator": "<[BallisticAttack]>",
+        "modificator": "module.functionsSharedData.perStep.damage",
         "isAffectedByInterference": false
       }
     ],

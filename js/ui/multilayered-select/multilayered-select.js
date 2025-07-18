@@ -1,3 +1,5 @@
+import { isElementInViewport } from "../../../libs/utils.js";
+
 let registerSelect = (jquery) => {};
 
 const groupHTMLTemplate = `<div class="group">
@@ -12,6 +14,7 @@ const optionHTMLTemplate = `<label class="option" value="{0}">{1}</label>`
 export default function() {
   registerSelect = (jquery) => {
     const select = $(jquery);
+    const container = select.find(' > .options');
     const label = select.find(" > label");
     const options = select.find(" .option");
 
@@ -19,6 +22,11 @@ export default function() {
       .off('click')
       .on('click', () => {
         select.attr('data-active', select.attr('data-active') == "true" ? "false" : "true")
+        if (!isElementInViewport(container[0])) {
+          container.attr('data-reversed', 'true');
+        } else {
+          container.attr('data-reversed', 'false');
+        }
       })
 
     options
