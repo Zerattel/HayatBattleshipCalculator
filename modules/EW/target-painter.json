@@ -11,6 +11,7 @@
   "activation": "active",
   "cycle": 1,
   "reload": 1,
+  "interference": 0,
 
   "modificators": {
     "offline": [],
