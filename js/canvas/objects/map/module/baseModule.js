@@ -2,7 +2,9 @@ import { clamp } from "../../../../../libs/clamp.js";
 import copy from "../../../../../libs/copy.js";
 import { mergeDeep } from "../../../../../libs/deepMerge.js";
 import { baseModuleCharacteristics } from "../../../../../libs/hayat/modules.js";
+import { log } from "../../../../controls/step-logs/log.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
+import { registerSteps } from "../step/stepInfoCollector.js";
 
 export default class BaseModule {
   characteristics = copy(baseModuleCharacteristics);
@@ -46,12 +48,19 @@ export default class BaseModule {
       this.inOnlineSteps = 0;
     }
 
-    if (['online', 'active', 'overload'].includes(state)) {
-      this.inOnlineSteps++;
+    if (['online', 'active', 'overload'].includes(this.state)) {
+      this.inOnlineSteps += 1;
     }
+
+    this.inOnlineSteps != 0 && log('module '+this.uuid+' '+this.characteristics.main.name, `next | in online for ${this.inOnlineSteps}`);
+    this.previousState != this.state && log('module '+this.uuid+' '+this.characteristics.main.name, `next | state changed ${this.previousState} -> ${this.state}`);
 
     this.previousState = this.state;
   }
+
+  step(index, objectsData) {}
+
+  finalize(objectsData) {}
 
 
   setState(state) {
@@ -71,12 +80,41 @@ export default class BaseModule {
   }
 
 
+  getOverridableValues() {
+    return [
+      {
+        name: "state",
+        type: "text",
+        current: () => this.state,
+        func: (val) => {
+          this.setState(val);
+        },
+      },
+      {
+        name: "inOnlineSteps",
+        type: "number",
+        current: () => this.inOnlineSteps,
+        func: (val) => {
+          this.inOnlineSteps = val;
+        },
+      },
+    ];
+  }
+
+  getChildrenWithOverridableValues(parent='this') {
+    return []
+  }
+
+
   save() {
     return {
       class: this.constructor.name,
       state: this.state,
       uuid: this.uuid,
       characteristics: this.characteristics,
+
+      previousState: this.previousState,
+      inOnlineSteps: this.inOnlineSteps,
     };
   }
 
@@ -84,7 +122,10 @@ export default class BaseModule {
     this.characteristics = data.characteristics;
     this.uuid = data.uuid;
     this.state = data.state;
+    this.previousState = data.previousState;
+    this.inOnlineSteps = data.inOnlineSteps;
   }
 }
 
-registerClass(BaseModule)
+registerClass(BaseModule);
+registerSteps(BaseModule, 0, []);

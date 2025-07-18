@@ -1,9 +1,10 @@
-console.log('asdas')
-
 export const EVENTS = {
+  LOAD_ENDED: 'loadEnded',
   MAP_SET_CHANGED: 'mapSetChanged',
   CALCULATION_ENDED: 'calculationEnded',
   ON_MAP_CLICK: 'onMapClick',
+  RESET: 'reset',
+  STEP_LOG: 'stepLog',
   MAP: {
     /** object, id, redraw */
     NEW: 'mapNewObject',
@@ -23,5 +24,13 @@ export const EVENTS = {
     /** id, func, attr, redraw */
     FUNCTION: 'overlayFunctionObject',
     REDRAW: 'overlayRedraw',
+  },
+  LOADING: {
+    /** */
+    CLOSE: 'loadingClose',
+    /** id */
+    OPEN: 'loadingOpen',
+    /** id, min, max, cur */
+    UPDATE: 'loadingUpdate'
   }
 }

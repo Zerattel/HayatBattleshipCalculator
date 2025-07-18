@@ -6,15 +6,14 @@
 
     "size": 2,
     "position": "internal",
-    "tags": ["capacitorew,ew"]
+    "tags": ["capacitorew", "ew"]
   },
-  "activation": "active",
+  "activation": "passive",
   "interference": 0,
 
   "modificators": {
     "offline": [],
-    "online": [],
-    "active": [
+    "online": [
       {
         "target": "this",
         "characteristic": "constant.capacitor.generation",
@@ -30,6 +29,7 @@
         "isAffectedByInterference": false
       }
     ],
+    "active": [],
     "overload": []
   }
 }
