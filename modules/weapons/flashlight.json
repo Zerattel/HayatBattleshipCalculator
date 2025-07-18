@@ -1,0 +1,59 @@
+{
+  "main": {
+    "name": "ИК Лазер «Фонарь»",
+    "type": "Орудия",
+    "category": "Лазеры",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["gun", "offencive", "laser"]
+  },
+  "activation": "active",
+  "interference": 0,
+
+  "additionalInfo": {
+    "baseDamage": 24,
+    "damageType": "thermal",
+    "targetHeating": 0.02,
+    "effectiveRange": 8000,
+    "maxRange": 12000,
+    "tracking": 45,
+    "reload": 1
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.06,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -4,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "",
+        "modificationType": "number",
+        "modificator": "<[LaserAttack]>",
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": "<[LaserAttack]>",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

@@ -18,5 +18,7 @@
   "Излучающая обшивка M": "thermodynamics/radiating-hull.json",
   "RES Vampire M": "EW/res-vampire.json",
   "Система целеуказания M": "EW/target-painter.json",
-  "REN-Contactor": "EW/ren-contactor.json"
+  "REN-Contactor": "EW/ren-contactor.json",
+  "note": "weapons/note.json",
+  "flashlight": "weapons/flashlight.json"
 }
