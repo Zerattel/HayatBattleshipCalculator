@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Проф. Особенность типа «Пионер»",
+    "type": "Проф. Особенность типа",
+    "category": "Проф. Особенность Фрегата",
+
+    "size": 0,
+    "position": "internal",
+    "tags": ["stp"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+        {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.offence.ballistic.damage_modifier",
+        "modificationType": "number",
+        "modificator": 0.2,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

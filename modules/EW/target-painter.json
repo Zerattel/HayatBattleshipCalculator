@@ -10,7 +10,7 @@
   },
   "activation": "active",
   "cycle": 1,
-  "reload": 1,
+  "reload": 0,
   "interference": 0,
 
   "modificators": {

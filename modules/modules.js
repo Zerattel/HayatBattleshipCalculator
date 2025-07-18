@@ -161,22 +161,23 @@ const MODULES_CALCULATION_FUNCTIONS = {
 
     const { angularVelocity } = calculateRelativeData(parent, target);
     const angularPenalty =
-      clamp(angularVelocity / module.characteristics.additionalInfo.tracking - 0.75, 0, 0.3) / 0.3;
+      clamp(Math.abs(angularVelocity) / module.characteristics.additionalInfo.tracking - 0.75, 0, 0.3) / 0.3;
 
     const chance = clamp(0.5 + resultAccuracy * 0.15, 0, 1) * (1 - angularPenalty);
     const random = Math.random();
 
     if (random <= chance) {
+      
+      module.functionsSharedData.perStep.damage  = module.characteristics.additionalInfo.baseDamage * parent.currentCharacteristics.constant.modulemodifier.offence.ballistic.damage_modifier ;
+      module.functionsSharedData.perStep.heating = module.characteristics.additionalInfo.targetHeating;
+      module.functionsSharedData.perStep.hit = true;
       log(
         module.path,
         `function | (data applied only in step calculation)<br>
 -------- | ${random} <= ${chance}, hit calculated<br>
--------- | ${module.characteristics.additionalInfo.baseDamage}dmg ${module.functionsSharedData.perStep.heating}heat`
+-------- | ${module.functionsSharedData.perStep.damage}dmg ${module.functionsSharedData.perStep.heating}heat`
       );
 
-      module.functionsSharedData.perStep.damage  = module.characteristics.additionalInfo.baseDamage;
-      module.functionsSharedData.perStep.heating = module.characteristics.additionalInfo.targetHeating;
-      module.functionsSharedData.perStep.hit = true;
     } else {
       log(
         module.path,

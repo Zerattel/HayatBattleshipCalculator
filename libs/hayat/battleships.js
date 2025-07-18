@@ -300,6 +300,9 @@ const battleshipCharacteristicsClampRules = {
     charge: (c, v) => clamp(v, 0, c.constant.capacitor.charge),
   },
   constant: {
+    body: {
+      signature: (c, v) => v < 0 ? 0 : v,
+    },
     capacitor: {
       charge: (c, v) => v < 0 ? 0 : v,
     },
@@ -338,7 +341,7 @@ export { baseBattleshipCharacteristics, battleshipCharacteristicsClampRules };
  * @param {number} maxTemp maximum temperature
  * @returns {number} temprature damage
  */
-const overheatDamage = (maxHull, curTemp, maxTemp) => maxHull * ( curTemp - maxTemp ) / 400;
+const overheatDamage = (maxHull, curTemp, maxTemp) => maxHull * ( curTemp - maxTemp ) / 100;
 
 /**
  * 

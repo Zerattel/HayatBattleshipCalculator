@@ -26,5 +26,6 @@
   "Система целеуказания M": "EW/target-painter.json",
   "REN-Contactor": "EW/ren-contactor.json",
   "Пулемёт гатлинга «Нота» S": "weapons/note.json",
-  "ИК Лазер «Фонарь»": "weapons/flashlight.json"
+  "ИК Лазер «Фонарь»": "weapons/flashlight.json",
+  "Пионер ПО": "shiptype-profile/kr-pioner-stp.json"
 }

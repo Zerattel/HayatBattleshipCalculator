@@ -10,7 +10,7 @@
   },
   "activation": "active",
   "cycle": 1,
-  "reload": 1,
+  "reload": 0,
   
   "interference": 0,
 
@@ -29,7 +29,7 @@
         "target": "this",
         "characteristic": "constant.body.signature",
         "modificationType": "percent",
-        "modificator": -0.1,
+        "modificator": 0.9,
         "isAffectedByInterference": true
       },
       {
