@@ -96,7 +96,7 @@ const MODULES_CALCULATION_FUNCTIONS = {
 
     const { angularVelocity } = calculateRelativeData(parent, target);
     const angularPenalty =
-      clamp(angularVelocity / module.characteristics.additionalInfo.tracking - 0.75, 0, 0.3) / 0.3;
+      clamp(Math.abs(angularVelocity) / module.characteristics.additionalInfo.tracking - 0.75, 0, 0.3) / 0.3;
 
     const chance = clamp(0.5 + resultAccuracy * 0.15, 0, 1) * (1 - angularPenalty);
     const random = Math.random();
