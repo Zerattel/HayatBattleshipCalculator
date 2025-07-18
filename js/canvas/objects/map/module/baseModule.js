@@ -90,8 +90,6 @@ export default class BaseModule {
   }
 
   next() {
-    this.functionsSharedData.perStep = {};
-
     if (this.previousState != this.state && this.state == "offline") {
       this.inOnlineSteps = 0;
     }
@@ -142,7 +140,9 @@ export default class BaseModule {
 
   step(index, objectsData) {}
 
-  finalize(objectsData) {}
+  finalize(objectsData) {
+    this.functionsSharedData.perStep = {};
+  }
 
   setState(state) {
     if (!["offline", "online", "active", "overload"].includes(state)) {
