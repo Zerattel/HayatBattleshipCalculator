@@ -14,10 +14,6 @@
   
   "interference": 0,
 
-  "additionalInfo": {
-    "recharge": 1
-  },
-
   "modificators": {
     "offline": [],
     "online": [],
