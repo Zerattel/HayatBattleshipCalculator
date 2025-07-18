@@ -41,7 +41,8 @@
         "modificationType": "number",
         "modificator": "<[RENContactor]>",
         "isAffectedByInterference": false
-      }],
+      }
+    ],
     "overload": []
   }
 }

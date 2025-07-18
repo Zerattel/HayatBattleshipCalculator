@@ -1,0 +1,46 @@
+{
+  "main": {
+    "name": "Пулемёт гатлинга «Нота» S",
+    "type": "Орудия",
+    "category": "Баллистика",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["gun", "offencive", "ballistic"]
+  },
+  "activation": "active",
+  "interference": 0,
+
+  "additionalInfo": {
+    "baseDamage": 33,
+    "damageType": "kinetic",
+    "targetHeating": 0,
+    "effectiveRange": 3000,
+    "penaltyStep": 1000,
+    "penalty": 1,
+    "tracking": 40,
+    "reload": 1
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.02,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "",
+        "modificationType": "number",
+        "modificator": "<[BallisticAttack]>",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}
