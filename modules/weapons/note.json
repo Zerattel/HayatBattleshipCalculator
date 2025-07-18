@@ -10,7 +10,7 @@
   },
   "activation": "active",
   "cycle": 1,
-  "reload": 1,
+  "reload": 0,
 
   "interference": 0,
 
@@ -22,6 +22,8 @@
     "penalty": 1,
     "tracking": 40
   },
+
+  "initFunctions": "<[BallisticAttack]>",
 
   "modificators": {
     "offline": [],
@@ -38,7 +40,7 @@
         "target": "target",
         "characteristic": "dynamic.recived_damage.kinetic",
         "modificationType": "number",
-        "modificator": "(<[BallisticAttack]> + module.functionsSharedData.perStep.damage)",
+        "modificator": "module.functionsSharedData.perStep.damage",
         "isAffectedByInterference": false
       }
     ],

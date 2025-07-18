@@ -42,6 +42,22 @@ export default class BaseModule {
   applyModifiers(mods, activeModules) {
     const interference = this.characteristics.interference * (activeModules[this.fullType] - 1);
 
+    if (this.characteristics.initFunctions && this.characteristics.initFunctions !== "") {
+      const modificator = {},
+        module = this,
+        parent = this.parent,
+        target = this.parent.children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER]?.target || null;
+
+      let m = this.characteristics.initFunctions;
+      (this.characteristics.initFunctions
+        .match(/<\[[^\]]+]>/g) || [])
+        .forEach((v) =>
+          m = m.replace(v, `MODULES_CALCULATION_FUNCTIONS["${v.slice(2, -2)}"](modificator, module, parent, target)`)
+        );
+      
+      eval(m);
+    }
+
     for (let mod of this.characteristics.modificators[this.state]) {
       let modif;
       if (typeof mod.modificator == "number") {

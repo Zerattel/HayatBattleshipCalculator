@@ -11,7 +11,7 @@
   "activation": "active",
   "cycle": 1,
   "reload": 1,
-  
+
   "interference": 0,
 
   "additionalInfo": {
@@ -21,6 +21,8 @@
     "maxRange": 12000,
     "tracking": 45
   },
+
+  "initFunctions": "<[LaserAttack]>",
 
   "modificators": {
     "offline": [],
@@ -44,7 +46,7 @@
         "target": "target",
         "characteristic": "dynamic.recived_damage.thermal",
         "modificationType": "number",
-        "modificator": "(<[LaserAttack]> + module.functionsSharedData.perStep.damage)",
+        "modificator": "module.functionsSharedData.perStep.damage",
         "isAffectedByInterference": false
       },
       {
