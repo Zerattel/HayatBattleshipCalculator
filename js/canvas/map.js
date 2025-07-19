@@ -1,3 +1,4 @@
+import { mergeDeep } from "../../libs/deepMerge.js";
 import { log } from "../controls/step-logs/log.js";
 import { EVENTS } from "../events.js";
 import { stepLoading, updateLoading } from "../loading.js";
@@ -95,10 +96,7 @@ export default function init() {
 
     let data = {};
     for (let i of Object.keys(objects)) {
-      data[i] = { 
-        object: objects[i],
-        data: objects[i].next()
-      };
+      data[i] = objects[i].next();
       stepLoading('step', 1);
     }
 
@@ -107,16 +105,14 @@ export default function init() {
     let prevData = {...data};
     for (let step=0; step < MAX_INTER_STEPS(); step++) {
       log('system', `starting ${step} inter step`)
+      console.log(prevData)
 
       for (let i of Object.keys(objects)) {
-        data[i] = { 
-          object: objects[i],
-          data: objects[i].step(step, prevData)
-        };
+        data[i] = objects[i].step(step, prevData);
         stepLoading('step', 1);
       }
 
-      prevData = {...data};
+      prevData = mergeDeep(prevData, data);
     }
 
     stepLoading('step', 1);
