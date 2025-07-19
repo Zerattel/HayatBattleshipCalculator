@@ -27,5 +27,8 @@
   "REN-Contactor": "EW/ren-contactor.json",
   "Пулемёт гатлинга «Нота» S": "weapons/note.json",
   "ИК Лазер «Фонарь»": "weapons/flashlight.json",
-  "Пионер ПО": "shiptype-profile/kr-pioner-stp.json"
+  "Пионер ПО": "shiptype-profile/kr-pioner-stp.json",
+  "Богомол ПО": "shiptype-profile/gc-mantis-stp.json",
+  "Драмиэль ПО": "shiptype-profile/sss-dramiel-stp.json",
+  "Неостальная броня": "regeneration/neosteel-coating.json"
 }

@@ -123,13 +123,29 @@ export default class ShipObject extends BasicMovingObject {
 
       const damage = Object.entries(this.applyDamage());
 
+      const healLog = {};
+      for (let [m, v] of Object.entries(mods.this.number)) {
+        if (m.startsWith('dynamic.hp.')) {
+          healLog[m.replace('dynamic.hp.', '')] = v;
+        }
+      }
+
+      for (let [m, v] of Object.entries(mods.this.percent)) {
+        if (m.startsWith('dynamic.hp.')) {
+          const name = m.replace('dynamic.hp.', '');
+          if (name in healLog) healLog[name] = v;
+        }
+      }
+
       log(this.path, `step ${index} | statsChange (no clamp):<br>
                        ------ | Heating: ${heating}<br>
                        ------ | Overheat Damage: ${ohDamage}<br>
                        ------ | Barrier Regen: ${barrierRegen}<br>
                        ------ | Generation: ${generation}<br>
                        ------ | Damage Recived:<br>${
-damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}`);
+damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
+                       ------ | Damage Healed:<br>${Object.entries(healLog)
+.map(([n, v]) =>      `------ | - | ${n}: ${v}`).join('<br>')}`);
     }
 
     return data;

@@ -79,8 +79,9 @@ const MODULES_CALCULATION_FUNCTIONS = {
 
     return num > 0 ? -num : 0;
   },
+
   LaserAttack: (modificator, module, parent, target) => {
-    if (module.functionsSharedData.perStep.processed) return 0;
+    if (parent.state != "step 0" || module.functionsSharedData.perStep.processed) return 0;
 
     module.functionsSharedData.perStep.hit          = false;
     module.functionsSharedData.perStep.effectivness = 0;

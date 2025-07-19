@@ -223,11 +223,15 @@ const baseBattleshipCharacteristics = {
         /** Барьера */
         barrier: {
           passive_recharge_modifier: 1,
-          active_recharge_modifier: 1
+          active_recharge_modifier: 1,
+          active_recharge_consumption: 1,
+          active_recharge_heating: 1
         },
         /** Брони */
         armor: {
-          active_repair_modifier: 1
+          active_repair_modifier: 1,
+          active_repair_consumption: 1,
+          active_repair_heating: 1
         },
 
         hardener: {
