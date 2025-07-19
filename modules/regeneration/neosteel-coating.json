@@ -1,0 +1,51 @@
+{
+  "main": {
+    "name": "Неостальная броня",
+    "type": "Восстановление",
+    "category": "Система активного ремонта",
+
+    "size": 2,
+    "position": "internal",
+    "tags": ["armorrepairer"]
+  },
+  "activation": "active",
+  "interference": -0.09,
+
+  "reload": 0,
+  "cycle": 1,
+
+  "additionalInfo": {
+    "baseRepair": 250,
+    "baseHeating": 0.20,
+    "baseConsumption": -30
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": "module.characteristics.additionalInfo.baseConsumption * parent.currentCharacteristics.constant.modulemodifier.engineering.armor.active_repair_consumption",
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": "module.characteristics.additionalInfo.baseHeating * parent.currentCharacteristics.constant.modulemodifier.engineering.armor.active_repair_heating",
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "dynamic.hp.armor",
+        "modificationType": "number",
+        "modificator": "module.characteristics.additionalInfo.baseRepair * parent.currentCharacteristics.constant.modulemodifier.engineering.armor.active_repair_modifier",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}
