@@ -20,23 +20,42 @@ export default class SignatureShower extends StandartObject {
     ctx.strokeStyle = style.getPropertyValue("--main");
     ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
-    const s = this.parent.currentCharacteristics.constant.body.signature;
+    const s =
+      this.parent.currentCharacteristics.constant.body.signature > 0
+        ? this.parent.currentCharacteristics.constant.body.signature
+        : 1;
+    const length = 2 * Math.PI * (s / 2)
 
     ctx.setLineDash([
-      toCurrentCanvasSize(canvas, clamp(s / 20, 5, 60)), 
-      toCurrentCanvasSize(canvas, clamp(s / 20, 5, 150))
+      toCurrentCanvasSize(canvas, clamp(length / 20, 5, 60)),
+      toCurrentCanvasSize(canvas, clamp(length / 20, 5, 150)),
     ]);
     ctx.beginPath();
-    ctx.arc(
-      toCanvas(this.parent._x),
-      toCanvas(this.parent._y),
-      toCanvas(this.parent.currentCharacteristics.constant.body.signature),
-      0,
-      Math.PI * 2
-    );
+    ctx.arc(toCanvas(this.parent._x), toCanvas(this.parent._y), toCanvas(s), 0, Math.PI * 2);
     ctx.closePath();
     ctx.stroke();
-    ctx.setLineDash([])
+    ctx.setLineDash([]);
+
+    if (this.parent.currentCharacteristics.constant.body.signature != this.parent.size) {
+      ctx.strokeStyle = style.getPropertyValue("--hud-hull");
+      ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
+
+      const sb =
+        this.parent.size > 0
+          ? this.parent.size
+          : 1;
+      const lengthb = 2 * Math.PI * (sb / 2)
+
+      ctx.setLineDash([
+        toCurrentCanvasSize(canvas, clamp(lengthb / 20, 5, 60)),
+        toCurrentCanvasSize(canvas, clamp(lengthb / 20, 5, 150)),
+      ]);
+      ctx.beginPath();
+      ctx.arc(toCanvas(this.parent._x), toCanvas(this.parent._y), toCanvas(sb), 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
   }
 
   getOverridableValues() {
@@ -52,7 +71,6 @@ export default class SignatureShower extends StandartObject {
       },
     ];
   }
-
 
   save(realParent = null) {
     return {

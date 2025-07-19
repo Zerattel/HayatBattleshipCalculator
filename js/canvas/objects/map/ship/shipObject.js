@@ -5,16 +5,21 @@ import { getByPath } from "../../../../../libs/getByPath.js";
 import {
   baseBattleshipCharacteristics,
   battleshipCharacteristicsClampRules,
+  energyToHeating,
+  energyToKineticDamage,
   overheatDamage,
   passiveBarrierRegeneration,
   tonnageToAcceleration,
   tonnageToCaptureRange,
   tonnageToManeuverabilityBonus,
 } from "../../../../../libs/hayat/battleships.js";
+import { collisionPoint } from "../../../../../libs/math.js";
 import { uuidv4 } from "../../../../../libs/uuid.js";
+import { calc, point } from "../../../../../libs/vector/point.js";
 import { log } from "../../../../controls/step-logs/log.js";
 import { load } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
+import { objects } from "../../../map.js";
 import BasicMovingObject from "../step/basicMovingObject.js";
 import { registerSteps } from "../step/stepInfoCollector.js";
 
@@ -25,7 +30,7 @@ export default class ShipObject extends BasicMovingObject {
   dices = {
     contactQuality: 10,
     maneuvering: 0,
-  }
+  };
 
   externalModules = [];
   internalModules = [];
@@ -50,13 +55,25 @@ export default class ShipObject extends BasicMovingObject {
     return [...this.externalModules, ...this.internalModules, ...this.otherModules];
   }
 
+  get size() {
+    return this.baseCharacteristics.constant.body.signature;
+  }
+
+  get mass() {
+    return this.currentCharacteristics.constant.body.mass;
+  }
+
+  get bounciness() {
+    return this.currentCharacteristics.constant.collision_energy_distribution.velocity;
+  }
+
   typeToModules(type) {
     return {
-      'ext': this.externalModules,
-      'int': this.internalModules,
-      'otr': this.otherModules,
-      'all': this.allModules,
-    }[type]
+      ext: this.externalModules,
+      int: this.internalModules,
+      otr: this.otherModules,
+      all: this.allModules,
+    }[type];
   }
 
   //region step
@@ -71,8 +88,8 @@ export default class ShipObject extends BasicMovingObject {
     for (let m of this.allModules) {
       data = {
         ...data,
-        ...m.next()
-      }
+        ...m.next(),
+      };
     }
 
     return data;
@@ -86,11 +103,11 @@ export default class ShipObject extends BasicMovingObject {
     for (let m of this.allModules) {
       data = {
         ...data,
-        ...m.step(index, objectsData)
-      }
+        ...m.step(index, objectsData),
+      };
     }
 
-    if (index == 0) {
+    if (index == 1) {
       const mods = this.recalculateCharacteristics(true);
 
       const c = this.currentCharacteristics;
@@ -110,7 +127,7 @@ export default class ShipObject extends BasicMovingObject {
         c.constant.barrier,
         c.dynamic.hp.barrier,
         c.constant.hp.barrier
-      )
+      );
 
       let generation = c.constant.capacitor.generation;
 
@@ -151,6 +168,22 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     return data;
   }
 
+  onCollision(collision, target, thisManeuver, targetManeuver) {
+    const energy = super.onCollision(collision, target, thisManeuver, targetManeuver);
+
+    const thisMassRatio = this.mass / (target.mass + this.mass);
+    const targetMassRatio = target.mass / (target.mass + this.mass);
+
+    const damage = energy * energyToKineticDamage * targetMassRatio * this.currentCharacteristics.constant.collision_energy_distribution.damage;
+    const heat = energy * energyToHeating * targetMassRatio * this.currentCharacteristics.constant.collision_energy_distribution.heat; // пока хз
+
+    log(this.path, `onCollision | ${damage}dmg ${heat}heat`)
+
+    this.currentCharacteristics.dynamic.recived_damage.kinetic += damage;
+    this.currentCharacteristics.dynamic.temperature += heat;
+    this.applyDamage()
+  }
+
   finalize(objectsData) {
     let data = super.finalize(objectsData);
 
@@ -159,8 +192,8 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     for (let m of this.allModules) {
       data = {
         ...data,
-        ...m.finalize(objectsData)
-      }
+        ...m.finalize(objectsData),
+      };
     }
 
     return data;
@@ -227,41 +260,40 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
           this.currentCharacteristics.dynamic.charge = +val;
         },
       },
-    ]
+    ];
   }
 
   getChildrenWithOverridableValues() {
     return [
       ...super.getChildrenWithOverridableValues(),
       {
-        id: 'externalModules',
-        children: this.externalModules.map(v => ({
+        id: "externalModules",
+        children: this.externalModules.map((v) => ({
           id: v.characteristics.main.name,
           getValues: () => v.getOverridableValues(),
           children: [],
         })),
       },
       {
-        id: 'internalModules',
-        children: this.internalModules.map(v => ({
+        id: "internalModules",
+        children: this.internalModules.map((v) => ({
           id: v.characteristics.main.name,
           getValues: () => v.getOverridableValues(),
           children: [],
         })),
       },
       {
-        id: 'otherModules',
-        children: this.otherModules.map(v => ({
+        id: "otherModules",
+        children: this.otherModules.map((v) => ({
           id: v.characteristics.main.name,
           getValues: () => v.getOverridableValues(),
           children: [],
         })),
       },
-    ]
+    ];
   }
 
-
-  calculateModifiers(externalEffectCalculation=true) {
+  calculateModifiers(externalEffectCalculation = true) {
     const activeModules = this.allModules.reduce((acc, v) => {
       if (v.fullType in acc) {
         acc[v.fullType] += 1;
@@ -292,14 +324,14 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     }
 
     if (externalEffectCalculation) {
-      const event = new CustomEvent('calculateModifiers', {
+      const event = new CustomEvent("calculateModifiers", {
         detail: {
           ship: this,
           mods: {
             number: {},
             percent: {},
           },
-        }
+        },
       });
       document.dispatchEvent(event);
 
@@ -323,7 +355,7 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     return mods;
   }
 
-  recalculateCharacteristics(applyDynamic=false) {
+  recalculateCharacteristics(applyDynamic = false) {
     const mods = this.calculateModifiers();
 
     this.currentCharacteristics = mergeDeep(copy(this.baseCharacteristics), {
@@ -331,14 +363,14 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     });
 
     for (let [path, number] of Object.entries(mods.this.number)) {
-      if (!applyDynamic && path.startsWith('dynamic')) continue;
+      if (!applyDynamic && path.startsWith("dynamic")) continue;
 
       const [a, l] = getByPath(this.currentCharacteristics, path);
       a[l] += number;
     }
 
     for (let [path, percent] of Object.entries(mods.this.percent)) {
-      if (!applyDynamic && path.startsWith('dynamic')) continue;
+      if (!applyDynamic && path.startsWith("dynamic")) continue;
 
       const [a, l] = getByPath(this.currentCharacteristics, path);
       a[l] *= percent;
@@ -356,15 +388,18 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     let receivedDamage = Object.entries(this.currentCharacteristics.dynamic.recived_damage);
     let out = {};
 
-    for (let hp of ['barrier', 'armor', 'hull']) {
-      receivedDamage.sort((a, b) => this.currentCharacteristics.constant.resistance[a[0]][hp] 
-                                    - this.currentCharacteristics.constant.resistance[b[0]]);
-      if (!receivedDamage.some(v => v[1] > 0)) break;
+    for (let hp of ["barrier", "armor", "hull"]) {
+      receivedDamage.sort(
+        (a, b) =>
+          this.currentCharacteristics.constant.resistance[a[0]][hp] -
+          this.currentCharacteristics.constant.resistance[b[0]]
+      );
+      if (!receivedDamage.some((v) => v[1] > 0)) break;
 
       let effectiveDamage = receivedDamage.reduce((acc, v) => {
         const resistance = this.currentCharacteristics.constant.resistance[v[0]][hp];
         const damageAfterResistance = v[1] * (1 - resistance);
-        
+
         return acc + damageAfterResistance;
       }, 0);
 
@@ -373,12 +408,13 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
       out[hp] = damageToApply;
 
       let remainingDamage = damageToApply;
-  
+
       for (let i = 0; i < receivedDamage.length && remainingDamage > 0; i++) {
-        const resistance = this.currentCharacteristics.constant.resistance[receivedDamage[i][0]][hp];
+        const resistance =
+          this.currentCharacteristics.constant.resistance[receivedDamage[i][0]][hp];
         const effectiveDamageFromThisSource = receivedDamage[i][1] * (1 - resistance);
         const damageToDeduct = Math.min(remainingDamage, effectiveDamageFromThisSource);
-        
+
         const rawDamageToDeduct = damageToDeduct * (1 + resistance);
         receivedDamage[i][1] -= rawDamageToDeduct;
         remainingDamage -= damageToDeduct;
@@ -388,14 +424,14 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     this.currentCharacteristics.dynamic.recived_damage = receivedDamage.reduce((acc, v) => {
       acc[v[0]] = v[1];
       return acc;
-    }, {})
+    }, {});
 
     return out;
-}
+  }
 
   //region modules
 
-  addModule(module, type='int') {
+  addModule(module, type = "int") {
     module.uuid = uuidv4();
     module.parent = this;
     this.typeToModules(type).push(module);
@@ -405,23 +441,23 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     return module.uuid;
   }
 
-  removeModule(id, type='all') {
+  removeModule(id, type = "all") {
     if (typeof id === "number") {
       this.typeToModules(type).splice(id, 1);
     } else {
-      if (type != 'all') {
+      if (type != "all") {
         const _id = this.typeToModules(type).findIndex((v) => v.uuid == id);
 
         if (_id != -1) this.typeToModules(type).splice(_id, 1);
         else return false;
       } else {
-        return this.removeModule(id, 'int') 
-                ? true 
-                : this.removeModule(id, 'ext') 
-                  ? true
-                  : this.removeModule(id, 'otr')
-                    ? true
-                    : false
+        return this.removeModule(id, "int")
+          ? true
+          : this.removeModule(id, "ext")
+          ? true
+          : this.removeModule(id, "otr")
+          ? true
+          : false;
       }
     }
 
@@ -429,11 +465,11 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     return true;
   }
 
-  getModule(id, type='all') {
+  getModule(id, type = "all") {
     return this.typeToModules(type).find((v) => v.uuid == id);
   }
 
-  callModule(id, func, type='int', recalculate=true) {
+  callModule(id, func, type = "int", recalculate = true) {
     if (typeof id === "number") {
       func(this.typeToModules(type)[id], this);
     } else {
@@ -454,7 +490,7 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
       dynamicCharacteristics: this.currentCharacteristics.dynamic,
       externalModules: this.externalModules.map((v) => v.save()),
       internalModules: this.internalModules.map((v) => v.save()),
-      otherModules:    this.otherModules.map((v) => v.save()),
+      otherModules: this.otherModules.map((v) => v.save()),
       dices: this.dices,
     };
   }
@@ -468,13 +504,13 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
 
     this.dices = data.dices;
 
-    for (let md of ['externalModules', 'internalModules', 'otherModules']) {
+    for (let md of ["externalModules", "internalModules", "otherModules"]) {
       this[md] = data[md].map((v) => {
         const obj = load("", v, "module");
         obj.parent = this;
 
         return obj;
-      })
+      });
     }
 
     this.recalculateCharacteristics();
@@ -484,4 +520,4 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
 }
 
 registerClass(ShipObject);
-registerSteps(ShipObject, 1, []);
+registerSteps(ShipObject, 3, []);

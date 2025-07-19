@@ -181,7 +181,6 @@ export default function init() {
       ]))
     } else {
       obj = new ShipObject(x, y, dir, vel, battleships[$('#modal-new_object-ships').attr('value')] || {});
-      obj.addModule(new BaseModule(modules['test']))
       obj.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())
       obj.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
       obj.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud())
