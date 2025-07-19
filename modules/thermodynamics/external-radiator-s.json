@@ -29,7 +29,7 @@
         "target": "this",
         "characteristic": "constant.body.signature",
         "modificationType": "percent",
-        "modificator": 0.08,
+        "modificator": 1.08,
         "isAffectedByInterference": false
       },
       {

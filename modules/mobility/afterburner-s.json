@@ -29,7 +29,7 @@
         "target": "this",
         "characteristic": "constant.acceleration",
         "modificationType": "percent",
-        "modificator": 0.4,
+        "modificator": 1.4,
         "isAffectedByInterference": true
       },
       {

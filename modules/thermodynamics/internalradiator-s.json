@@ -18,7 +18,7 @@
         "target": "this",
         "characteristic": "constant.temperature",
         "modificationType": "percent",
-        "modificator": 0.2,
+        "modificator": 1.2,
         "isAffectedByInterference": true
       }
     ],
