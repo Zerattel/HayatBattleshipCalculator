@@ -1,18 +1,18 @@
 {
   "main": {
-    "name": "Дополнительные РСУ M",
+    "name": "Микродисторционный привод S",
     "type": "Мобильность",
-    "category": "Маневровые ускорители",
+    "category": "Микродисторционный привод",
 
-    "size": 2,
+    "size": 1,
     "position": "internal",
-    "tags": ["rss", "maneuverbuff", "signaturesupressor"]
+    "tags": ["microdistortiondrive", "signaturepenalty"]
   },
   "activation": "active",
   "cycle": 1,
   "reload": 0,
   
-  "interference": 0,
+  "interference": -1,
 
   "modificators": {
     "offline": [],
@@ -22,29 +22,29 @@
         "target": "this",
         "characteristic": "constant.capacitor.generation",
         "modificationType": "number",
-        "modificator": -8,
+        "modificator": -10,
         "isAffectedByInterference": false
       },
       {
         "target": "this",
-        "characteristic": "constant.body.signature",
+        "characteristic": "constant.acceleration",
         "modificationType": "percent",
-        "modificator": 0.8,
+        "modificator": 1.5,
         "isAffectedByInterference": true
       },
       {
         "target": "this",
         "characteristic": "constant.heating",
         "modificationType": "number",
-        "modificator": 0.01,
+        "modificator": 0.03,
         "isAffectedByInterference": false
       },
       {
         "target": "this",
-        "characteristic": "constant.maneuverability",
-        "modificationType": "number",
-        "modificator": 2,
-        "isAffectedByInterference": true
+        "characteristic": "constant.body.signature",
+        "modificationType": "percent",
+        "modificator": 2.5,
+        "isAffectedByInterference": false
       }
     ],
     "overload": []

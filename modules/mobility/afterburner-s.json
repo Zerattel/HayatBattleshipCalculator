@@ -1,18 +1,18 @@
 {
   "main": {
-    "name": "Внешний радиатор M",
-    "type": "Термодинамика",
-    "category": "Радиатор",
+    "name": "Форсажная камера S",
+    "type": "Мобильность",
+    "category": "Форсажная камера",
 
-    "size": 2,
+    "size": 1,
     "position": "internal",
-    "tags": ["externalradiator","cooler"]
+    "tags": ["afterburner", "maneuverbuff"]
   },
   "activation": "active",
   "cycle": 1,
   "reload": 0,
   
-  "interference": 0,
+  "interference": -1,
 
   "modificators": {
     "offline": [],
@@ -22,22 +22,22 @@
         "target": "this",
         "characteristic": "constant.capacitor.generation",
         "modificationType": "number",
-        "modificator": -4,
+        "modificator": -5,
         "isAffectedByInterference": false
       },
       {
         "target": "this",
-        "characteristic": "constant.body.signature",
+        "characteristic": "constant.acceleration",
         "modificationType": "percent",
-        "modificator": 1.15,
-        "isAffectedByInterference": false
+        "modificator": 1.4,
+        "isAffectedByInterference": true
       },
       {
         "target": "this",
         "characteristic": "constant.heating",
         "modificationType": "number",
-        "modificator": -0.08,
-        "isAffectedByInterference": true
+        "modificator": 0.03,
+        "isAffectedByInterference": false
       }
     ],
     "overload": []

@@ -2,7 +2,7 @@
   "main": {
     "name": "Проф. Особенность типа «Драмиэль»",
     "type": "Проф. Особенность типа",
-    "category": "Проф. Особенность типа",
+    "category": "Проф. Особенность Фрегата",
 
     "size": 0,
     "position": "internal",
@@ -13,9 +13,8 @@
 
   "modificators": {
     "offline": [],
-    "online": [],
-    "active": [
-        {
+    "online": [
+      {
         "target": "this",
         "characteristic": "modulemodifier.offence.ballistic.damage_modifier",
         "modificationType": "percent",
@@ -33,7 +32,7 @@
         "target": "this",
         "characteristic": "modulemodifier.engineering.hardener.active.armor.heating_modifier",
         "modificationType": "percent",
-        "modificator": 3.5,
+        "modificator": 0,
         "isAffectedByInterference": false
       },
       {
@@ -51,6 +50,7 @@
         "isAffectedByInterference": false
       }
     ],
+    "active": [],
     "overload": []
   }
 }
