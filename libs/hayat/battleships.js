@@ -22,7 +22,10 @@ const tonnageToManeuverabilityBonus = [5, 4, 3, 2, 1, 0, -2, -4, -6, -10];
 
 const tonnageToAcceleration = [240, 180, 150, 120, 90, 72, 54, 36, 18, 12];
 
-export { tonnage, tonnageToCaptureRange, tonnageToManeuverabilityBonus, tonnageToAcceleration };
+const energyToKineticDamage = 0.0000017;
+const energyToHeating = 0.000000001;
+
+export { tonnage, tonnageToCaptureRange, tonnageToManeuverabilityBonus, tonnageToAcceleration, energyToKineticDamage, energyToHeating };
 
 
 const baseBattleshipCharacteristics = {
@@ -93,6 +96,11 @@ const baseBattleshipCharacteristics = {
       armor: 100,
       /** максимальное значение барьера */
       barrier: 100,
+    },
+    collision_energy_distribution: {
+      damage: 0.69,
+      velocity: 0.3,
+      heat: 0.01,
     },
     /** максимальное значение нагрева */
     temperature: 1,
