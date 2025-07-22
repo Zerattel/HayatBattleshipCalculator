@@ -20,7 +20,7 @@ const tonnageToCaptureRange = [
 
 const tonnageToManeuverabilityBonus = [5, 4, 3, 2, 1, 0, -2, -4, -6, -10];
 
-const tonnageToAcceleration = [900, 600, 420, 300, 180, 120, 90, 60, 30, 18];
+const tonnageToAcceleration = [240, 180, 150, 120, 90, 72, 54, 36, 18, 12];
 
 export { tonnage, tonnageToCaptureRange, tonnageToManeuverabilityBonus, tonnageToAcceleration };
 

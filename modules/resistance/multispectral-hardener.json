@@ -1,6 +1,6 @@
 {
   "main": {
-    "name": "«Мультиспектралка из той самой»",
+    "name": "Активная система настройки барьера",
     "type": "Сопротивляемость",
     "category": "Система настройки барьера",
 
@@ -13,12 +13,12 @@
   "reload": 0,
 
   "additionalInfo": {
-    "effectiveness": 0.35,
+    "effectiveness": 0.25,
     "baseHeating": 0.04,
     "baseConsumption": -3
   },
   
-  "interference": -0.1225,
+  "interference": -0.0625,
 
   "modificators": {
     "offline": [],

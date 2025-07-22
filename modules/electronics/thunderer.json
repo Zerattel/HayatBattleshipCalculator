@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Комплекс «Громовержец»",
+    "type": "Электроника",
+    "category": "Система управления огнём",
+
+    "size": 1,
+    "position": "internal",
+    "tags": ["weaponbuff,kineticweaponbuff"]
+  },
+  "activation": "passive",
+  "interference": -0.0225,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.offence.ballistic.damage_modifier",
+        "modificationType": "number",
+        "modificator": 0.15,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

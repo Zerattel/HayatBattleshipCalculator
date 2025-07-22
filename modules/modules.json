@@ -14,6 +14,8 @@
   "«Drivedose»": "pilot-drug-effects/drivedose.json",
   "Интеллектуальная гибкость": "pilot-skills-perks/intellectualflexibility-skill.json",
   "«Мультиспектралка из той самой»": "resistance/Multispectralfromthatveryone.json",
+  "Активная система настройки барьера": "resistance/multispectral-hardener.json",
+  "Активная универсальная обшивка": "resistance/universal-armor-plating.json",
   "Интерферентная ячейка щита": "resistance/shieldextender.json",
   "Дополнительный слой вольфрама": "resistance/tunsgencoating.json",
   "Внешний радиатор M": "thermodynamics/external-radiator.json",
@@ -30,5 +32,8 @@
   "Пионер ПО": "shiptype-profile/kr-pioner-stp.json",
   "Богомол ПО": "shiptype-profile/gc-mantis-stp.json",
   "Драмиэль ПО": "shiptype-profile/sss-dramiel-stp.json",
-  "Неостальная броня": "regeneration/neosteel-coating.json"
+  "Неостальная броня": "regeneration/neosteel-coating.json",
+  "Модуль откачки барьера M": "regeneration/active-barrier-recharger-m.json",
+  "Модуль откачки барьера S": "regeneration/active-barrier-recharger-s.json",
+  "Комплекс «Громовержец»": "electronics/thunderer.json"
 }
