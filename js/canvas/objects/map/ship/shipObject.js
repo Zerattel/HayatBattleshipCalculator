@@ -385,21 +385,21 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
   }
 
   applyDamage() {
-    let receivedDamage = Object.entries(this.currentCharacteristics.dynamic.recived_damage);
+    let receivedDamage = Object.entries(this.currentCharacteristics.dynamic.recived_damage)
     let out = {};
 
     for (let hp of ["barrier", "armor", "hull"]) {
       receivedDamage.sort(
         (a, b) =>
           this.currentCharacteristics.constant.resistance[a[0]][hp] -
-          this.currentCharacteristics.constant.resistance[b[0]]
+          this.currentCharacteristics.constant.resistance[b[0]][hp]
       );
+
       if (!receivedDamage.some((v) => v[1] > 0)) break;
 
       let effectiveDamage = receivedDamage.reduce((acc, v) => {
         const resistance = this.currentCharacteristics.constant.resistance[v[0]][hp];
         const damageAfterResistance = v[1] * (1 - resistance);
-
         return acc + damageAfterResistance;
       }, 0);
 
@@ -412,11 +412,15 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
       for (let i = 0; i < receivedDamage.length && remainingDamage > 0; i++) {
         const resistance =
           this.currentCharacteristics.constant.resistance[receivedDamage[i][0]][hp];
+
+        if (resistance >= 1) continue;
+
         const effectiveDamageFromThisSource = receivedDamage[i][1] * (1 - resistance);
         const damageToDeduct = Math.min(remainingDamage, effectiveDamageFromThisSource);
 
-        const rawDamageToDeduct = damageToDeduct * (1 + resistance);
-        receivedDamage[i][1] -= rawDamageToDeduct;
+        const rawDamageToDeduct = damageToDeduct / (1 - resistance);
+
+        receivedDamage[i][1] = Math.max(0, receivedDamage[i][1] - rawDamageToDeduct);
         remainingDamage -= damageToDeduct;
       }
     }
