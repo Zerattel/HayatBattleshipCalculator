@@ -233,15 +233,22 @@ const baseBattleshipCharacteristics = {
           passive_recharge_modifier: 1,
           active_recharge_modifier: 1,
           active_recharge_consumption: 1,
-          active_recharge_heating: 1
-        },
+          active_recharge_heating: 1,
+          resonance: {
+          /** резонансная частота */
+          frequency: 0.3,
+          /** тенденция к резонансу */
+          tendency: 0.01,
+          /** резонансный диапазон */
+          range: 0.4,
+        }
+      },
         /** Брони */
         armor: {
           active_repair_modifier: 1,
           active_repair_consumption: 1,
           active_repair_heating: 1
         },
-
         hardener: {
           active: {
             barrier: {
@@ -276,6 +283,11 @@ const baseBattleshipCharacteristics = {
             capacitor_consumption_modifier: 1,
             heating_modifier: 1
           }
+        },
+        thermodynamic: {
+          radiation_modifier: 1,
+          consumption_modifier: 1,
+          signature_penalty_modifier: 1
         }
 
       },

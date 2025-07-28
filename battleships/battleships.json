@@ -1,5 +1,5 @@
 {
-  "NSB - «Gefest»": "industrial/ind-gefest.json",
+  "ZD - «Valravn»": "cruisers/nc-valravn.json",
   "LRV - «Созерцатель»": "frigates/lrv-observer.json",
   "SSS - «Dramiel»": "frigates/sss-dramiel.json",
   "KR - MD-16": "frigates/md-16.json",
@@ -15,11 +15,13 @@
   "«Plague»": "cruisers/crimson-plague.json",
   "ITP - «Peacekeeper»": "cruisers/itp-peacekeeper.json",
   "NF - «Pilgrim»": "cruisers/nc-pilgrim.json",
-  "NF - «Valravn»": "cruisers/nc-valravn.json",
   "KR - «Жнец»": "battlecruisers/kr-reaper.json",
   "KR - «Албаст»": "battleships/kr-albast.json",
   "NC - «Raven»": "battleships/nc-raven.json",
   "A-288 «DOLON»": "battleships/precursor-dolon.json",
   "KR - «Кузнец»": "capital/kr-kuznec.json",
-  "ARES - «LEVIATHAN»": "capital/nc-leviathan.json"
+  "ARES - «LEVIATHAN»": "capital/nc-leviathan.json",
+  "NSB - «Gefest»": "industrial/ind-gefest.json",
+  "ZD - «Moth»": "destroers/zd-moth.json",
+  "SSS - «Lurker MkII»": "frigates/sss-lurker-mk2.json"
 }

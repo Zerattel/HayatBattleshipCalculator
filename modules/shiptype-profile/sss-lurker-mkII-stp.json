@@ -1,0 +1,35 @@
+{
+  "main": {
+    "name": "Проф. Особенность типа «Lurker MkII»",
+    "type": "Проф. Особенность типа",
+    "category": "Проф. Особенность Фрегата",
+
+    "size": 0,
+    "position": "internal",
+    "tags": ["stp"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+        {
+        "target": "this",
+        "characteristic": "constant.maneuverability",
+        "modificationType": "number",
+        "modificator": 2,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.engineering.thermodynamic.signature_penalty_modifier",
+        "modificationType": "number",
+        "modificator": -0.5,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}

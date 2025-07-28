@@ -1,0 +1,50 @@
+{
+  "main": {
+    "name": "Проф. Особенность типа «Мотылёк»",
+    "type": "Проф. Особенность типа",
+    "category": "Проф. Особенность Эсминца",
+
+    "size": 0,
+    "position": "internal",
+    "tags": ["stp"]
+  },
+  "activation": "passive",
+  "interference": 0,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.offence.launcher.fuel_modifier",
+        "modificationType": "number",
+        "modificator": -0.25,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.offence.launcher.acceleration_modifier",
+        "modificationType": "number",
+        "modificator": 0.5,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.offence.launcher.explosion_signature_modifier",
+        "modificationType": "number",
+        "modificator": -0.175,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.engineering.barrier.resonance.tendency",
+        "modificationType": "number",
+        "modificator": 0.15,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}
+

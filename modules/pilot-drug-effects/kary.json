@@ -1,0 +1,35 @@
+{
+  "main": {
+    "name": "D3 «Кари»",
+    "type": "Наркотик",
+    "category": "Доза-3",
+
+    "size": 0,
+    "position": "internal",
+    "tags": ["psychoserocin"]
+  },
+  "activation": "passive",
+  "interference": -1,
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.modulemodifier.engineering.thermodynamic.radiation_modifier",
+        "modificationType": "number",
+        "modificator": 0.075,
+        "isAffectedByInterference": true
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.resistance.EW",
+        "modificationType": "number",
+        "modificator": -10,
+        "isAffectedByInterference": true
+      }
+    ],
+    "active": [],
+    "overload": []
+  }
+}
