@@ -1,0 +1,68 @@
+{
+  "main": {
+    "name": "Адаптивная мембрана предтеч",
+    "type": "Сопротивляемость",
+    "category": "Реактивная мембрана Брони",
+    "size": 1,
+    "position": "internal",
+    "tags": ["armor", "defensive", "adaptive", "precursor"]
+  },
+  "activation": "online",
+  "cycle": 1,
+  "reload": 0,
+  "interference": 0,
+  "additionalInfo": {
+    "perStepBonus": 0.04,
+    "bonusCap": 0.60
+  },
+  "initFunctions": "<[ReactiveMembrane]>",
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+        {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.06,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -15,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.resistance.thermal.armor",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.currentResistances.thermal",
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.resistance.kinetic.armor",
+        "modificationType": "number", 
+        "modificator": "module.functionsSharedData.currentResistances.kinetic",
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.resistance.high_explosive.armor",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.currentResistances.explosive", 
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.resistance.electro_magnetic.armor",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.currentResistances.electromagnetic",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

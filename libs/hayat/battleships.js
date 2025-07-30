@@ -308,6 +308,16 @@ const baseBattleshipCharacteristics = {
         capacitor_injection_modifier: 1,
         shield_injection_modifier: 1,
         armor_repair_modifier: 1,
+      },
+      precursor: {
+        desintegrator: {
+          bonus_cap_modifier: 1,
+          per_step_bonus_modifier: 1
+        },
+        membrane: {
+          bonus_cap_modifier: 1,
+          per_step_bonus_modifier: 1
+        },
       }
     }
   },

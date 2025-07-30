@@ -1,0 +1,59 @@
+{
+    "main": {
+    "name": "Энтр. Дезинтегр. «Велес»",
+    "type": "Орудия",
+    "category": "Предтеч",
+    "size": 2,
+    "position": "external",
+    "tags": ["gun", "offencive", "entropic", "precursor"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 0,
+  "interference": 0,
+  "additionalInfo": {
+    "baseDamage": 60,
+    "targetHeating": 0.02,
+    "effectiveRange": 15000,
+    "maxRange": 22500,
+    "tracking": 45,
+    "perStepBonus": 0.06,
+    "bonusCap": 2.0
+  },
+  "initFunctions": "<[EntropicDisintegrator]>",
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.06,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -8,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "dynamic.recived_damage.thermal",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.perStep.damage",
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "dynamic.temperature",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.perStep.heating",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+    }
+}

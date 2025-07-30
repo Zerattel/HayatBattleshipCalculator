@@ -37,5 +37,7 @@
   "Неостальная броня": "regeneration/neosteel-coating.json",
   "Модуль откачки барьера M": "regeneration/active-barrier-recharger-m.json",
   "Модуль откачки барьера S": "regeneration/active-barrier-recharger-s.json",
-  "Комплекс «Громовержец»": "electronics/thunderer.json"
+  "Комплекс «Громовержец»": "electronics/thunderer.json",
+  "Энтр. Дезинтегр. «Велес»": "weapons/veles.json",
+  "Адаптивная мембрана предтеч": "resistance/precursor-reactive-membrane.json"
 }
