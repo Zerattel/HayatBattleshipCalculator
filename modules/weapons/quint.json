@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Пулемёт гатлинга «Квинт» L",
+    "type": "Орудия",
+    "category": "Баллистика",
+
+    "size": 3,
+    "position": "external",
+    "tags": ["gun", "offencive", "ballistic"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 0,
+
+  "interference": 0,
+
+  "additionalInfo": {
+    "baseDamage": 60,
+    "targetHeating": 0,
+    "effectiveRange": 9000,
+    "penaltyStep": 3000,
+    "penalty": 1,
+    "tracking": 10
+  },
+
+  "initFunctions": "<[BallisticAttack]>",
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.02,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "dynamic.recived_damage.kinetic",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.perStep.damage",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

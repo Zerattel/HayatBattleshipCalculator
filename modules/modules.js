@@ -53,22 +53,6 @@ export default function init() {
 
 export { isReady, modules, setReadyFunction };
 
-/**
- * @type { Record<string, 
- * (
- *    modificator: {
- *      target: string,
- *      characteristic: string,
- *      modificationType: string,
- *      modificator: number | string,
- *      isAffectedByInterference: boolean
- *    }, 
- *    module: BaseModule,
- *    parent: ShipObject,
- *    target: ShipObject
- *  ) => number }
- */
-
 const MODULES_CALCULATION_FUNCTIONS = {
   RENContactor: (modificator, module, parent, target) => {
     if (!target || !parent) return 0;
@@ -331,9 +315,96 @@ EntropicDisintegrator: (modificator, module, parent, target) => {
     module.functionsSharedData.perStep.processed = true;
     return 0;
   },
-  
 };
 
+const AdaptiveMembrane = (modificator, module, parent, target) => {
+    if (module.functionsSharedData.perStep.processed) return 0;
 
+    // Инициализация данных модуля при первом запуске
+    if (!module.functionsSharedData.persistent) {
+        module.functionsSharedData.persistent = {
+            currentResistances: {
+                thermal: 0,
+                kinetic: 0,
+                explosive: 0,
+                electromagnetic: 0,
+            },
+            steps: 0,
+            wasActiveLastStep: false,
+        };
+    }
+
+    // Сброс данных текущего шага
+    module.functionsSharedData.perStep.hit = false;
+    module.functionsSharedData.perStep.effectiveness = 0;
+    module.functionsSharedData.perStep.damage = 0;
+
+    // Проверяем состояние модуля - активен ли он сейчас
+    const isActive = (parent.state === "step 0" && module.state === "active");
+
+    if (isActive && module.functionsSharedData.persistent.wasActiveLastStep) {
+        // Увеличиваем количество шагов
+        module.functionsSharedData.persistent.steps++;
+    } else if (isActive && !module.functionsSharedData.persistent.wasActiveLastStep) {
+        // Первый шаг активности после перерыва
+        module.functionsSharedData.persistent.steps = 1;
+    } else {
+        // Модуль неактивен - сбрасываем шаги
+        module.functionsSharedData.persistent.steps = 0;
+    }
+
+    module.functionsSharedData.persistent.wasActiveLastStep = isActive;
+
+    if (!isActive || parent.state !== "step 0") {
+        module.functionsSharedData.perStep.processed = true;
+        return 0;
+    }
+
+    if (!target || !parent) {
+        module.functionsSharedData.perStep.processed = true;
+        return 0;
+    }
+
+    // Получаем модификаторы из характеристик корабля
+    const bonusCap = module.characteristics.additionalInfo.bonusCap;
+    const perStepBonus = module.characteristics.additionalInfo.perStepBonus;
+
+    // Распределяем сопротивления
+    const resistances = {
+        thermal: target.currentCharacteristics.constant.resistance.thermal.armor,
+        kinetic: target.currentCharacteristics.constant.resistance.kinetic.armor,
+        explosive: target.currentCharacteristics.constant.resistance.high_explosive.armor,
+        electromagnetic: target.currentCharacteristics.constant.resistance.electro_magnetic.armor,
+    };
+
+    // Суммируем сопротивления
+    const totalResistance = Object.values(resistances).reduce((acc, val) => acc + val, 0);
+
+    // Проверяем, не превышает ли сумма сопротивлений максимальное значение
+    if (totalResistance > bonusCap) {
+        module.functionsSharedData.perStep.hit = true;
+        module.functionsSharedData.perStep.effectiveness = 0; // Сопротивление слишком высоко
+        log(module.path, `Adaptive Membrane | Resistance exceeded: ${totalResistance} > ${bonusCap}`);
+    } else {
+        // Распределяем сопротивления
+        const effectiveResistance = Object.entries(resistances).reduce((acc, [key, value]) => {
+            const distribution = Math.min(value, perStepBonus);
+            acc[key] = distribution;
+            return acc;
+        }, {});
+
+        // Обновляем текущие сопротивления
+        module.functionsSharedData.currentResistances = effectiveResistance;
+
+        module.functionsSharedData.perStep.hit = true;
+        module.functionsSharedData.perStep.effectiveness = 1 - (totalResistance / bonusCap); // Эффективность
+        module.functionsSharedData.perStep.damage = effectiveResistance; // Урон
+
+        log(module.path, `Adaptive Membrane | Effective Resistance: ${effectiveResistance}, Total Resistance: ${totalResistance}`);
+    }
+
+    module.functionsSharedData.perStep.processed = true;
+    return 0;
+};
 
 export { MODULES_CALCULATION_FUNCTIONS };

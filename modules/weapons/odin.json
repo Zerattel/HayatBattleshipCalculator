@@ -1,10 +1,10 @@
 {
   "main": {
-    "name": "ИК Лазер «Фонарь»",
+    "name": "УФ Лазер «Один»",
     "type": "Орудия",
     "category": "Лазеры",
 
-    "size": 1,
+    "size": 3,
     "position": "external",
     "tags": ["gun", "offencive", "laser"]
   },
@@ -15,11 +15,11 @@
   "interference": 0,
 
   "additionalInfo": {
-    "baseDamage": 24,
-    "targetHeating": 0.02,
-    "effectiveRange": 8000,
-    "maxRange": 12000,
-    "tracking": 45
+    "baseDamage": 117,
+    "targetHeating": 0.09,
+    "effectiveRange": 52000,
+    "maxRange": 78000,
+    "tracking": 7
   },
 
   "initFunctions": "<[LaserAttack]>",
@@ -32,19 +32,19 @@
         "target": "this",
         "characteristic": "constant.heating",
         "modificationType": "number",
-        "modificator": 0.06,
+        "modificator": 0.09,
         "isAffectedByInterference": false
       },
       {
         "target": "this",
         "characteristic": "constant.capacitor.generation",
         "modificationType": "number",
-        "modificator": -4,
+        "modificator": -102,
         "isAffectedByInterference": false
       },
       {
         "target": "target",
-        "characteristic": "dynamic.recived_damage.thermal",
+        "characteristic": "dynamic.recived_damage.electro_magnetic",
         "modificationType": "number",
         "modificator": "module.functionsSharedData.perStep.damage",
         "isAffectedByInterference": false

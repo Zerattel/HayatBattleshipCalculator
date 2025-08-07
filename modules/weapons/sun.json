@@ -1,10 +1,10 @@
 {
   "main": {
-    "name": "ИК Лазер «Фонарь»",
+    "name": "ИК Лазер «Светило»",
     "type": "Орудия",
     "category": "Лазеры",
 
-    "size": 1,
+    "size": 2,
     "position": "external",
     "tags": ["gun", "offencive", "laser"]
   },
@@ -15,11 +15,11 @@
   "interference": 0,
 
   "additionalInfo": {
-    "baseDamage": 24,
-    "targetHeating": 0.02,
-    "effectiveRange": 8000,
-    "maxRange": 12000,
-    "tracking": 45
+    "baseDamage": 39,
+    "targetHeating": 0.04,
+    "effectiveRange": 14000,
+    "maxRange": 21000,
+    "tracking": 22
   },
 
   "initFunctions": "<[LaserAttack]>",
@@ -39,7 +39,7 @@
         "target": "this",
         "characteristic": "constant.capacitor.generation",
         "modificationType": "number",
-        "modificator": -4,
+        "modificator": -21,
         "isAffectedByInterference": false
       },
       {

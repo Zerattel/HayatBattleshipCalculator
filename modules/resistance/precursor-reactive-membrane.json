@@ -15,7 +15,7 @@
     "perStepBonus": 0.04,
     "bonusCap": 0.60
   },
-  "initFunctions": "<[ReactiveMembrane]>",
+  "initFunctions": "<[AdaptiveMembrane]>",
   "modificators": {
     "offline": [],
     "online": [],
