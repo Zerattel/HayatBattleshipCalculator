@@ -1,4 +1,5 @@
 import { mergeDeep } from "../../libs/deepMerge.js";
+import { compareVersions } from "../../libs/utils.js";
 import { log } from "../controls/step-logs/log.js";
 import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
@@ -194,7 +195,15 @@ export default function init() {
 
   if (settings.saveLastState && settings.lastState != "{}") {
     try {
-      loadJSON(JSON.parse(settings.lastState));
+      const json = JSON.parse(settings.lastState);
+
+      const version = json.version ?? "0.0.0";
+      if (compareVersions(ENV.SUPPORTED_SAVE_VERSION, version) == 1) {
+        alert("Unsupported save version.");
+        throw new Error("Unsupported save version");
+      }
+
+      loadJSON(json);
     } catch (e) {
       console.log(e);
       if (confirm("Error on loading last state, remove it?")) {

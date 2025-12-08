@@ -1,6 +1,7 @@
 import { mapProps } from "../canvas/grid.js";
 import { objects } from "../canvas/map.js";
 import { dumpLogs } from "../controls/step-logs/step_logs.js";
+import ENV from "../enviroments/env.js";
 
 export function saveFunction(func) {
   const entire = func.toString().replace(/\n/g, '');
@@ -23,6 +24,7 @@ export function saveFunction(func) {
 
 export function getJSONedData() {
   return {
+    version: ENV.CURRENT_VERSION,
     map: {...mapProps},
     logs: dumpLogs(),
     objects: Object.entries(objects).reduce((acc, [id, v]) => {

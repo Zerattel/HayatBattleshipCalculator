@@ -1,4 +1,6 @@
+import { compareVersions } from "../../libs/utils.js";
 import { loadLogs } from "../controls/step-logs/step_logs.js";
+import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
 import { closeLoading, openLoading, updateLoading } from "../loading.js";
 import classes from "./objectCollector.js";
@@ -91,6 +93,7 @@ export function loadJSON(json) {
 }
 
 const DEFAULT_SAVE_FILE = {
+  version: ENV.CURRENT_VERSION,
   map: {
     size: 10000,
     grid: 500,

@@ -1,4 +1,6 @@
+import { compareVersions } from "../../libs/utils.js";
 import uuidv4 from "../../libs/uuid.js";
+import ENV from "../enviroments/env.js";
 import { loadJSON } from "../save&load/load.js";
 import { getJSONedData } from "../save&load/save.js"
 
@@ -28,11 +30,19 @@ export default function init() {
     fr.onload = (e) => {
       curJSONdata = JSON.parse(fr.result)
 
+      const version = curJSONdata.version ?? "0.0.0";
+      if (compareVersions(ENV.SUPPORTED_SAVE_VERSION, version) == 1) {
+        alert("Unsupported save version");
+        loading.attr('data-active', 'false');
+        return;
+      }
+
       const data = [
         [`File name: `, `${file.name}`],
         [`Last modified: `, `${file.lastModifiedDate.toLocaleString()}`],
         [`File size: `, `${Math.round(file.size / 1024 * 1000) / 1000}KB`],
         [``, ``],
+        [`Version: `, curJSONdata.version],
         [`Map size: `, `${curJSONdata.map.size}m`],
         [`Map grid: `, `${curJSONdata.map.grid}m`],
         [`Core objects: `, `${Object.keys(curJSONdata.objects).length}`]
