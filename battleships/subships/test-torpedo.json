@@ -1,0 +1,39 @@
+{
+  "dynamic": {
+    "hp": {
+      "hull": 100,
+      "armor": 20,
+      "barrier": 0
+    },
+    "charge": 0,
+    "fuel": 1000
+  },
+  "constant": {
+    "body": {
+      "tonnage": -1,
+      "core": 0,
+      "mass": 500,
+      "signature": 10,
+      "subgrid": {
+        "size": 40,
+        "category": "battle",
+        "fuel": 1000
+      }
+    },
+    "acceleration": 60,
+    "maneuverability": 10,
+    "capacitor": {
+      "charge": 0,
+      "generation": 0
+    },
+    "slots": {
+      "external": 4,
+      "internal": 12
+    },
+    "hp": {
+      "hull": 100,
+      "armor": 20,
+      "barrier": 0
+    }
+  }
+}

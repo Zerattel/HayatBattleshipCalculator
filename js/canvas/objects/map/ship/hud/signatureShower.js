@@ -15,14 +15,16 @@ export default class SignatureShower extends StandartObject {
   draw(canvas, ctx, toCanvas, style) {
     super.draw(canvas, ctx, toCanvas, style);
 
-    if (!this.parent || !this.parent.currentCharacteristics) return;
+    if (!this.parent) return;
 
     ctx.strokeStyle = style.getPropertyValue("--main");
     ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
+    const signature = (this.parent.currentCharacteristics?.constant.body.signature ?? -1);
+
     const s =
-      this.parent.currentCharacteristics.constant.body.signature > 0
-        ? this.parent.currentCharacteristics.constant.body.signature
+       signature > 0
+        ? signature
         : 1;
     const length = 2 * Math.PI * (s / 2)
 
@@ -36,7 +38,7 @@ export default class SignatureShower extends StandartObject {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    if (this.parent.currentCharacteristics.constant.body.signature != this.parent.size) {
+    if (signature != this.parent.size) {
       ctx.strokeStyle = style.getPropertyValue("--hud-hull");
       ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 

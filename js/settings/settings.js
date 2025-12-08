@@ -8,6 +8,7 @@ let settings = {
   hudSize: 1,
 
   saveLastState: true,
+  saveLogs: false,
   lastState: "{}",
 }
 

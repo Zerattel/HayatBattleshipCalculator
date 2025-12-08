@@ -1,3 +1,5 @@
+import BaseModule from "../js/canvas/objects/map/module/baseModule.js";
+import ShipObject from "../js/canvas/objects/map/ship/shipObject.js";
 import { calculateRelativeData } from "../js/controls/show_rdata.js";
 import { log } from "../js/controls/step-logs/log.js";
 import { updateLoading } from "../js/loading.js";
@@ -53,6 +55,21 @@ export default function init() {
 
 export { isReady, modules, setReadyFunction };
 
+/**
+ * @type { Record<string, 
+ * (
+ *    modificator: {
+ *      target: string,
+ *      characteristic: string,
+ *      modificationType: string,
+ *      modificator: number | string,
+ *      isAffectedByInterference: boolean
+ *    }, 
+ *    module: BaseModule,
+ *    parent: ShipObject,
+ *    target: ShipObject
+ *  ) => number }
+ */
 const MODULES_CALCULATION_FUNCTIONS = {
   RENContactor: (modificator, module, parent, target) => {
     if (!target || !parent) return 0;

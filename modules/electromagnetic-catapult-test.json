@@ -1,0 +1,46 @@
+{
+  "main": {
+    "name": "Электромагнитная торпедная катапульта",
+    "type": "Стартовые площадки",
+    "category": "Катапульты",
+    "class": "SubshipDeployerModule",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["catapult", "subship"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 5,
+
+  "interference": 0,
+
+  "additionalInfo": {
+    "launchVector": [120, 0],
+    "subshipClass": "TorpedoSubship",
+    "subshipData": "Torpedo T"
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -5,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -15,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

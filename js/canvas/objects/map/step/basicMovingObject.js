@@ -29,6 +29,8 @@ export default class BasicMovingObject extends BasicStepObject {
           amount
     );
   }
+  
+  collision = true;
 
   get size() {
     return 30;
@@ -52,82 +54,43 @@ export default class BasicMovingObject extends BasicStepObject {
     return (this._direction = -val + 180);
   }
 
-  step(index, objectsData) {
-    let data = super.step(index, objectsData);
-    
-    if (index == 0) {
-      const rx = this.velocity.x * this._step,
-            ry = this.velocity.y * this._step;
-      data.maneuver = {};
-      data.maneuver.startPoint = [this._x, this._y];
 
-      this.moveTo(this._x + rx, this._y + ry);
-      (rx != 0 || ry != 0) &&
-        log(
-          this.path,
-          `next | moved (${this._x - rx}, ${this._y - ry}) -> (${this._x}, ${this._y}) [${rx}, ${ry}]`
-        );
-      
-      data.maneuver.endPoint = [this._x, this._y];
-      data.maneuver.delta = [rx, ry];
+  finalize(objectsData) {
+    const phys = objectsData[this.id]?._physics;
+    if (phys) {
+      this._x = phys.pos.x;
+      this._y = phys.pos.y;
+      this.velocity = phys.vel;
     }
 
-    if (index == 2) {
-      for (let [n, target] of Object.entries(objects)) {
-        if (n == this.id) continue;
+    const collisions = objectsData._physics_collisions || [];
+    for (const c of collisions) {
+      if (c.a === this.id || c.b === this.id) {
+        const targetObj = objects[c.a === this.id ? c.b : c.a];
+        if (!targetObj) continue;
 
-        const collision = collisionPoint(
-          this.size,
-          objectsData[this.id].maneuver.startPoint,
-          objectsData[this.id].maneuver.endPoint,
-          target.size,
-          objectsData[n].maneuver.startPoint,
-          objectsData[n].maneuver.endPoint
+        this.onCollision(
+          c,
+          targetObj
         );
-
-        if (collision.collision) {
-          this.onCollision(collision, target, objectsData[this.id], objectsData[n]);
-        }
       }
     }
 
-    return data;
+    super.finalize(objectsData);
   }
 
-  onCollision(collision, target, thisManeuver, targetManeuver) {
-    const mp1 = point(...thisManeuver.maneuver.startPoint),
-      mp2 = point(...thisManeuver.maneuver.endPoint),
-      tp1 = point(...targetManeuver.maneuver.startPoint),
-      tp2 = point(...targetManeuver.maneuver.endPoint);
-    
-    const v1 = point(() => (mp2 - mp1) / this._step);
-    const v2 = point(() => (tp2 - tp1) / target._step);
 
-    const energy = (0.5 * this.mass * v1.length ** 2 + 0.5 * target.mass * v2.length ** 2);
-
-    const m1 = this.mass;
-    const m2 = target.mass;
-    const collisionNormal = point(collision.p2[0] - collision.p1[0], collision.p2[1] - collision.p1[1]).normalize();
-    
-    const v1n = collisionNormal.dot(v1);
-    const v2n = collisionNormal.dot(v2);
-
-    const v1t = point(() => v1 - collisionNormal * v1n)
-    
-    this.velocity = point(() => (v1t + collisionNormal * (((m1 - m2) * v1n + 2 * m2 * v2n) / (m1 + m2))) * this.bounciness);
-
-    const rx = this.velocity.x * this._step * (1 - collision.time),
-          ry = this.velocity.y * this._step * (1 - collision.time);
-
-    this.moveTo(collision.p1[0] + rx, collision.p1[1] + ry);
+  onCollision(collision, target) {
+    let energy = collision.energy;
+    if (energy === undefined) {
+        energy = 0.5 * impulse * Math.abs(relVel);
+    }
 
     log(this.path, `onCollision | collision!<br>
       ----------- | with ${target.path}<br>
-      ----------- | speeds: ${v1.length} m/s | ${v2.length} m/s<br>
-      ----------- | collision: ${collision.point[0]}m x ${collision.point[1]}m<br>
+      ----------- | collision: ${collision.point.x}m x ${collision.point.y}m<br>
       ----------- | energy: ${(Math.round(energy / 1000)).toLocaleString('en-US', { maximumFractionDigits: 1, notation: "compact" })} kJ<br>
-      ----------- | resulted velocity: ${this.velocity.length}<br>
-      ----------- | resulted position: ${this._x}m x ${this._y}m<br>`)
+      ----------- | resulted impulse: ${this.impulse}<br>`)
 
     return energy;
   }
@@ -194,4 +157,4 @@ export default class BasicMovingObject extends BasicStepObject {
 }
 
 registerClass(BasicMovingObject);
-registerSteps(BasicMovingObject, 1, []);
+registerSteps(BasicMovingObject, 3, []);
