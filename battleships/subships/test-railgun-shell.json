@@ -1,0 +1,46 @@
+{
+  "dynamic": {
+    "hp": {
+      "hull": 30,
+      "armor": 0,
+      "barrier": 0
+    },
+    "charge": 0,
+    "fuel": 0
+  },
+  "constant": {
+    "body": {
+      "tonnage": -1,
+      "core": 0,
+      "mass": 12000,
+      "signature": 10,
+      "subgrid": {
+        "size": 40,
+        "category": "battle",
+        "fuel": 0,
+
+        "self_destruct_in": 24
+      }
+    },
+    "collision_energy_distribution": {
+      "damage": 0.9,
+      "velocity": 0.1,
+      "heat": 0
+    },
+    "acceleration": 0,
+    "maneuverability": 0,
+    "capacitor": {
+      "charge": 0,
+      "generation": 0
+    },
+    "slots": {
+      "external": 0,
+      "internal": 0
+    },
+    "hp": {
+      "hull": 30,
+      "armor": 0,
+      "barrier": 0
+    }
+  }
+}

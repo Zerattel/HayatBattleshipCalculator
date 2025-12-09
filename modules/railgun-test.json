@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Рельсотрон",
+    "type": "Стартовые площадки",
+    "category": "Высокомощные ускорители",
+    "class": "SubgridLauncherModule",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["catapult", "subgrid", "railgun"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 3,
+
+  "interference": 0,
+
+  "launcher": {
+    "vector": [0, 1600],
+    "headingOffset": 0,
+    "subgrid": {
+      "class": "ShellSubgridObject",
+      "dataRef": "Railgun Shell (10m)"
+    }
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -5,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -9,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

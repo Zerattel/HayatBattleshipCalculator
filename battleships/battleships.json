@@ -23,5 +23,6 @@
   "KR - «Кузнец»": "capital/kr-kuznec.json",
   "ARES - «LEVIATHAN»": "capital/nc-leviathan.json",
 
-  "Torpedo T": "subships/test-torpedo.json"
+  "Torpedo T": "subships/test-torpedo.json",
+  "Railgun Shell (10m)": "subships/test-railgun-shell.json"
 }
