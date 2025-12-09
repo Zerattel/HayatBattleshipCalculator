@@ -23,11 +23,11 @@ export default class SubgridLauncherModule extends BaseModule {
       const object = createObject(
         this.characteristics.launcher.subgrid.class,
         this.parent._x, this.parent._y, 
-        this.parent.direction, this.parent.velocity, 
+        this.parent.direction + this.characteristics.launcher.headingOffset, 0, 
         this, subgridData
       )
 
-      const offset = (object.size ?? 30) + (this.parent.size ?? 30);
+      const offset = (object.size ?? 30) + (this.parent.size ?? 30) + 10;
 
       const dirRad = ((this.parent._direction + this.characteristics.launcher.headingOffset) / 180) * Math.PI;
       const globalOffset = point(
@@ -38,6 +38,7 @@ export default class SubgridLauncherModule extends BaseModule {
       object._x += globalOffset.x;
       object._y += globalOffset.y;
 
+      object.velocity = point(this.parent.velocity.x, this.parent.velocity.y);
       object.applyForce(point(this.characteristics.launcher.vector[0], this.characteristics.launcher.vector[1]));
 
       object.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())

@@ -63,6 +63,14 @@
           <label>Overlay Resolution: </label><input type="number" id="modal-settings-overlayres" class="small" placeholder="2000" />px
         </div>
         <button id="modal-settings-updateres" class="fit">Update Resolutions</button>
+        <div style="
+          display: grid;
+          grid-template-columns: 1fr 60px 20px;
+          margin-top: 20px;
+        ">
+          <label>Simulation Speedup (mult): </label><input type="number" id="modal-settings-sim_speedup" class="small" placeholder="4" /><span></span>
+          <label>Instant simulation</label><input type="checkbox" id="modal-settings-instant_sim" />
+        </div>
         <div style="margin-top: 20px;">
           <label>Save state on exit?</label><input type="checkbox" id="modal-settings-savestate" />
         </div>

@@ -1,6 +1,6 @@
 import { mapProps } from "../canvas/grid.js";
 import { EVENTS } from "../events.js";
-import { settings } from "../settings/settings.js";
+import { saveSettings, settings } from "../settings/settings.js";
 
 export default function () {
   $('#tab-settings').on('click', () => {
@@ -27,16 +27,36 @@ export default function () {
         },
       }
     ))
+
+    saveSettings();
   })
+
+
+  $('#modal-settings-sim_speedup').val(settings.physicsSimulationSpeedupMultiplier);
+  $('#modal-settings-sim_speedup').on('change', (e) => {
+    const val = Number($('#modal-settings-sim_speedup').val());
+
+    settings.physicsSimulationSpeedupMultiplier = Number.isNaN(val) ? 4 : val;
+    saveSettings();
+  })
+
+  $('#modal-settings-instant_sim').prop('checked', settings.instantSimulation);
+  $('#modal-settings-instant_sim').on('change', (e) => {
+    settings.instantSimulation = $('#modal-settings-instant_sim').is(':checked');
+    saveSettings();
+  })
+
 
   $('#modal-settings-savestate').prop('checked', settings.saveLastState);
   $('#modal-settings-savestate').on('change', (e) => {
     settings.saveLastState = $('#modal-settings-savestate').is(':checked');
+    saveSettings();
   })
 
   $('#modal-settings-savelogs').prop('checked', settings.saveLogs);
   $('#modal-settings-savelogs').on('change', (e) => {
     settings.saveLogs = $('#modal-settings-savelogs').is(':checked');
+    saveSettings();
   })
 
   $('#modal-settings-hudsize').val(settings.hudSize);
@@ -52,5 +72,7 @@ export default function () {
         },
       }
     ))
+
+    saveSettings();
   })
 }

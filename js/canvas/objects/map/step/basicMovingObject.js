@@ -30,8 +30,8 @@ export default class BasicMovingObject extends BasicStepObject {
       ) * amount);
     } else {
       const rotated = point(
-        amount.x * Math.cos(dirRad) - amount.y * Math.sin(dirRad),
-        amount.x * Math.sin(dirRad) + amount.y * Math.cos(dirRad)
+        amount.x * Math.cos(-dirRad) - amount.y * Math.sin(-dirRad),
+        amount.x * Math.sin(-dirRad) + amount.y * Math.cos(-dirRad)
       );
 
       force = rotated;
@@ -62,6 +62,16 @@ export default class BasicMovingObject extends BasicStepObject {
     if (val == 0) return (this._direction = 180);
 
     return (this._direction = -val + 180);
+  }
+
+
+  physicsSimulationStep(step, objectsData) {
+    const phys = objectsData[this.id]?._physics;
+    if (phys) {
+      this._x = phys.pos.x;
+      this._y = phys.pos.y;
+      this.velocity = phys.vel;
+    }
   }
 
 

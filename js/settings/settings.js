@@ -7,25 +7,49 @@ let settings = {
 
   hudSize: 1,
 
+  physicsSimulationSpeedupMultiplier: 20,
+  instantSimulation: false,
+
   saveLastState: true,
   saveLogs: false,
   lastState: "{}",
+}
+
+
+const fromString = {
+  gridResolution: Number,
+  mapResolution: Number,
+  overlayResolution: Number,
+
+  hudSize: Number,
+
+  physicsSimulationSpeedupMultiplier: Number,
+  instantSimulation: (v) => v === "true",
+
+  saveLastState: (v) => v === "true",
+  saveLogs: (v) => v === "true",  
+  lastState: String,
+}
+
+
+function saveSettings() {
+  for (let [n, v] of Object.entries(settings)) {
+    localStorage.setItem(n, v);
+  }
 }
 
 export default function () {
   for (let n in settings) {
     const val = localStorage.getItem(n);
 
-    if (val) settings[n] = val;
+    if (val !== undefined) settings[n] = fromString[n](val);
   }
 
   window.addEventListener("beforeunload", function(e) {
     if (settings.saveLastState) settings.lastState = JSON.stringify(getJSONedData());
 
-    for (let [n, v] of Object.entries(settings)) {
-      localStorage.setItem(n, v);
-    }
+    saveSettings();
   });
 }
 
-export { settings }
+export { settings, saveSettings }

@@ -39,8 +39,68 @@ export default class PhysicsEngine {
     this.bodies.delete(id);
   }
 
+  simulate(substepCallback) {
+    this.collisionEvents = [];
+    const dtSub = this.dt / this.substeps;
+
+    // prepare prevPos for CCD
+    for (const b of this.bodies.values()) {
+      b.prevPos.x = b.pos.x;
+      b.prevPos.y = b.pos.y;
+    }
+
+    let s = 0;
+
+    return () => {
+      if (s >= this.substeps) return false;
+
+      // integrate forces -> velocity -> pos (semi-implicit Euler)
+      for (const b of this.bodies.values()) {
+        // sum forces
+        let Fx = 0, Fy = 0;
+        for (const f of b.forces) { Fx += f.x; Fy += f.y; }
+        const ax = Fx / b.mass;
+        const ay = Fy / b.mass;
+        b.vel.x += ax * dtSub;
+        b.vel.y += ay * dtSub;
+
+        if (this.globalDamping) {
+          b.vel.x *= (1 - this.globalDamping * dtSub);
+          b.vel.y *= (1 - this.globalDamping * dtSub);
+        }
+
+        b.pos.x += b.vel.x * dtSub;
+        b.pos.y += b.vel.y * dtSub;
+      }
+
+      // collision detection & resolution (pairwise, O(n^2) — можно заменить spatial hash / quadtree)
+      const arr = Array.from(this.bodies.values());
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+          const A = arr[i], B = arr[j];
+          // CCD: если сегмент prev->pos пересекает круг другого — считаем коллизией
+          if (this._segmentIntersectsCircle(A.prevPos, A.pos, B.pos, B.radius) ||
+              this._segmentIntersectsCircle(B.prevPos, B.pos, A.pos, A.radius) ||
+              this._circlesIntersect(A.pos, B.pos, A.radius, B.radius)) {
+            this._resolveCollision(A, B);
+          }
+        }
+      }
+
+      // update prevPos for next substep CCD
+      for (const b of this.bodies.values()) {
+        b.prevPos.x = b.pos.x;
+        b.prevPos.y = b.pos.y;
+      }
+
+
+      substepCallback?.(s);
+      return ++s;
+    }
+  }
+
   // основной шаг: вызывает серию substeps
-  simulate() {
+  instantSimulate(substepCallback) {
     this.collisionEvents = [];
     const dtSub = this.dt / this.substeps;
 
@@ -90,6 +150,9 @@ export default class PhysicsEngine {
         b.prevPos.x = b.pos.x;
         b.prevPos.y = b.pos.y;
       }
+
+
+      substepCallback?.(s);
     } // end substeps
   }
 
