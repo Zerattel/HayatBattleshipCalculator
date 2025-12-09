@@ -35,6 +35,10 @@ export default class BaseModule {
     return this.characteristics.main.type + " | " + this.characteristics.main.category;
   }
 
+  get name() {
+    return "module " + this.uuid + " " + this.characteristics.main.name;
+  }
+
   get path() {
     return (this.parent?.path || '') + " > " + "module " + this.uuid + " " + this.characteristics.main.name
   }

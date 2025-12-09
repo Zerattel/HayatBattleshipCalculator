@@ -2,7 +2,7 @@ const ENV = {
   STEP: 6,
   DEFAULT_CANVAS_SIZE: 10000,
   SUPPORTED_SAVE_VERSION: "1.0.0",
-  CURRENT_VERSION: "1.0.1",
+  CURRENT_VERSION: "1.1.0",
 }
 
 export default ENV;

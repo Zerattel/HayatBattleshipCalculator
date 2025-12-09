@@ -3,11 +3,11 @@
     "name": "Электромагнитная торпедная катапульта",
     "type": "Стартовые площадки",
     "category": "Катапульты",
-    "class": "SubshipDeployerModule",
+    "class": "SubgridLauncherModule",
 
     "size": 1,
     "position": "external",
-    "tags": ["catapult", "subship"]
+    "tags": ["catapult", "subgrid"]
   },
   "activation": "active",
   "cycle": 1,
@@ -15,10 +15,13 @@
 
   "interference": 0,
 
-  "additionalInfo": {
-    "launchVector": [120, 0],
-    "subshipClass": "TorpedoSubship",
-    "subshipData": "Torpedo T"
+  "launcher": {
+    "vector": [0, 120],
+    "headingOffset": 0,
+    "subgrid": {
+      "class": "SubgridObject",
+      "dataRef": "Torpedo T"
+    }
   },
 
   "modificators": {

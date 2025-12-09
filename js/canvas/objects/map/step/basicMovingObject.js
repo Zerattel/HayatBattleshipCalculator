@@ -19,15 +19,25 @@ export default class BasicMovingObject extends BasicStepObject {
   }
 
   applyForce(amount) {
-    this.velocity = calc(
-      () =>
-        this.velocity +
-        point(
-          Math.sin((this._direction / 180) * Math.PI),
-          Math.cos((this._direction / 180) * Math.PI)
-        ) *
-          amount
-    );
+    const dirRad = (this._direction / 180) * Math.PI;
+
+    let force;
+
+    if (typeof amount === "number") {
+      force = calc(() => point(
+        Math.sin(dirRad),
+        Math.cos(dirRad)
+      ) * amount);
+    } else {
+      const rotated = point(
+        amount.x * Math.cos(dirRad) - amount.y * Math.sin(dirRad),
+        amount.x * Math.sin(dirRad) + amount.y * Math.cos(dirRad)
+      );
+
+      force = rotated;
+    }
+
+    this.velocity = calc(() => this.velocity + force);
   }
   
   collision = true;

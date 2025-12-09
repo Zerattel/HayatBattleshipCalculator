@@ -521,6 +521,14 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
 
     loadChildren && super.loadChildren(data);
   }
+
+  afterLoad() {
+    for (let md of ["externalModules", "internalModules", "otherModules"]) {
+      for (let module of this[md]) {
+        module.afterLoad?.();
+      }
+    }
+  }
 }
 
 registerClass(ShipObject);

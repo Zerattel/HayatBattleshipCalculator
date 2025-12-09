@@ -193,6 +193,11 @@ export default function init() {
   })
 
 
+  document.addEventListener(EVENTS.LOAD_ENDED, () => {
+    for (let i of Object.keys(objects)) objects[i].afterLoad?.();
+  })
+
+
   if (settings.saveLastState && settings.lastState != "{}") {
     try {
       const json = JSON.parse(settings.lastState);

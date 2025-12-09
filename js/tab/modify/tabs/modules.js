@@ -4,8 +4,10 @@ import { modules } from "../../../../modules/modules.js";
 import { objects } from "../../../canvas/map.js";
 import { check_id } from "../../../canvas/map/check_id.js";
 import BaseModule from "../../../canvas/objects/map/module/baseModule.js";
+import SubgridLauncherModule from "../../../canvas/objects/map/module/subgrid/subgridLauncherModule.js";
 import BasicTask from "../../../canvas/objects/map/tasks/basicTask.js";
 import { EVENTS } from "../../../events.js";
+import { createObject } from "../../../save&load/load.js";
 import { groupHTMLTemplate, optionHTMLTemplate, registerSelect } from "../../../ui/multilayered-select/multilayered-select.js";
 
 const htmlTemplate = `<div class="module" id="{0}">
@@ -105,7 +107,7 @@ export default class {
           detail: {
             id: id,
             func: "addModule",
-            attr: [ new BaseModule(modules[module]), position ],
+            attr: [ createObject(modules[module].main.class ?? "BaseModule", modules[module]), position ],
             redraw: false,
           }
         }

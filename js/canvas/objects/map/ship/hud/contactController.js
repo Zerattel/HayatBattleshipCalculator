@@ -311,10 +311,10 @@ export class ContactController extends BasicStepObject {
     this.currentTarget = data.currentTarget;
 
     loadChildren && super.loadChildren(data);
+  }
 
-    document.addEventListener(EVENTS.LOAD_ENDED, () => {
-      this.listenForModifiers();
-    })
+  afterLoad() {
+    this.listenForModifiers();
   }
 }
 
