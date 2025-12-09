@@ -95,7 +95,7 @@ export default function init() {
         Object.keys(objects).length 
           * (MAX_INTER_STEPS() + 2) // steps + next + finalize для каждого объекта
         + 4 // промежуточные состояния
-        + 3 + ENV.PHYSICS_ENGINE_STEPS, // физ движок
+        + 4 + ENV.PHYSICS_ENGINE_STEPS + Object.keys(objects).length, // физ движок
       0,
       0
     );
@@ -171,6 +171,12 @@ export default function init() {
       log('system', `done! export states...`);
     
       exportPhysicsState();
+      
+      for (let i of Object.keys(objects)) {
+        objects[i].afterSimulation?.(prevData);
+
+        stepLoading('step', 1);
+      }
 
       log('system', `done!`);
       stepLoading('step', 1);
@@ -197,16 +203,16 @@ export default function init() {
     const onStep = (step) => {
       exportPhysicsState();
 
-      const forces = {};
+      const callback = {};
       for (let i of Object.keys(objects)) {
         const f = objects[i].physicsSimulationStep?.(step, dt, prevData);
 
-        if (f !== undefined) forces[i] = f;
+        if (f !== undefined) callback[i] = f;
       }
 
       stepLoading('step', 1);
 
-      return forces;
+      return callback;
     }
 
     if (settings.instantSimulation) {

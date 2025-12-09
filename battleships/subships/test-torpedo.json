@@ -19,7 +19,18 @@
         "fuel": 102,
 
         "self_destruct_in": 120,
-        "thrust": 40000
+        "thrust": 40000,
+
+        "explosion": {
+          "radius": 200,
+          "damage": {
+            "kinetic": 0,
+            "high_explosive": 350,
+            "electro_magnetic": 0,
+            "thermal": 100
+          },
+          "falloff": 2
+        }
       }
     },
     "acceleration": 60,

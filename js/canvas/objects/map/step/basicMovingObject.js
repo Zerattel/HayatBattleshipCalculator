@@ -75,7 +75,7 @@ export default class BasicMovingObject extends BasicStepObject {
   }
 
 
-  finalize(objectsData) {
+  afterSimulation(objectsData) {
     const phys = objectsData[this.id]?._physics;
     if (phys) {
       this._x = phys.pos.x;
@@ -95,8 +95,6 @@ export default class BasicMovingObject extends BasicStepObject {
         );
       }
     }
-
-    super.finalize(objectsData);
   }
 
 

@@ -9,6 +9,7 @@ import SubgridObject from "../subgridObject.js";
 
 export default class SelfguidedSubgridObject extends SubgridObject {
   target = new ObjectConnection(() => objects);
+  isCollided = false;
 
 
   constructor(x, y, direction, velocity, controlledBy = null, battleshipChars = {}) {
@@ -39,65 +40,265 @@ export default class SelfguidedSubgridObject extends SubgridObject {
     super.afterLoad();
   }
 
+
+  applyExplosiveDamage() {
+    const { radius, falloff, damage } 
+      = this.currentCharacteristics.constant.body.subgrid.explosion 
+      ?? { 
+        radius: 10, 
+        falloff: 2,  
+        damage: {
+          kinetic: 0,
+          high_explosive: 100,
+          electro_magnetic: 0,
+          thermal: 50
+        },
+      };
+
+    
+    for (let obj of Object.values(objects)) {
+      if (!("applyDamage" in obj) || !("currentCharacteristics" in obj)) continue;
+
+      const rx = obj._x - this._x;
+      const ry = obj._y - this._y;
+      const range = rx*rx + ry*ry;
+
+      if (range > (radius*radius)) continue;
+
+      const mult = Math.pow(1 - Math.sqrt(range) / radius, falloff)
+      for (let [k, v] of Object.entries(damage)) {
+        if (!obj.currentCharacteristics.dynamic.recived_damage[k])
+          obj.currentCharacteristics.dynamic.recived_damage[k] = 0;
+
+        obj.currentCharacteristics.dynamic.recived_damage[k] += v * mult;
+      }
+
+      obj.applyDamage();
+    }
+  }
+
+
   physicsSimulationStep(step, dt, objectsData) {
-    const prevForces = super.physicsSimulationStep(step, dt, objectsData) ?? [];
+    if (this.isCollided) return;
 
-    const missile = this;
-    const target = this.target.Connection;
+    if (this.currentCharacteristics.dynamic.hp.hull <= 0) {
+      this.isCollided = true;
+      this.visible = false;
 
-    if (!target || this.currentCharacteristics?.constant?.body?.subgrid?.fuel <= this._livetime) {
-        return prevForces;
+      this.applyExplosiveDamage();
+
+      return {
+        delete: true
+      };
     }
 
-    const thrust = (this.currentCharacteristics?.constant?.body?.subgrid?.thrust) ?? 100;
+    const data = super.physicsSimulationStep(step, dt, objectsData);
 
-    // Позиции
+    const collisions = objectsData._physics_collisions || [];
+    for (const c of collisions) {
+      if (c.a === this.id || c.b === this.id) {
+        this.isCollided = true;
+        this.visible = false;
+
+        this.applyExplosiveDamage();
+
+        return {
+          delete: true
+        };
+      }
+    }
+
+    // ---- проверки и базовые параметры ----
+    const target = this.target && this.target.Connection;
+    if (!target || this.currentCharacteristics?.constant?.body?.subgrid?.fuel <= this._livetime) {
+      return data;
+    }
+
+    // thrust — сила (Н), mass — масса (кг)
+    const thrust = (this.currentCharacteristics?.constant?.body?.subgrid?.thrust) ?? 100;
+    const mass = (this.currentCharacteristics?.constant?.body?.mass) ?? 1;
+    const maxAccel = thrust / Math.max(mass, 1e-6); // m/s^2
+
+    // Позиции и скорости
     const R = { x: this._x, y: this._y };
     const T = { x: target._x, y: target._y };
+    const Vm = { x: this.velocity?.x || 0, y: this.velocity?.y || 0 };
+    const Vt = { x: target.velocity?.x || 0, y: target.velocity?.y || 0 };
 
-    // Скорости
-    const body = {
-        vx: this.velocity.x,
-        vy: this.velocity.y,
-        deltaVStep: thrust * dt
+    // Относительный вектор и расстояние
+    const rx = T.x - R.x;
+    const ry = T.y - R.y;
+    const range = Math.hypot(rx, ry) || 1e-6;
+    const ux = rx / range;
+    const uy = ry / range;
+    const nx = -uy;
+    const ny = ux;
+
+    // Относительная скорость (v_target - v_missile)
+    const vrx = Vt.x - Vm.x;
+    const vry = Vt.y - Vm.y;
+
+    // Текущая скорость ракеты (модуль)
+    const speedM = Math.hypot(Vm.x, Vm.y);
+
+    // LOS rate (угловая скорость линии визирования)
+    const losRateNow = (vrx * nx + vry * ny) / range; // rad/s
+
+    // closing velocity (положительное = сближаемся)
+    const closingV = -(vrx * ux + vry * uy);
+
+    // -------------------------
+    // 1) Предсказание времени до перехвата (итеративно)
+    //    модель: цель движется равномерно; ракета может ускоряться вдоль направления к цели
+    //    упрощение: ракета в среднем достигает скорости S = speedM + maxAccel * t
+    //    решаем уравнение ||relPos + relVel * t|| = S * t  (quadratic), итеративно обновляя S
+    // -------------------------
+    const relPosDotRelVel = rx * vrx + ry * vry;
+    const relVelSq = vrx * vrx + vry * vry;
+    const relPosSq = rx * rx + ry * ry;
+
+    // Начальная оценка S и t
+    let S = Math.max(speedM, Math.min(speedM + 0.5 * maxAccel, 1e-6)); // стартовое предположение
+    if (S < 1e-6) S = 1.0; // избегаем degenerate
+    let tIntercept = Math.max(0.01, range / S);
+
+    // Итеративное уточнение (несколько итераций — быстро и стабильно)
+    for (let iter = 0; iter < 4; iter++) {
+      // Решаем квадратичное уравнение: (relVel^2 - S^2) t^2 + 2(relPos·relVel) t + relPos^2 = 0
+      const A = relVelSq - S * S;
+      const B = 2 * relPosDotRelVel;
+      const C = relPosSq;
+
+      let tCandidate = null;
+      if (Math.abs(A) < 1e-6) {
+        // линейное решение: B t + C = 0
+        if (Math.abs(B) > 1e-9) {
+          const tSol = -C / B;
+          if (tSol > 0) tCandidate = tSol;
+        }
+      } else {
+        const disc = B * B - 4 * A * C;
+        if (disc >= 0) {
+          const sqrtD = Math.sqrt(disc);
+          const t1 = (-B + sqrtD) / (2 * A);
+          const t2 = (-B - sqrtD) / (2 * A);
+          // берем наименьший положительный корень
+          const tPos = [t1, t2].filter(t => t > 1e-5).sort((a, b) => a - b);
+          if (tPos.length) tCandidate = tPos[0];
+        }
+      }
+
+      // защита: если нет положительного решения — используем грубую оценку
+      if (!tCandidate) {
+        tCandidate = Math.max(0.01, range / Math.max(1.0, S));
+      }
+
+      tIntercept = tCandidate;
+
+      // Обновляем оценку S: предполагаем, что ракета может разогнаться вдоль LOS с accel = maxAccel
+      // Простейшая модель: средняя скорость ≈ speedM + 0.5 * maxAccel * t
+      const S_new = Math.max(speedM, speedM + 0.5 * maxAccel * Math.min(tIntercept, 5.0));
+      // Сглаживание обновления S, чтобы итерации сходились
+      S = 0.5 * S + 0.5 * S_new;
+    }
+
+    // Вычисляем предсказанную точку перехвата (позиция цели через tIntercept)
+    const predictTgtX = T.x + Vt.x * tIntercept;
+    const predictTgtY = T.y + Vt.y * tIntercept;
+
+    // Новый относительный вектор к предсказанной точке
+    const rxP = predictTgtX - R.x;
+    const ryP = predictTgtY - R.y;
+    const rangeP = Math.hypot(rxP, ryP) || 1e-6;
+    const uxP = rxP / rangeP;
+    const uyP = ryP / rangeP;
+    const nxP = -uyP;
+    const nyP = uxP;
+
+    // Относительная скорость в направлении, важном для предсказания
+    const vrxP = Vt.x - Vm.x;
+    const vryP = Vt.y - Vm.y;
+
+    // LOS rate относительно предсказанной точки (approx)
+    const losRatePred = (vrxP * nxP + vryP * nyP) / rangeP;
+
+    // -------------------------
+    // 2) Adaptive PN, но относительно предсказанной точки
+    // -------------------------
+    const N_base = 2.5;
+    const N_max  = 8.0;
+    const k_los = 1.0;
+    const k_closing = 1.2;
+    const V_expected = Math.max(50, S); // эталонная скорость (подстраиваемся под S)
+
+    let N = N_base
+          + k_los * Math.min(Math.abs(losRatePred) * rangeP / 100, 6)
+          + k_closing * Math.max(0, 1 - ((-(vrxP * uxP + vryP * uyP)) / V_expected));
+    N = Math.min(Math.max(N, N_base), N_max);
+
+    // PN команда поперечного ускорения (в сторону, перпендикулярно LOS к пред. точке)
+    let aLat = N * Math.max(0, (-(vrxP * uxP + vryP * uyP))) * losRatePred;
+    // если closing velocity отрицательное (удаляется) — усиливаем коррекцию
+    if (aLat === 0 && losRatePred !== 0) {
+      // fallback: используем текущий losRate и S
+      aLat = N * S * losRatePred;
+    }
+
+    let aCmdX = nxP * aLat;
+    let aCmdY = nyP * aLat;
+
+    // Ограничение поперечной составляющей по maxAccel
+    const aLatAbs = Math.hypot(aCmdX, aCmdY);
+    if (aLatAbs > maxAccel) {
+      const scale = maxAccel / aLatAbs;
+      aCmdX *= scale;
+      aCmdY *= scale;
+    }
+
+    // Используем оставшийся доступный ускорение для сокращения дистанции (по LOS к предсказанной точке)
+    const usedAccel = Math.hypot(aCmdX, aCmdY);
+    if (usedAccel < maxAccel) {
+      const remaining = maxAccel - usedAccel;
+      // forwardFactor регулирует, какую часть remaining направим вдоль LOS
+      const forwardFactor = 0.9;
+      aCmdX += uxP * remaining * forwardFactor;
+      aCmdY += uyP * remaining * forwardFactor;
+    }
+
+    // -------------------------
+    // 3) Кинематическая задержка (guidance lag)
+    //    экспоненциальный фильтр: a_out = a_prev * exp(-dt/tau) + a_cmd * (1-exp(-dt/tau))
+    //    tau — время реакции (в секундах). Малое tau -> быстрая реакция.
+    // -------------------------
+    const tau = (this.currentCharacteristics?.constant?.guidance?.lag_tau) ?? 0.12; // сек (пример)
+    // храним предыдущее командное ускорение в свойстве ракеты
+    if (!this._guidanceState) this._guidanceState = { ax: 0, ay: 0 };
+    const alpha = 1 - Math.exp(-dt / Math.max(tau, 1e-6));
+    this._guidanceState.ax = this._guidanceState.ax * (1 - alpha) + aCmdX * alpha;
+    this._guidanceState.ay = this._guidanceState.ay * (1 - alpha) + aCmdY * alpha;
+
+    // Финальная команда (после фильтра)
+    let aFinalX = this._guidanceState.ax;
+    let aFinalY = this._guidanceState.ay;
+
+    // Ещё раз ограничим по maxAccel (чтобы не выйти за пределы после фильтра)
+    const aFinalMag = Math.hypot(aFinalX, aFinalY);
+    if (aFinalMag > maxAccel) {
+      const scaleFinal = maxAccel / aFinalMag;
+      aFinalX *= scaleFinal;
+      aFinalY *= scaleFinal;
+    }
+
+    // Визуализация: направление ракеты (опционально — ориентируем по вектору ускорения)
+    const angle = Math.atan2(-aFinalY, aFinalX);
+    this._direction = angle * 180 / Math.PI + 90;
+
+    // Возвращаем массив сил/ускорений: если движок ожидает силы, умножьте на mass.
+    // По умолчанию возвращаем ускорение (a = dv/dt).
+    return {
+      ...data,
+      forces: [...(data?.forces ?? []), { x: aFinalX * mass, y: aFinalY * mass }]
     };
-    const tgt = {
-        vx: (target.velocity && typeof target.velocity.x === "number") ? target.velocity.x : 0,
-        vy: (target.velocity && typeof target.velocity.y === "number") ? target.velocity.y : 0
-    };
-
-    // Вектор до цели
-    const dx = T.x - R.x;
-    const dy = T.y - R.y;
-
-    // Угол на цель
-    const angleToTarget = Math.atan2(dy, dx);
-
-    // Относительная скорость
-    const relativeVx = body.vx - tgt.vx;
-    const relativeVy = body.vy - tgt.vy;
-
-    // Поперечная составляющая скорости
-    const transverseVelocity =
-        relativeVx * Math.sin(angleToTarget) -
-        relativeVy * Math.cos(angleToTarget);
-
-    // Поправка поперечной скорости
-    const transverseCorrectionX = -transverseVelocity * Math.sin(angleToTarget);
-    const transverseCorrectionY =  transverseVelocity * Math.cos(angleToTarget);
-
-    // Итоговый манёвр
-    const maneuverVx = body.deltaVStep * Math.cos(angleToTarget) + transverseCorrectionX;
-    const maneuverVy = body.deltaVStep * Math.sin(angleToTarget) + transverseCorrectionY;
-
-    const outX = maneuverVx / dt;
-    const outY = maneuverVy / dt;
-
-    // Обновляем визуальный угол (поворот по направлению силы)
-    const currentAngle = Math.atan2(-outY, outX);
-    this._direction = currentAngle * 180 / Math.PI + 90;
-
-    return [...prevForces, { x: outX, y: outY }];
   }
 
 
@@ -108,7 +309,8 @@ export default class SelfguidedSubgridObject extends SubgridObject {
 
     if (
       this._livetime >= selfDestruct ||
-      this.currentCharacteristics.dynamic.hp.hull <= 0
+      this.currentCharacteristics.dynamic.hp.hull <= 0 ||
+      this.isCollided
     ) {
       document.dispatchEvent(
         new CustomEvent(EVENTS.MAP.DELETE, {
