@@ -1,3 +1,6 @@
+import { compareVersions } from "../../libs/utils.js";
+import { loadLogs } from "../controls/step-logs/step_logs.js";
+import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
 import { closeLoading, openLoading, updateLoading } from "../loading.js";
 import classes from "./objectCollector.js";
@@ -55,7 +58,7 @@ export function loadFunction(data) {
 
 export function loadJSON(json) {
   openLoading('level');
-  const length = Object.keys(json).length+1;
+  const length = Object.keys(json.objects).length+1;
   updateLoading('level', length, 0, 0)
 
   document.dispatchEvent(new Event(EVENTS.RESET))
@@ -70,6 +73,10 @@ export function loadJSON(json) {
   );
 
   updateLoading('level', length, 0, 1)
+
+  loadLogs(json.logs ?? []);
+
+  updateLoading('level', length, 0, 2)
 
   let counter = 1;
   for (let [i, v] of Object.entries(json.objects)) {
@@ -86,6 +93,7 @@ export function loadJSON(json) {
 }
 
 const DEFAULT_SAVE_FILE = {
+  version: ENV.CURRENT_VERSION,
   map: {
     size: 10000,
     grid: 500,

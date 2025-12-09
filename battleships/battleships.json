@@ -23,5 +23,7 @@
   "ARES - «LEVIATHAN»": "capital/nc-leviathan.json",
   "NSB - «Gefest»": "industrial/ind-gefest.json",
   "ZD - «Moth»": "destroers/zd-moth.json",
-  "SSS - «Lurker MkII»": "frigates/sss-lurker-mk2.json"
+  "SSS - «Lurker MkII»": "frigates/sss-lurker-mk2.json",
+
+  "Torpedo T": "subships/test-torpedo.json"
 }

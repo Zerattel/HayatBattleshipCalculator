@@ -1,7 +1,10 @@
 import { mergeDeep } from "../../libs/deepMerge.js";
+import { compareVersions } from "../../libs/utils.js";
 import { log } from "../controls/step-logs/log.js";
+import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
 import { stepLoading, updateLoading } from "../loading.js";
+import PhysicsEngine from "../physics/engine.js";
 import { DEFAULT_SAVE_FILE, loadJSON } from "../save&load/load.js";
 import { settings } from "../settings/settings.js";
 import { mapProps } from "./grid.js";
@@ -89,7 +92,10 @@ export default function init() {
 
     updateLoading(
       'step', 
-      Object.keys(objects).length * (MAX_INTER_STEPS() + 2) + 4,
+        Object.keys(objects).length 
+          * (MAX_INTER_STEPS() + 2) // steps + next + finalize для каждого объекта
+        + 4 // промежуточные состояния
+        + 3, // физ движок
       0,
       0
     );
@@ -116,7 +122,54 @@ export default function init() {
     }
 
     stepLoading('step', 1);
+    log('system', `init physics engine`);
 
+    const physics = new PhysicsEngine();
+    physics.setStep(ENV.STEP, 32);
+
+    stepLoading('step', 1);
+    log('system', `gather object infos`);
+
+
+    for (let id of Object.keys(objects)) {
+      const obj = objects[id];
+
+      const intent = {
+        id: id,
+        pos: { x: obj._x, y: obj._y },
+        vel: { x: obj.velocity?.x || 0, y: obj.velocity?.y || 0 },
+        mass:       typeof obj.mass === "function" ? obj.mass : (obj.mass ?? 1),
+        radius:     typeof obj.size === "function" ? obj.size : (obj.size ?? 10),
+        bounciness: typeof obj.bounciness === "function" ? obj.bounciness : (obj.bounciness ?? 0.2),
+        type: obj.constructor?.name || "object",
+        forces: [...(prevData[id]?.appliedForces ?? [])] // силы которые будут применятся (если будут)
+      };
+      physics.registerIntent(intent);
+    }
+
+
+    stepLoading('step', 1);
+    log('system', `physics simulation...`);
+    physics.simulate();
+    log('system', `done! export states...`);
+    const physRes = physics.exportStates();
+
+    for (let id of Object.keys(objects)) {
+      prevData[id] = {
+        ...prevData[id],
+        _physics: physRes.states[id] ? {
+          pos: physRes.states[id].pos,
+          vel: physRes.states[id].vel,
+          radius: physRes.states[id].radius
+        } : prevData[id]?._physics
+      };
+    }
+
+    log('system', `done!`);
+    stepLoading('step', 1);
+
+
+    prevData._physics_collisions = physRes.collisions;
     for (let i of Object.keys(objects)) {
       objects[i].finalize(prevData);
 
@@ -142,7 +195,15 @@ export default function init() {
 
   if (settings.saveLastState && settings.lastState != "{}") {
     try {
-      loadJSON(JSON.parse(settings.lastState));
+      const json = JSON.parse(settings.lastState);
+
+      const version = json.version ?? "0.0.0";
+      if (compareVersions(ENV.SUPPORTED_SAVE_VERSION, version) == 1) {
+        alert("Unsupported save version.");
+        throw new Error("Unsupported save version");
+      }
+
+      loadJSON(json);
     } catch (e) {
       console.log(e);
       if (confirm("Error on loading last state, remove it?")) {

@@ -1,6 +1,7 @@
 import { clamp } from "../clamp.js";
 
 const tonnage = {
+  [-1]: "Субтело",
   null: "Индустриальный",
   0: "Шаттл",
   1: "Корвет",
@@ -14,13 +15,50 @@ const tonnage = {
   9: "Титан",
 };
 
-const tonnageToCaptureRange = [
-  5000, 10000, 25000, 35000, 50000, 60000, 100000, 300000, 500000, 500000,
-];
+const tonnageToCaptureRange = {
+  [-1]: 0,
+  null: 0,
+  0: 5000, 
+  1: 10000, 
+  2: 25000, 
+  3: 35000, 
+  4: 50000, 
+  5: 60000, 
+  6: 100000, 
+  7: 300000, 
+  8: 500000, 
+  9: 500000,
+};
 
-const tonnageToManeuverabilityBonus = [5, 4, 3, 2, 1, 0, -2, -4, -6, -10];
+const tonnageToManeuverabilityBonus = {
+  [-1]: 0,
+  null: 0,
+  0: 5, 
+  1: 4, 
+  2: 3, 
+  3: 2, 
+  4: 1, 
+  5: 0, 
+  6: -2, 
+  7: -4, 
+  8: -6, 
+  9: -10
+};
 
-const tonnageToAcceleration = [240, 180, 150, 120, 90, 72, 54, 36, 18, 12];
+const tonnageToAcceleration = {
+  [-1]: 0,
+  null: 0,
+  0: 240, 
+  1: 180, 
+  2: 150, 
+  3: 120, 
+  4: 90, 
+  5: 72, 
+  6: 54, 
+  7: 36, 
+  8: 18, 
+  9: 12
+};
 
 const energyToKineticDamage = 0.0000017;
 const energyToHeating = 0.000000001;
@@ -49,6 +87,8 @@ const baseBattleshipCharacteristics = {
     temperature: 0,
     /** заряд конденсатора */
     charge: 0,
+    /** количество топлива у субтела */
+    fuel: 0,
   },
   constant: {
     body: {
@@ -66,6 +106,13 @@ const baseBattleshipCharacteristics = {
       },
       /** радиус сигнатуры */
       signature: 0,
+      /** параметры если это субтело */
+      subgrid: {
+        effective_distance: 0,
+        size: 0,
+        category: 'battle',
+        fuel: 0,
+      },
     },
     /** максимальное ускорение */
     acceleration: 0,

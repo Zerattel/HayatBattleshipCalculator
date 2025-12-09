@@ -168,8 +168,8 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     return data;
   }
 
-  onCollision(collision, target, thisManeuver, targetManeuver) {
-    const energy = super.onCollision(collision, target, thisManeuver, targetManeuver);
+  onCollision(collision, target) {
+    const energy = super.onCollision(collision, target);
 
     const thisMassRatio = this.mass / (target.mass + this.mass);
     const targetMassRatio = target.mass / (target.mass + this.mass);

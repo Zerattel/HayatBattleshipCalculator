@@ -1,5 +1,6 @@
 {
   "test": "test.json",
+  "Электромагнитная торпедная катапульта": "electromagnetic-catapult-test.json",
   "Средний трюм M": "construction/cargohold.json",
   "Малый ангар M": "construction/hangar.json",
   "Золотая проточная катушка M": "energetics/golden-flowcoil.json",

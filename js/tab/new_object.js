@@ -179,6 +179,7 @@ export default function init() {
         { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
       ]))
+      obj.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
     } else {
       obj = new ShipObject(x, y, dir, vel, battleships[$('#modal-new_object-ships').attr('value')] || {});
       obj.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())

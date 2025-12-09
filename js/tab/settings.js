@@ -34,6 +34,11 @@ export default function () {
     settings.saveLastState = $('#modal-settings-savestate').is(':checked');
   })
 
+  $('#modal-settings-savelogs').prop('checked', settings.saveLogs);
+  $('#modal-settings-savelogs').on('change', (e) => {
+    settings.saveLogs = $('#modal-settings-savelogs').is(':checked');
+  })
+
   $('#modal-settings-hudsize').val(settings.hudSize);
   $('#modal-settings-hudsize').on('change', (e) => {
     settings.hudSize = e.target.value;

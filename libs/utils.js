@@ -17,3 +17,25 @@ export function isElementInViewport(el) {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
+
+
+export function compareVersions(v1, v2) {
+  const parts1 = v1.split('.').map(Number);
+  const parts2 = v2.split('.').map(Number);
+
+  const maxLength = Math.max(parts1.length, parts2.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    const num1 = parts1[i] === undefined ? 0 : parts1[i];
+    const num2 = parts2[i] === undefined ? 0 : parts2[i];
+
+    if (num1 > num2) {
+      return 1; // v1 is greater than v2
+    }
+    if (num1 < num2) {
+      return -1; // v1 is less than v2
+    }
+  }
+
+  return 0; // Versions are equal
+}
