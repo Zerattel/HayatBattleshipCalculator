@@ -9,6 +9,7 @@ import VectorHud from "../../hud/vectorHud.js";
 import { ContactController } from "../../ship/hud/contactController.js";
 import ShipStatsHUD from "../../ship/hud/shipStatsHud.js";
 import SignatureShower from "../../ship/hud/signatureShower.js";
+import SpriteShower from "../../spriteShow.js";
 import { registerSteps } from "../../step/stepInfoCollector.js";
 import BaseModule from "../baseModule.js";
 
@@ -41,18 +42,25 @@ export default class SubgridLauncherModule extends BaseModule {
       object.velocity = point(this.parent.velocity.x, this.parent.velocity.y);
       object.applyForce(point(this.characteristics.launcher.vector[0], this.characteristics.launcher.vector[1]));
 
-      object.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())
       object.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
-      object.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud())
-      object.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
+      // object.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud({
+      //   directionLength: 250,
+      //   nextStepPointSize: 20,
+      //   showRDirection: true,
+      //   showVDirection: false,
+      //   showNextSteps: false,
+      // }))
       object.setChildren(MAP_OBJECTS_IDS.DATA_HUD,           new BasicDataHud([
-        { func: (hud) => `${hud.parent.id}` },
         { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
-        { func: (hud) => `vel: ${Math.round(hud.parent.velocity.x)}m/s, ${Math.round(hud.parent.velocity.y)}m/s` },
         { func: (hud) => `speed: ${Math.round(hud.parent.velocity.length)}m/s` },
-        { func: (hud) => `dir: ${Math.round(hud.parent.direction)}deg` },
-        { func: (hud) => `vdir: ${toRealDirection(Math.round(Math.atan2(hud.parent.velocity.x, hud.parent.velocity.y) / Math.PI * 180) || 0)}deg` }
       ]))
+      object.setChildren(MAP_OBJECTS_IDS.SPRITE, 
+        new SpriteShower(
+          './img/frigate.png', 
+          '#ff0000',
+          200,
+        )
+      )
 
       document.dispatchEvent(
         new CustomEvent(EVENTS.MAP.NEW, {
@@ -64,6 +72,37 @@ export default class SubgridLauncherModule extends BaseModule {
         })
       );
     }
+  }
+
+
+  getOverridableValues() {
+    return [
+      ...super.getOverridableValues(),
+      {
+        name: "launchVectorX",
+        type: "number",
+        current: () => this.characteristics.launcher.vector[0],
+        func: (val) => {
+          this.characteristics.launcher.vector = [+val, this.characteristics.launcher.vector[1]];
+        },
+      },
+      {
+        name: "launchVectorY",
+        type: "number",
+        current: () => this.characteristics.launcher.vector[1],
+        func: (val) => {
+          this.characteristics.launcher.vector = [this.characteristics.launcher.vector[0], +val];
+        },
+      },
+      {
+        name: "headingOffset",
+        type: "number",
+        current: () => this.characteristics.launcher.headingOffset,
+        func: (val) => {
+          this.characteristics.launcher.headingOffset = +val;
+        },
+      },
+    ];
   }
 }
 

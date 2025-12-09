@@ -65,12 +65,12 @@ export default class BasicMovingObject extends BasicStepObject {
   }
 
 
-  physicsSimulationStep(step, objectsData) {
+  physicsSimulationStep(step, delta, objectsData) {
     const phys = objectsData[this.id]?._physics;
     if (phys) {
       this._x = phys.pos.x;
       this._y = phys.pos.y;
-      this.velocity = phys.vel;
+      this.velocity = point(phys.vel.x, phys.vel.y);
     }
   }
 
@@ -80,7 +80,7 @@ export default class BasicMovingObject extends BasicStepObject {
     if (phys) {
       this._x = phys.pos.x;
       this._y = phys.pos.y;
-      this.velocity = phys.vel;
+      this.velocity = point(phys.vel.x, phys.vel.y);
     }
 
     const collisions = objectsData._physics_collisions || [];

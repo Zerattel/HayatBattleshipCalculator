@@ -11,15 +11,15 @@
   },
   "activation": "active",
   "cycle": 1,
-  "reload": 5,
+  "reload": 2,
 
   "interference": 0,
 
   "launcher": {
-    "vector": [0, 120],
-    "headingOffset": 0,
+    "vector": [0, 50],
+    "headingOffset": 90,
     "subgrid": {
-      "class": "SubgridObject",
+      "class": "SelfguidedSubgridObject",
       "dataRef": "Torpedo T"
     }
   },

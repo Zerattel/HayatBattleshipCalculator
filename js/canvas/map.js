@@ -193,41 +193,45 @@ export default function init() {
     }
 
 
-    if (settings.instantSimulation) {
-      physics.instantSimulate();
+    const dt = ENV.STEP / ENV.PHYSICS_ENGINE_STEPS;
+    const onStep = (step) => {
+      exportPhysicsState();
 
-      stepLoading('step', ENV.PHYSICS_ENGINE_STEPS);
+      const forces = {};
+      for (let i of Object.keys(objects)) {
+        const f = objects[i].physicsSimulationStep?.(step, dt, prevData);
+
+        if (f !== undefined) forces[i] = f;
+      }
+
+      stepLoading('step', 1);
+
+      return forces;
+    }
+
+    if (settings.instantSimulation) {
+      physics.instantSimulate(onStep);
+
       return finalize();
     }
 
 
-    const next = physics.simulate();
+    const next = physics.simulate(onStep);
 
     const sim = (deltaTime) => {
-      const start = Date.now();
-      exportPhysicsState();
-
-      for (let i of Object.keys(objects)) {
-        objects[i].physicsSimulationStep?.(0, prevData);
-      }
-
-      redrawMap();
-
-      stepLoading('step', 1);
-      const delta2 = Date.now() - start;
-
       const time = ENV.STEP * 1000 / ENV.PHYSICS_ENGINE_STEPS * (1 / settings.physicsSimulationSpeedupMultiplier);
 
       setTimeout(() => {
         const start = Date.now();
         const simResult = next();
+        redrawMap();
 
         const delta = Date.now() - start;
         log('system', `physics simulation ${simResult === false ? "last" : simResult} step, delta: ${delta}ms`);
 
         if (simResult !== false) { sim(delta); }
         else { finalize(); }
-      }, time - deltaTime - delta2)
+      }, time - deltaTime)
     }
 
     next();

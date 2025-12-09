@@ -94,7 +94,14 @@ export default class PhysicsEngine {
       }
 
 
-      substepCallback?.(s);
+      const forces = substepCallback?.(s) ?? {};
+      console.log(forces);
+      for (const i of Object.keys(forces)) {
+        if (!this.bodies.has(i)) continue;
+
+        this.bodies.set(i, { ...this.bodies.get(i), forces: forces[i] });
+      }
+      console.log(this.bodies);
       return ++s;
     }
   }
@@ -152,7 +159,14 @@ export default class PhysicsEngine {
       }
 
 
-      substepCallback?.(s);
+      const forces = substepCallback?.(s) ?? {};
+      console.log(forces);
+      for (const i of Object.keys(forces)) {
+        if (!this.bodies.has(i)) continue;
+
+        this.bodies.set(i, { ...this.bodies.get(i), forces: forces[i] });
+      }
+      console.log(this.bodies);
     } // end substeps
   }
 

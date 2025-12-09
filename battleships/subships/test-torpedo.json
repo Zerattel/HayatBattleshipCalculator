@@ -5,8 +5,7 @@
       "armor": 20,
       "barrier": 0
     },
-    "charge": 0,
-    "fuel": 1000
+    "charge": 0
   },
   "constant": {
     "body": {
@@ -17,7 +16,10 @@
       "subgrid": {
         "size": 40,
         "category": "battle",
-        "fuel": 1000
+        "fuel": 102,
+
+        "self_destruct_in": 120,
+        "thrust": 40000
       }
     },
     "acceleration": 60,
