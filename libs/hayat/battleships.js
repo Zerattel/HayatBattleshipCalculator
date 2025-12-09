@@ -419,4 +419,104 @@ const getFullManeuverability = (characteristics, maneuverDice) => {
   return characteristics.constant.maneuverability + maneuverDice
 }
 
+// === SUBBODY SYSTEM =====================================================
+class Subbody {
+  constructor(opts = {}) {
+    Object.assign(this, {
+      id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+      type: opts.type || "projectile",   // projectile | apparatus
+      parentId: opts.parentId || null,
+      targetId: opts.targetId || null,
+      pos: opts.pos || [0, 0],
+      vel: opts.vel || [0, 0],
+      hp: opts.hp || 10,
+      maxAccel: opts.maxAccel || 0,
+      accelBudget: opts.accelBudget ?? Infinity,
+      hitRadius: opts.hitRadius || 2,
+      maxSpeed: opts.maxSpeed || 200,
+      aiMode: opts.aiMode || "Stop",
+      desiredDistance: opts.desiredDistance || 500,
+      inHangar: opts.inHangar ?? false,
+      state: opts.state || "idle", // idle, active, online, offline, overheat
+      effectiveRange: opts.effectiveRange || 1000,
+      barrier: opts.barrier || 0,
+      barrierMax: opts.barrierMax || 0,
+      barrierRegen: opts.barrierRegen || 0,
+    });
+  }
+
+  /** основной апдейт субтела */
+  step(dt, world) {
+    if (this.hp <= 0 || this.inHangar) return;
+    const target = world.getBody?.(this.targetId);
+
+    if (this.type === "projectile") {
+      if (this.accelBudget > 0) {
+        const accelMag = Math.min(this.maxAccel, this.accelBudget);
+        const accel = this._dirTo(target) ? vecScale(this._dirTo(target), accelMag) : [0, 0];
+        this.vel = vecAdd(this.vel, vecScale(accel, dt));
+        this.accelBudget -= accelMag * dt;
+      }
+    } else if (this.type === "apparatus") {
+      this._updateAI(dt, target);
+    }
+
+    // Движение
+    this.pos = vecAdd(this.pos, vecScale(this.vel, dt));
+  }
+
+  /** простейший AI */
+  _updateAI(dt, target) {
+    if (!target) return;
+    const toTarget = vecSub(target.pos, this.pos);
+    const dist = vecLength(toTarget);
+    const dir = vecNormalize(toTarget);
+
+    switch (this.aiMode) {
+      case "Stop":
+        this.vel = vecScale(this.vel, 0.9); // трение
+        break;
+
+      case "Distance":
+        if (Math.abs(dist - this.desiredDistance) > 10) {
+          const desiredVel = vecScale(dir, (dist - this.desiredDistance) * 0.1);
+          this._steer(desiredVel, dt);
+        }
+        break;
+
+      case "Virage":
+        const tangent = [-dir[1], dir[0]];
+        const orbitVel = Math.min(this.maxSpeed, Math.sqrt(this.maxAccel * this.desiredDistance));
+        this._steer(vecScale(tangent, orbitVel), dt);
+        break;
+
+      case "Intercept":
+        const tLead = dist / Math.max(1, this.maxSpeed);
+        const leadPos = vecAdd(target.pos, vecScale(target.vel, tLead));
+        const leadDir = vecNormalize(vecSub(leadPos, this.pos));
+        this._steer(vecScale(leadDir, this.maxSpeed), dt);
+        break;
+    }
+  }
+
+  _steer(desiredVel, dt) {
+    const diff = vecSub(desiredVel, this.vel);
+    const accel = vecClamp(diff, this.maxAccel);
+    this.vel = vecAdd(this.vel, vecScale(accel, dt));
+  }
+
+  _dirTo(target) {
+    if (!target) return null;
+    return vecNormalize(vecSub(target.pos, this.pos));
+  }
+}
+
+// === Простые векторные функции ===
+function vecAdd(a, b) { return [a[0] + b[0], a[1] + b[1]]; }
+function vecSub(a, b) { return [a[0] - b[0], a[1] - b[1]]; }
+function vecScale(v, s) { return [v[0] * s, v[1] * s]; }
+function vecLength(v) { return Math.sqrt(v[0]**2 + v[1]**2); }
+function vecNormalize(v) { const l = vecLength(v)||1; return [v[0]/l, v[1]/l]; }
+function vecClamp(v, max) { const l = vecLength(v); return l>max ? vecScale(v, max/l) : v; }
+
 export { overheatDamage, passiveBarrierRegeneration, getFullManeuverability }

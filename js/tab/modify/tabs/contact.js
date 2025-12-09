@@ -332,7 +332,6 @@ export default class {
           },
         })
       );
-
       this.updateCurrentTarget(id);
     }
   }
