@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Register",
+  "type": "object",
+  "patternProperties": {
+    "^.*$": { 
+      "type": "string",
+      "pattern": "^([\\w-]+(\\/|.json))+$",
+      "description": "Name: Path pair for module/battleship."
+    }
+  }
+}
