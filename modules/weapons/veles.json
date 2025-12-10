@@ -1,29 +1,26 @@
 {
-  "main": {
-    "name": "ИК Лазер «Фонарь»",
+    "main": {
+    "name": "Энтр. Дезинтегр. «Велес»",
     "type": "Орудия",
-    "category": "Лазеры",
-
-    "size": 1,
+    "category": "Предтеч",
+    "size": 2,
     "position": "external",
-    "tags": ["gun", "offencive", "laser"]
+    "tags": ["gun", "offencive", "entropic", "precursor"]
   },
   "activation": "active",
   "cycle": 1,
   "reload": 0,
-
   "interference": 0,
-
   "additionalInfo": {
-    "baseDamage": 24,
+    "baseDamage": 60,
     "targetHeating": 0.02,
-    "effectiveRange": 8000,
-    "maxRange": 12000,
-    "tracking": 45
+    "effectiveRange": 15000,
+    "maxRange": 22500,
+    "tracking": 45,
+    "perStepBonus": 0.06,
+    "bonusCap": 2.0
   },
-
-  "initFunctions": "<[LaserAttack]>",
-
+  "initFunctions": "<[EntropicDisintegrator]>",
   "modificators": {
     "offline": [],
     "online": [],
@@ -39,7 +36,7 @@
         "target": "this",
         "characteristic": "constant.capacitor.generation",
         "modificationType": "number",
-        "modificator": -4,
+        "modificator": -8,
         "isAffectedByInterference": false
       },
       {
@@ -58,5 +55,5 @@
       }
     ],
     "overload": []
-  }
+    }
 }

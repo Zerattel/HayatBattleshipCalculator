@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Артиллерия «Гекон» S",
+    "type": "Орудия",
+    "category": "Баллистика",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["gun", "offencive", "ballistic"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 3,
+
+  "interference": 0,
+
+  "additionalInfo": {
+    "baseDamage": 60,
+    "targetHeating": 0,
+    "effectiveRange": 30000,
+    "penaltyStep": 5000,
+    "penalty": 1,
+    "tracking": 4
+  },
+
+  "initFunctions": "<[BallisticAttack]>",
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.08,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "dynamic.recived_damage.kinetic",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.perStep.damage",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

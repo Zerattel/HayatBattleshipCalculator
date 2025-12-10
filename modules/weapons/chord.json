@@ -1,0 +1,49 @@
+{
+  "main": {
+    "name": "Пулемёт гатлинга «Аккорд» M",
+    "type": "Орудия",
+    "category": "Баллистика",
+
+    "size": 2,
+    "position": "external",
+    "tags": ["gun", "offencive", "ballistic"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 0,
+
+  "interference": 0,
+
+  "additionalInfo": {
+    "baseDamage": 45,
+    "targetHeating": 0,
+    "effectiveRange": 5000,
+    "penaltyStep": 2000,
+    "penalty": 1,
+    "tracking": 20
+  },
+
+  "initFunctions": "<[BallisticAttack]>",
+
+  "modificators": {
+    "offline": [],
+    "online": [],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.02,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "target",
+        "characteristic": "dynamic.recived_damage.kinetic",
+        "modificationType": "number",
+        "modificator": "module.functionsSharedData.perStep.damage",
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}
