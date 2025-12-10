@@ -13,6 +13,18 @@ function Wrapper(constructorFunc) {
   };
 }
 
+
+/**
+ * Create new object from registered object.
+ * @param {string} cls
+ * @returns 
+ */
+export function createObject(cls, ...constructorArgs) {
+  const wrap = new Wrapper(classes[cls]);
+  const cfunc = wrap.constructorFunc();
+  return new cfunc(...constructorArgs);
+}
+
 /**
  * Load object from data
  * @param {string} id 
@@ -21,9 +33,7 @@ function Wrapper(constructorFunc) {
  * @returns {object | undefined} if parent="module" returns loaded object
  */
 export function load(id, data, parent = null) {
-  const wrap = new Wrapper(classes[data.class]);
-  const cfunc = wrap.constructorFunc();
-  const object = new cfunc();
+  const object = createObject(data.class);
 
   object.load(data, true);
 
@@ -98,6 +108,7 @@ const DEFAULT_SAVE_FILE = {
     size: 10000,
     grid: 500,
   },
+  logs: [],
   objects: [],
 }
 

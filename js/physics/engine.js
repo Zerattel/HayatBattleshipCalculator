@@ -39,8 +39,7 @@ export default class PhysicsEngine {
     this.bodies.delete(id);
   }
 
-  // основной шаг: вызывает серию substeps
-  simulate() {
+  simulate(substepCallback) {
     this.collisionEvents = [];
     const dtSub = this.dt / this.substeps;
 
@@ -50,8 +49,11 @@ export default class PhysicsEngine {
       b.prevPos.y = b.pos.y;
     }
 
-    // субшаги
-    for (let s = 0; s < this.substeps; s++) {
+    let s = 0;
+
+    return () => {
+      if (s >= this.substeps) return false;
+
       // integrate forces -> velocity -> pos (semi-implicit Euler)
       for (const b of this.bodies.values()) {
         // sum forces
@@ -90,7 +92,40 @@ export default class PhysicsEngine {
         b.prevPos.x = b.pos.x;
         b.prevPos.y = b.pos.y;
       }
-    } // end substeps
+
+
+      const callback = substepCallback?.(s) ?? {};
+
+      for (const i of Object.keys(callback)) {
+        if (!this.bodies.has(i)) continue;
+
+        if (callback[i].delete === true) {
+          this.bodies.delete(i);
+          continue;
+        }
+
+        if (callback[i].forces) {
+          this.bodies.set(i, { ...this.bodies.get(i), forces: callback[i].forces });
+        }
+      }
+      return ++s;
+    }
+  }
+
+  // основной шаг: вызывает серию substeps
+  instantSimulate(substepCallback) {
+    this.collisionEvents = [];
+    const dtSub = this.dt / this.substeps;
+
+    // prepare prevPos for CCD
+    for (const b of this.bodies.values()) {
+      b.prevPos.x = b.pos.x;
+      b.prevPos.y = b.pos.y;
+    }
+
+    const next = this.simulate();
+
+    while (next() !== false);
   }
 
   // check circle overlap

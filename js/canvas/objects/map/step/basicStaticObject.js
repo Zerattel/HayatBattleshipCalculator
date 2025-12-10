@@ -54,6 +54,16 @@ export default class BasicStaticObject extends BasicStepObject {
   }
 
 
+  physicsSimulationStep(step, objectsData) {
+    const phys = objectsData[this.id]?._physics;
+    if (phys) {
+      this._x = phys.pos.x;
+      this._y = phys.pos.y;
+      this.velocity = phys.vel;
+    }
+  }
+
+
   finalize(objectsData) {
     const phys = objectsData[this.id]?._physics;
     if (phys) {

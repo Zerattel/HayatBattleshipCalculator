@@ -171,11 +171,14 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
   onCollision(collision, target) {
     const energy = super.onCollision(collision, target);
 
-    const thisMassRatio = this.mass / (target.mass + this.mass);
-    const targetMassRatio = target.mass / (target.mass + this.mass);
-
-    const damage = energy * energyToKineticDamage * targetMassRatio * this.currentCharacteristics.constant.collision_energy_distribution.damage;
-    const heat = energy * energyToHeating * targetMassRatio * this.currentCharacteristics.constant.collision_energy_distribution.heat; // пока хз
+    const damage = energy * energyToKineticDamage * ((
+      this.currentCharacteristics.constant.collision_energy_distribution.damage +
+      (target.currentCharacteristics?.constant?.collision_energy_distribution?.damage ?? 0.69)
+    ) / 2);
+    const heat = energy * energyToHeating * ((
+      this.currentCharacteristics.constant.collision_energy_distribution.heat +
+      (target.currentCharacteristics?.constant?.collision_energy_distribution?.heat ?? 0.01)
+    ) / 2);
 
     log(this.path, `onCollision | ${damage}dmg ${heat}heat`)
 
@@ -520,6 +523,14 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
     this.recalculateCharacteristics();
 
     loadChildren && super.loadChildren(data);
+  }
+
+  afterLoad() {
+    for (let md of ["externalModules", "internalModules", "otherModules"]) {
+      for (let module of this[md]) {
+        module.afterLoad?.();
+      }
+    }
   }
 }
 

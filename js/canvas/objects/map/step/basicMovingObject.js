@@ -19,15 +19,25 @@ export default class BasicMovingObject extends BasicStepObject {
   }
 
   applyForce(amount) {
-    this.velocity = calc(
-      () =>
-        this.velocity +
-        point(
-          Math.sin((this._direction / 180) * Math.PI),
-          Math.cos((this._direction / 180) * Math.PI)
-        ) *
-          amount
-    );
+    const dirRad = (this._direction / 180) * Math.PI;
+
+    let force;
+
+    if (typeof amount === "number") {
+      force = calc(() => point(
+        Math.sin(dirRad),
+        Math.cos(dirRad)
+      ) * amount);
+    } else {
+      const rotated = point(
+        amount.x * Math.cos(-dirRad) - amount.y * Math.sin(-dirRad),
+        amount.x * Math.sin(-dirRad) + amount.y * Math.cos(-dirRad)
+      );
+
+      force = rotated;
+    }
+
+    this.velocity = calc(() => this.velocity + force);
   }
   
   collision = true;
@@ -55,12 +65,22 @@ export default class BasicMovingObject extends BasicStepObject {
   }
 
 
-  finalize(objectsData) {
+  physicsSimulationStep(step, delta, objectsData) {
     const phys = objectsData[this.id]?._physics;
     if (phys) {
       this._x = phys.pos.x;
       this._y = phys.pos.y;
-      this.velocity = phys.vel;
+      this.velocity = point(phys.vel.x, phys.vel.y);
+    }
+  }
+
+
+  afterSimulation(objectsData) {
+    const phys = objectsData[this.id]?._physics;
+    if (phys) {
+      this._x = phys.pos.x;
+      this._y = phys.pos.y;
+      this.velocity = point(phys.vel.x, phys.vel.y);
     }
 
     const collisions = objectsData._physics_collisions || [];
@@ -75,8 +95,6 @@ export default class BasicMovingObject extends BasicStepObject {
         );
       }
     }
-
-    super.finalize(objectsData);
   }
 
 

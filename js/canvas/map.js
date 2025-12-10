@@ -95,7 +95,7 @@ export default function init() {
         Object.keys(objects).length 
           * (MAX_INTER_STEPS() + 2) // steps + next + finalize для каждого объекта
         + 4 // промежуточные состояния
-        + 3, // физ движок
+        + 4 + ENV.PHYSICS_ENGINE_STEPS + Object.keys(objects).length, // физ движок
       0,
       0
     );
@@ -125,7 +125,7 @@ export default function init() {
     log('system', `init physics engine`);
 
     const physics = new PhysicsEngine();
-    physics.setStep(ENV.STEP, 32);
+    physics.setStep(ENV.STEP, ENV.PHYSICS_ENGINE_STEPS);
 
     stepLoading('step', 1);
     log('system', `gather object infos`);
@@ -150,46 +150,109 @@ export default function init() {
 
     stepLoading('step', 1);
     log('system', `physics simulation...`);
-    physics.simulate();
-    log('system', `done! export states...`);
-    const physRes = physics.exportStates();
+    const exportPhysicsState = () => {
+      const physRes = physics.exportStates();
 
-    for (let id of Object.keys(objects)) {
-      prevData[id] = {
-        ...prevData[id],
-        _physics: physRes.states[id] ? {
-          pos: physRes.states[id].pos,
-          vel: physRes.states[id].vel,
-          radius: physRes.states[id].radius
-        } : prevData[id]?._physics
-      };
+      for (let id of Object.keys(objects)) {
+        prevData[id] = {
+          ...prevData[id],
+          _physics: physRes.states[id] ? {
+            pos: physRes.states[id].pos,
+            vel: physRes.states[id].vel,
+            radius: physRes.states[id].radius
+          } : prevData[id]?._physics
+        };
+      }
+
+      prevData._physics_collisions = physRes.collisions;
     }
 
-    log('system', `done!`);
-    stepLoading('step', 1);
+    const finalize = () => {
+      log('system', `done! export states...`);
+    
+      exportPhysicsState();
+      
+      for (let i of Object.keys(objects)) {
+        objects[i].afterSimulation?.(prevData);
+
+        stepLoading('step', 1);
+      }
+
+      log('system', `done!`);
+      stepLoading('step', 1);
 
 
-    prevData._physics_collisions = physRes.collisions;
-    for (let i of Object.keys(objects)) {
-      objects[i].finalize(prevData);
+      for (let i of Object.keys(objects)) {
+        objects[i].finalize(prevData);
+
+        stepLoading('step', 1);
+      }
+
+      document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))
+
+      stepLoading('step', 1);
+
+      log('sys', 'map redraw...')
+      redrawMap();
 
       stepLoading('step', 1);
     }
 
-    document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))
 
-    stepLoading('step', 1);
+    const dt = ENV.STEP / ENV.PHYSICS_ENGINE_STEPS;
+    const onStep = (step) => {
+      exportPhysicsState();
 
-    log('sys', 'map redraw...')
-    redrawMap();
+      const callback = {};
+      for (let i of Object.keys(objects)) {
+        const f = objects[i].physicsSimulationStep?.(step, dt, prevData);
 
-    stepLoading('step', 1);
+        if (f !== undefined) callback[i] = f;
+      }
+
+      stepLoading('step', 1);
+
+      return callback;
+    }
+
+    if (settings.instantSimulation) {
+      physics.instantSimulate(onStep);
+
+      return finalize();
+    }
+
+
+    const next = physics.simulate(onStep);
+
+    const sim = (deltaTime) => {
+      const time = ENV.STEP * 1000 / ENV.PHYSICS_ENGINE_STEPS * (1 / settings.physicsSimulationSpeedupMultiplier);
+
+      setTimeout(() => {
+        const start = Date.now();
+        const simResult = next();
+        redrawMap();
+
+        const delta = Date.now() - start;
+        log('system', `physics simulation ${simResult === false ? "last" : simResult} step, delta: ${delta}ms`);
+
+        if (simResult !== false) { sim(delta); }
+        else { finalize(); }
+      }, time - deltaTime)
+    }
+
+    next();
+    sim(0);
   });
 
 
   document.addEventListener(EVENTS.RESET, () => {
     objects = {};
     redrawMap();
+  })
+
+
+  document.addEventListener(EVENTS.LOAD_ENDED, () => {
+    for (let i of Object.keys(objects)) objects[i].afterLoad?.();
   })
 
 

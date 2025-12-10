@@ -127,6 +127,13 @@ export default class StandartObject {
       load(i, data.children[i], this);
     }
   }
+
+
+  afterLoad() {
+    for (let i of Object.keys(data.children)) {
+      data.children[i].afterLoad?.();
+    }
+  }
 }
 
 registerClass(StandartObject);

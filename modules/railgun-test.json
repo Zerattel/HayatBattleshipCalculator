@@ -1,26 +1,26 @@
 {
   "main": {
-    "name": "Электромагнитная торпедная катапульта",
+    "name": "Рельсотрон",
     "type": "Стартовые площадки",
-    "category": "Катапульты",
+    "category": "Высокомощные ускорители",
     "class": "SubgridLauncherModule",
 
     "size": 1,
     "position": "external",
-    "tags": ["catapult", "subgrid"]
+    "tags": ["catapult", "subgrid", "railgun"]
   },
   "activation": "active",
   "cycle": 1,
-  "reload": 2,
+  "reload": 3,
 
   "interference": 0,
 
   "launcher": {
-    "vector": [0, 50],
-    "headingOffset": 90,
+    "vector": [0, 1600],
+    "headingOffset": 0,
     "subgrid": {
-      "class": "SelfguidedSubgridObject",
-      "dataRef": "Torpedo T"
+      "class": "ShellSubgridObject",
+      "dataRef": "Railgun Shell (10m)"
     }
   },
 
@@ -40,7 +40,7 @@
         "target": "this",
         "characteristic": "constant.capacitor.generation",
         "modificationType": "number",
-        "modificator": -15,
+        "modificator": -9,
         "isAffectedByInterference": false
       }
     ],
