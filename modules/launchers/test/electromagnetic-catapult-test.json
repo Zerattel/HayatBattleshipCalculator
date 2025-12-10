@@ -16,12 +16,43 @@
   "interference": 0,
 
   "launcher": {
-    "vector": [0, 50],
-    "headingOffset": 90,
-    "subgrid": {
-      "class": "SelfguidedSubgridObject",
-      "dataRef": "Torpedo T"
-    }
+    "heading": 0,
+    "instances": [
+      {
+        "vector": [0, 50],
+
+        "headingOffset": 70,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "SelfguidedSubgridObject",
+          "dataRef": "[Test] Torpedo T"
+        }
+      },
+      {
+        "vector": [0, 50],
+
+        "headingOffset": -70,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "SelfguidedSubgridObject",
+          "dataRef": "[Test] Torpedo T"
+        }
+      }
+    ]
   },
 
   "modificators": {

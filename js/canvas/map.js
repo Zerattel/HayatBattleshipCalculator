@@ -1,4 +1,5 @@
 import { mergeDeep } from "../../libs/deepMerge.js";
+import intentFromObject from "../../libs/generatePhysicsIntentFromObject.js";
 import { compareVersions } from "../../libs/utils.js";
 import { log } from "../controls/step-logs/log.js";
 import ENV from "../enviroments/env.js";
@@ -132,19 +133,8 @@ export default function init() {
 
 
     for (let id of Object.keys(objects)) {
-      const obj = objects[id];
-
-      const intent = {
-        id: id,
-        pos: { x: obj._x, y: obj._y },
-        vel: { x: obj.velocity?.x || 0, y: obj.velocity?.y || 0 },
-        mass:       typeof obj.mass === "function" ? obj.mass : (obj.mass ?? 1),
-        radius:     typeof obj.size === "function" ? obj.size : (obj.size ?? 10),
-        bounciness: typeof obj.bounciness === "function" ? obj.bounciness : (obj.bounciness ?? 0.2),
-        type: obj.constructor?.name || "object",
-        forces: [...(prevData[id]?.appliedForces ?? [])] // силы которые будут применятся (если будут)
-      };
-      physics.registerIntent(intent);
+      if (!objects[id].collision) continue;
+      physics.registerIntent(intentFromObject(objects[id]));
     }
 
 
@@ -207,7 +197,10 @@ export default function init() {
       for (let i of Object.keys(objects)) {
         const f = objects[i].physicsSimulationStep?.(step, dt, prevData);
 
-        if (f !== undefined) callback[i] = f;
+        if (f !== undefined) callback[i] = {
+          ...f,
+          objectRef: intentFromObject(objects[i]),
+        };
       }
 
       stepLoading('step', 1);

@@ -1,0 +1,53 @@
+{
+  "dynamic": {
+    "hp": {
+      "hull": 10,
+      "armor": 0,
+      "barrier": 0
+    },
+    "charge": 0
+  },
+  "constant": {
+    "body": {
+      "tonnage": -1,
+      "core": 0,
+      "mass": 20,
+      "signature": 2,
+      "subgrid": {
+        "size": 4,
+        "category": "battle",
+        "autonomous": true,
+        "fuel": 36,
+
+        "self_destruct_in": 42,
+        "thrust": 1000,
+
+        "explosion": {
+          "radius": 30,
+          "damage": {
+            "kinetic": 0,
+            "high_explosive": 50,
+            "electro_magnetic": 0,
+            "thermal": 10
+          },
+          "falloff": 2
+        }
+      }
+    },
+    "acceleration": 60,
+    "maneuverability": 10,
+    "capacitor": {
+      "charge": 0,
+      "generation": 0
+    },
+    "slots": {
+      "external": 4,
+      "internal": 12
+    },
+    "hp": {
+      "hull": 10,
+      "armor": 0,
+      "barrier": 0
+    }
+  }
+}

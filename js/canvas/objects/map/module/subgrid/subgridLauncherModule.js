@@ -1,5 +1,5 @@
 import { battleships } from "../../../../../../battleships/battleships.js";
-import { uuidv4 } from "../../../../../../libs/uuid.js";
+import uuid, { uuidv4 } from "../../../../../../libs/uuid.js";
 import { point } from "../../../../../../libs/vector/point.js";
 import { EVENTS } from "../../../../../events.js";
 import { createObject } from "../../../../../save&load/load.js";
@@ -18,60 +18,77 @@ export default class SubgridLauncherModule extends BaseModule {
     super.next();
 
     if (this.state == "active" && this.parent) {
-      const id = "subgrid-" + uuidv4();
-      const subgridData = battleships[this.characteristics.launcher.subgrid.dataRef];
+      const sequenceId = uuid();
 
-      const object = createObject(
-        this.characteristics.launcher.subgrid.class,
-        this.parent._x, this.parent._y, 
-        this.parent.direction + this.characteristics.launcher.headingOffset, 0, 
-        this, subgridData
-      )
+      for (let [k, launcher] of Object.entries(this.characteristics.launcher.instances)) {
+        console.log(launcher);
+        const fireSegments = launcher.fire.type == "single" ? [launcher.fire.delay] : launcher.fire.delay;
 
-      const offset = (object.size ?? 30) + (this.parent.size ?? 30) + 10;
+        for (let delay of fireSegments) {
+          const id = `SG[${sequenceId}] ${uuidv4()}`;
+          const subgridData = battleships[launcher.subgrid.dataRef];
 
-      const dirRad = ((this.parent._direction + this.characteristics.launcher.headingOffset) / 180) * Math.PI;
-      const globalOffset = point(
-        offset * Math.cos(dirRad),
-        offset * Math.sin(dirRad)
-      );
 
-      object._x += globalOffset.x;
-      object._y += globalOffset.y;
+          const object = createObject(
+            launcher.subgrid.class,
+            this.parent._x, this.parent._y, 
+            0, 0, 
+            this, subgridData, { delay, correctionId: k }
+          )
 
-      object.velocity = point(this.parent.velocity.x, this.parent.velocity.y);
-      object.applyForce(point(this.characteristics.launcher.vector[0], this.characteristics.launcher.vector[1]));
+          this.applyCorrection(k, object);
 
-      object.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
-      // object.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud({
-      //   directionLength: 250,
-      //   nextStepPointSize: 20,
-      //   showRDirection: true,
-      //   showVDirection: false,
-      //   showNextSteps: false,
-      // }))
-      object.setChildren(MAP_OBJECTS_IDS.DATA_HUD,           new BasicDataHud([
-        { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
-        { func: (hud) => `speed: ${Math.round(hud.parent.velocity.length)}m/s` },
-      ]))
-      object.setChildren(MAP_OBJECTS_IDS.SPRITE, 
-        new SpriteShower(
-          './img/frigate.png', 
-          '#ff0000',
-          200,
-        )
-      )
+          object.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
+          object.setChildren(MAP_OBJECTS_IDS.DATA_HUD,           new BasicDataHud([
+            { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
+            { func: (hud) => `speed: ${Math.round(hud.parent.velocity.length)}m/s` },
+          ]))
+          object.setChildren(MAP_OBJECTS_IDS.SPRITE, 
+            new SpriteShower(
+              './img/frigate.png', 
+              '#ff0000',
+              200,
+            )
+          )
 
-      document.dispatchEvent(
-        new CustomEvent(EVENTS.MAP.NEW, {
-          detail: {
-            object: object,
-            id: id,
-            redraw: false,
-          },
-        })
-      );
+          document.dispatchEvent(
+            new CustomEvent(EVENTS.MAP.NEW, {
+              detail: {
+                object: object,
+                id: id,
+                redraw: false,
+              },
+            })
+          );
+        }
+      }
     }
+  }
+
+
+  applyCorrection(correctionId, object) {
+    if (!this.parent || !object) return;
+
+    let heading = this.characteristics.launcher.heading;
+
+    const launcher = this.characteristics.launcher.instances[correctionId];
+    const headingOffset = launcher.headingOffset ?? 0;
+
+    const offset = (object.size ?? 30) + (this.parent.size ?? 30) + 10 + (launcher.distanceOffset ?? 0);
+
+    const dirRad = ((this.parent._direction + heading + headingOffset) / 180) * Math.PI;
+    const globalOffset = point(
+      offset * Math.sin(dirRad),
+      offset * Math.cos(dirRad)
+    );
+
+    object._x = this.parent._x + globalOffset.x;
+    object._y = this.parent._y + globalOffset.y;
+
+    object.direction = this.parent.direction - (headingOffset + heading + (launcher.subgridRotation ?? 0));
+
+    object.velocity = point(this.parent.velocity.x, this.parent.velocity.y);
+    object.applyForce(point(launcher.vector?.[0] ?? 0, launcher.vector?.[1] ?? 0));
   }
 
 

@@ -16,6 +16,7 @@
       "subgrid": {
         "size": 40,
         "category": "battle",
+        "autonomous": true,
         "fuel": 102,
 
         "self_destruct_in": 120,

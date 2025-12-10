@@ -107,6 +107,7 @@ export default class BasicStaticObject extends BasicStepObject {
   save(realParent = null) {
     return {
       ...super.save(realParent),
+      collision: this.collision,
       size: this.size,
       mass: this.mass,
       bounciness: this.bounciness,
@@ -115,6 +116,7 @@ export default class BasicStaticObject extends BasicStepObject {
 
   load(data, loadChildren = false) {
     super.load(data, false);
+    this.collision = data.collision;
     this.size = data.size;
     this.mass = data.mass;
     this.bounciness = data.bounciness;
