@@ -1,10 +1,16 @@
-import { EVENTS } from "../../../../../../events.js";
 import { registerClass } from "../../../../../../save&load/objectCollector.js";
 import { registerSteps } from "../../../step/stepInfoCollector.js";
 import SubgridObject from "../subgridObject.js";
 
-export default class ShellSubgridObject extends SubgridObject {
+export default class ContactSubgridObject extends SubgridObject {
   isCollided = false;
+  contactOptions = {
+    hide: true,
+    destroy: true,
+  }
+
+
+  onContact(collidedTargetId) {}
 
   physicsSimulationStep(step, dt, objectsData) {
     const data = super.physicsSimulationStep(step, dt, objectsData);
@@ -12,8 +18,8 @@ export default class ShellSubgridObject extends SubgridObject {
     if (this.isCollided || !this.active) return data;
 
     if (this.currentCharacteristics.dynamic.hp.hull <= 0) {
-      this.isCollided = true;
       this.visible = false;
+      this.destroy();
 
       return {
         delete: true
@@ -24,10 +30,13 @@ export default class ShellSubgridObject extends SubgridObject {
     for (const c of collisions) {
       if (c.a === this.id || c.b === this.id) {
         this.isCollided = true;
-        this.visible = false;
+        this.visible = !this.contactOptions.hide;
+
+        this.onContact(c.a === this.id ? c.b : c.a);
+        if (this.contactOptions.destroy) this._kill = true;
 
         return {
-          delete: true
+          delete: this.contactOptions.hide
         };
       }
     }
@@ -35,18 +44,35 @@ export default class ShellSubgridObject extends SubgridObject {
     return data;
   }
 
+
   finalize(objectsData) {
     const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in ?? 24;
 
-    this.kill = 
-      this.kill                                         ||
+    this._kill ||= 
       this._livetime >= selfDestruct                    ||
-      this.currentCharacteristics.dynamic.hp.hull <= 0  ||
-      this.isCollided
+      this.currentCharacteristics.dynamic.hp.hull <= 0
+    
+    this.isCollided = false;
 
     return super.finalize(objectsData);
   }
+
+
+  save(realParent = null) {
+    return {
+      ...super.save(realParent),
+      contactOptions: this.contactOptions,
+    };
+  }
+
+  load(data, loadChildren = false) {
+    super.load(data, false);
+    
+    this.contactOptions ??= data.contactOptions;
+
+    loadChildren && super.loadChildren(data);
+  }
 }
 
-registerClass(ShellSubgridObject);
-registerSteps(ShellSubgridObject, 0, []);
+registerClass(ContactSubgridObject);
+registerSteps(ContactSubgridObject, 0, []);

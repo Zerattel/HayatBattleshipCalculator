@@ -6,6 +6,7 @@ import { registerSteps } from "./stepInfoCollector.js";
 import { log } from "../../../../controls/step-logs/log.js";
 import { objects } from "../../../map.js";
 import { collisionPoint } from "../../../../../libs/math.js";
+import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from "./simulationStates.constant.js";
 
 export default class BasicMovingObject extends BasicStepObject {
   velocity = point(0, 0);
@@ -66,6 +67,8 @@ export default class BasicMovingObject extends BasicStepObject {
 
 
   physicsSimulationStep(step, delta, objectsData) {
+    this.state = generateSimulationState(SIMULATION_STATES.PHYSICS_SIMULATION, step);
+
     const phys = objectsData[this.id]?._physics;
     if (phys) {
       this._x = phys.pos.x;
@@ -76,6 +79,8 @@ export default class BasicMovingObject extends BasicStepObject {
 
 
   afterSimulation(objectsData) {
+    this.state = generateSimulationState(SIMULATION_STATES.AFTER_SIMULATION);
+
     const phys = objectsData[this.id]?._physics;
     if (phys) {
       this._x = phys.pos.x;

@@ -20,15 +20,18 @@
         "fuel": 36,
 
         "self_destruct_in": 42,
-        "thrust": 1000,
+        "thrust": 4000,
+        "guidanceDelay": 2,
 
         "explosion": {
           "radius": 30,
-          "damage": {
-            "kinetic": 0,
-            "high_explosive": 50,
-            "electro_magnetic": 0,
-            "thermal": 10
+          "effect": {
+            "damage": {
+              "kinetic": 0,
+              "high_explosive": 50,
+              "electro_magnetic": 0,
+              "thermal": 10
+            }
           },
           "falloff": 2
         }

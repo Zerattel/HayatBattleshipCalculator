@@ -10,9 +10,11 @@ import BaseModule from "../canvas/objects/map/module/baseModule.js";
 import ShipStatsHUD from "../canvas/objects/map/ship/hud/shipStatsHud.js";
 
 import ShipObject from "../canvas/objects/map/ship/shipObject.js";
-import SubgridObject from "../canvas/objects/map/ship/subgrid/subgridObject.js";
-import ShellSubgridObject from "../canvas/objects/map/ship/subgrid/shell/shellSubgridObject.js";
-import SelfguidedSubgridObject from "../canvas/objects/map/ship/subgrid/automatic/SelfguidedSubgridObject.js";
+import SubgridObject            from "../canvas/objects/map/ship/subgrid/subgridObject.js";
+import ContactSubgridObject     from "../canvas/objects/map/ship/subgrid/contact/contactSubgridObject.js";
+import ExplosiveSubgridObject   from "../canvas/objects/map/ship/subgrid/contact/explosiveSubgridObject.js";
+import ShellSubgridObject       from "../canvas/objects/map/ship/subgrid/contact/shell/shellSubgridObject.js";
+import SelfguidedSubgridObject  from "../canvas/objects/map/ship/subgrid/contact/automatic/SelfguidedSubgridObject.js";
 
 import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";

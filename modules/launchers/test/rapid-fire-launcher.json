@@ -19,7 +19,7 @@
     "heading": 0,
     "instances": [
       {
-        "vector": [0, 50],
+        "vector": [0, 100],
 
         "headingOffset": 70,
         "distanceOffset": 0,
@@ -36,7 +36,7 @@
         }
       },
       {
-        "vector": [0, 50],
+        "vector": [0, 100],
 
         "headingOffset": -70,
         "distanceOffset": 0,
@@ -53,7 +53,7 @@
         }
       },
       {
-        "vector": [0, 50],
+        "vector": [0, 100],
 
         "headingOffset": 80,
         "distanceOffset": 0,
@@ -70,7 +70,7 @@
         }
       },
       {
-        "vector": [0, 50],
+        "vector": [0, 100],
 
         "headingOffset": -80,
         "distanceOffset": 0,

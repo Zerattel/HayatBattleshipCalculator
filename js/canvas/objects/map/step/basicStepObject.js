@@ -3,11 +3,13 @@ import env from "../../../../enviroments/env.js";
 import { load } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
 import StandartObject from "../../standartObject.js";
+import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from "./simulationStates.constant.js";
 import { registerSteps } from "./stepInfoCollector.js";
 
 export default class BasicStepObject extends StandartObject {
   _step = 6;
   _livetime = 0;
+  _kill = false;
 
   tasks = [];
 
@@ -18,9 +20,19 @@ export default class BasicStepObject extends StandartObject {
     this._step = step || env.STEP;
   }
 
+
+  destroy() {
+    if (parceSimulationState(this.state)[0] == SIMULATION_STATES.FINALIZE) {
+      super.destroy();
+    } else {
+      this._kill = true;
+    }
+  }
+
+
   next() {
     log(this.path, `next | function call`)
-    this.state = "next";
+    this.state = generateSimulationState(SIMULATION_STATES.NEXT);
 
     for (let i in this.tasks) {
       if (!this.tasks[i].do(this)) {
@@ -49,13 +61,13 @@ export default class BasicStepObject extends StandartObject {
     };
     log(this.path, `next | children processed: `, data)
 
-    this.state = "step 0"
+    this.state = generateSimulationState(SIMULATION_STATES.STEP, 0);
     return d;
   }
 
   step(index, objectsData) {
     log(this.path, `step ${index} | function call`)
-    this.state = "step "+index;
+    this.state = generateSimulationState(SIMULATION_STATES.STEP, index);
 
     let data = {};
 
@@ -76,12 +88,16 @@ export default class BasicStepObject extends StandartObject {
 
   finalize(objectsData) {
     log(this.path, `finalize | function call`)
-    this.state = "finalize";
+    this.state = generateSimulationState(SIMULATION_STATES.FINALIZE);
 
     this._livetime += this._step;
 
     for (let i of Object.keys(this.children)) {
       "finalize" in this.children[i] && this.children[i].finalize(objectsData);
+    }
+
+    if (this._kill) {
+      this.destroy();
     }
   }
 

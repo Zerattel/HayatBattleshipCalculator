@@ -3,13 +3,12 @@ import { objectFromPath } from "../../../../../../libs/pathResolver.js";
 import { EVENTS } from "../../../../../events.js";
 import { registerClass } from "../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../map.js";
+import { generateSimulationState } from "../../step/simulationStates.constant.js";
 import { registerSteps } from "../../step/stepInfoCollector.js";
 import ShipObject from "../shipObject.js";
 
 export default class SubgridObject extends ShipObject {
   controlledBy = new ObjectConnection(() => objects);
-
-  kill = false;
 
   active = false;
   activationInfo = {
@@ -35,7 +34,8 @@ export default class SubgridObject extends ShipObject {
       return super.physicsSimulationStep(step, dt, objectsData);
     } else if (this.activationInfo.delay - this._livetime - dt*step <= 0) {
       if (!this.controlledBy.Connection || this.activationInfo.correctionId === null) {
-        this.kill = true;
+        this.destroy();
+
         return;
       }
 
@@ -56,17 +56,7 @@ export default class SubgridObject extends ShipObject {
 
 
   finalize(objectsData) {
-    if (this.kill || (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection)) {
-      document.dispatchEvent(
-        new CustomEvent(EVENTS.MAP.DELETE, {
-          detail: {
-            id: this.id,
-          },
-        })
-      );
-
-      return {};
-    } 
+    this._kill ||= !this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection;
 
     return super.finalize(objectsData);
   }

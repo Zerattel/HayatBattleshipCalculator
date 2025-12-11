@@ -87,8 +87,6 @@ const baseBattleshipCharacteristics = {
     temperature: 0,
     /** заряд конденсатора */
     charge: 0,
-    /** количество топлива у субтела */
-    fuel: 0,
   },
   constant: {
     body: {
@@ -108,10 +106,8 @@ const baseBattleshipCharacteristics = {
       signature: 0,
       /** параметры если это субтело */
       subgrid: {
-        effective_distance: 0,
         size: 0,
         category: 'battle',
-        fuel: 0,
       },
     },
     /** максимальное ускорение */

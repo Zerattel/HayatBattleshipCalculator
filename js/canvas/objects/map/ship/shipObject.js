@@ -160,7 +160,7 @@ export default class ShipObject extends BasicMovingObject {
                        ------ | Barrier Regen: ${barrierRegen}<br>
                        ------ | Generation: ${generation}<br>
                        ------ | Damage Recived:<br>${
-damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}
+damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
                        ------ | Damage Healed:<br>${Object.entries(healLog)
 .map(([n, v]) =>      `------ | - | ${n}: ${v}`).join('<br>')}`);
     }

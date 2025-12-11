@@ -197,7 +197,7 @@ export default function init() {
       for (let i of Object.keys(objects)) {
         const f = objects[i].physicsSimulationStep?.(step, dt, prevData);
 
-        if (f !== undefined) callback[i] = {
+        if (f !== undefined && objects[i]) callback[i] = {
           ...f,
           objectRef: intentFromObject(objects[i]),
         };

@@ -1,3 +1,4 @@
+import { EVENTS } from "../../events.js";
 import { load } from "../../save&load/load.js";
 import { registerClass } from "../../save&load/objectCollector.js";
 
@@ -133,6 +134,17 @@ export default class StandartObject {
     for (let i of Object.keys(data.children)) {
       data.children[i].afterLoad?.();
     }
+  }
+
+
+  destroy() {
+    document.dispatchEvent(
+      new CustomEvent(EVENTS.MAP.DELETE, {
+        detail: {
+          id: this.id,
+        },
+      })
+    );
   }
 }
 

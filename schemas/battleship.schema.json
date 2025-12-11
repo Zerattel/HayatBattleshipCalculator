@@ -6,7 +6,7 @@
   "properties": {
     "dynamic": {
       "type": "object",
-      "required": ["hp", "charge", "temperature"],
+      "required": ["hp"],
       "properties": {
         "hp": {
           "type": "object",
@@ -56,20 +56,36 @@
                 "fuel": { "type": "number" },
                 "self_destruct_in": { "type": "number" },
                 "thrust": { "type": "number" },
+                "guidanceDelay": { "type": "number" },
 
                 "explosion": {
                   "type": "object",
-                  "required": ["radius", "falloff", "damage"],
+                  "required": ["radius", "falloff", "effect"],
                   "properties": {
                     "radius": { "type": "number" },
-                    "damage": {
+                    "effect": {
                       "type": "object",
-                      "required": ["kinetic", "high_explosive", "electro_magnetic", "thermal"],
                       "properties": {
-                        "kinetic": { "type": "number" },
-                        "high_explosive": { "type": "number" },
-                        "electro_magnetic": { "type": "number" },
-                        "thermal": { "type": "number" }
+                        "damage": {
+                          "type": "object",
+                          "required": ["kinetic", "high_explosive", "electro_magnetic", "thermal"],
+                          "properties": {
+                            "kinetic": { "type": "number" },
+                            "high_explosive": { "type": "number" },
+                            "electro_magnetic": { "type": "number" },
+                            "thermal": { "type": "number" }
+                          }
+                        },
+                        "heal": {
+                          "type": "object",
+                          "properties": {
+                            "hull": { "type": "number" },
+                            "armor": { "type": "number" },
+                            "barrier": { "type": "number" }
+                          }
+                        },
+                        "temperature": { "type": "number" },
+                        "charge": { "type": "number" }
                       }
                     },
                     "falloff": { "type": "number" }

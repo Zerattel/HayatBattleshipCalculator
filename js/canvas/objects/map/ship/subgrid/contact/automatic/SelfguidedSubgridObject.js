@@ -1,15 +1,14 @@
-import { ObjectConnection } from "../../../../../../../libs/connection.js";
-import { calc, point } from "../../../../../../../libs/vector/point.js";
-import { EVENTS } from "../../../../../../events.js";
-import { registerClass } from "../../../../../../save&load/objectCollector.js";
-import { objects } from "../../../../../map.js";
-import MAP_OBJECTS_IDS from "../../../mapObjectsIds.constant.js";
-import { registerSteps } from "../../../step/stepInfoCollector.js";
-import SubgridObject from "../subgridObject.js";
+import { ObjectConnection } from "../../../../../../../../libs/connection.js";
+import { calc, point } from "../../../../../../../../libs/vector/point.js";
+import { EVENTS } from "../../../../../../../events.js";
+import { registerClass } from "../../../../../../../save&load/objectCollector.js";
+import { objects } from "../../../../../../map.js";
+import MAP_OBJECTS_IDS from "../../../../mapObjectsIds.constant.js";
+import { registerSteps } from "../../../../step/stepInfoCollector.js";
+import ExplosiveSubgridObject from "../explosiveSubgridObject.js";
 
-export default class SelfguidedSubgridObject extends SubgridObject {
+export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
   target = new ObjectConnection(() => objects);
-  isCollided = false;
 
 
   constructor(x, y, direction, velocity, controlledBy = null, battleshipChars = {}, activationDelay = 0) {
@@ -41,76 +40,17 @@ export default class SelfguidedSubgridObject extends SubgridObject {
   }
 
 
-  applyExplosiveDamage() {
-    const { radius, falloff, damage } 
-      = this.currentCharacteristics.constant.body.subgrid.explosion 
-      ?? { 
-        radius: 10, 
-        falloff: 2,  
-        damage: {
-          kinetic: 0,
-          high_explosive: 100,
-          electro_magnetic: 0,
-          thermal: 50
-        },
-      };
-
-    
-    for (let obj of Object.values(objects)) {
-      if (!("applyDamage" in obj) || !("currentCharacteristics" in obj)) continue;
-
-      const rx = obj._x - this._x;
-      const ry = obj._y - this._y;
-      const range = rx*rx + ry*ry - Math.pow(obj.size ?? 0, 2);
-
-      if (range > (radius*radius)) continue;
-
-      const mult = Math.pow(1 - Math.sqrt(range) / radius, falloff)
-      for (let [k, v] of Object.entries(damage)) {
-        if (!obj.currentCharacteristics.dynamic.recived_damage[k])
-          obj.currentCharacteristics.dynamic.recived_damage[k] = 0;
-
-        obj.currentCharacteristics.dynamic.recived_damage[k] += v * mult;
-      }
-
-      obj.applyDamage();
-    }
-  }
-
-
   physicsSimulationStep(step, dt, objectsData) {
     const data = super.physicsSimulationStep(step, dt, objectsData);
 
     if (this.isCollided || !this.active) return data;
 
-    if (this.currentCharacteristics.dynamic.hp.hull <= 0) {
-      this.isCollided = true;
-      this.visible = false;
-
-      this.applyExplosiveDamage();
-
-      return {
-        delete: true
-      };
-    }
-
-    const collisions = objectsData._physics_collisions || [];
-    for (const c of collisions) {
-      if (c.a === this.id || c.b === this.id) {
-        this.isCollided = true;
-        this.visible = false;
-
-        this.applyExplosiveDamage();
-
-        return {
-          delete: true
-        };
-      }
-    }
-
     // ---- проверки и базовые параметры ----
-    const target = this.target && this.target.Connection;
-    if (!target || this.currentCharacteristics?.constant?.body?.subgrid?.fuel <= this._livetime) {
+    const target = this.target?.Connection;
+    const fuel = this.currentCharacteristics?.constant?.body?.subgrid?.fuel ?? 0;
+    const guidanceDelay = this.currentCharacteristics?.constant?.body?.subgrid?.guidanceDelay ?? 0;
+
+    if (!target || fuel <= this._livetime || (guidanceDelay - this._livetime - dt*step) > 0) {
       return data;
     }
 
@@ -291,7 +231,11 @@ export default class SelfguidedSubgridObject extends SubgridObject {
 
     // Визуализация: направление ракеты (опционально — ориентируем по вектору ускорения)
     const angle = Math.atan2(-aFinalY, aFinalX);
-    this._direction = angle * 180 / Math.PI + 90;
+
+    const delta = (this._direction - 90) / 180 * Math.PI - angle;
+    const rotatingSpeed = 270 * dt;
+
+    this._direction -= Math.min(delta * 180 / Math.PI, rotatingSpeed);
 
     // Возвращаем массив сил/ускорений: если движок ожидает силы, умножьте на mass.
     // По умолчанию возвращаем ускорение (a = dv/dt).
@@ -299,19 +243,6 @@ export default class SelfguidedSubgridObject extends SubgridObject {
       ...data,
       forces: [...(data?.forces ?? []), { x: aFinalX * mass, y: aFinalY * mass }]
     };
-  }
-
-
-  finalize(objectsData) {
-    const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in ?? 120;
-
-    this.kill = 
-      this.kill                                         ||
-      this._livetime >= selfDestruct                    ||
-      this.currentCharacteristics.dynamic.hp.hull <= 0  ||
-      this.isCollided
-
-    return super.finalize(objectsData);
   }
 }
 
