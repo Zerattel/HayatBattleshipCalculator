@@ -184,9 +184,23 @@
         </select>
 
         <div id="modal-maneuver-types" class="sub">
-          <div id="modal-maneuver-types-maneuver" class="gridded" data-active="true">
-            <label>Vel: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
-            <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
+          <div id="modal-maneuver-types-maneuver" data-active="true">
+            <select id="modal-maneuver-types-maneuver-type" class="fit">
+              <option value="instant" selected>Instant</option> 
+              <option value="continious">Continious</option> 
+            </select>
+            <div class="gridded" style="margin-top: 5px;">
+              <label>Vel: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
+              <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
+            </div>
+
+            <label 
+              for="modal-maneuver-types-maneuver-applied" 
+              style="margin-top: 20px; display: block;"
+            >Currnetly applied continious forces:</label>
+            <div id="modal-maneuver-types-maneuver-applied">
+
+            </div>
           </div>
           <div id="modal-maneuver-types-hud" data-active="false">
             

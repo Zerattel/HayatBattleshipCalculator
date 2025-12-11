@@ -11,12 +11,36 @@ import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from
 export default class BasicMovingObject extends BasicStepObject {
   velocity = point(0, 0);
   _direction = 0;
+  forces = [];
 
   constructor(x, y, direction, velocity) {
     super(x, y, 6);
 
     this.direction = direction || 0;
     if (velocity) this.applyForce(velocity);
+  }
+
+
+  applyContiniousForce(amount) {
+    const dirRad = (this._direction / 180) * Math.PI;
+
+    let force;
+
+    if (typeof amount === "number") {
+      force = calc(() => point(
+        Math.sin(dirRad),
+        Math.cos(dirRad)
+      ) * amount * this.mass);
+    } else {
+      const rotated = calc(() => point(
+        amount.x * Math.cos(-dirRad) - amount.y * Math.sin(-dirRad),
+        amount.x * Math.sin(-dirRad) + amount.y * Math.cos(-dirRad)
+      ) * this.mass);
+
+      force = rotated;
+    }
+
+    this.forces.push(force);
   }
 
   applyForce(amount) {
@@ -103,6 +127,13 @@ export default class BasicMovingObject extends BasicStepObject {
   }
 
 
+  finalize(objectsData) {
+    this.forces = [];
+
+    return super.finalize(objectsData);
+  }
+
+
   onCollision(collision, target) {
     let energy = collision.energy;
     if (energy === undefined) {
@@ -168,6 +199,7 @@ export default class BasicMovingObject extends BasicStepObject {
       collision: this.collision,
       velocity: [this.velocity.x, this.velocity.y],
       direction: this._direction,
+      forces: this.forces,
     };
   }
 
@@ -176,6 +208,7 @@ export default class BasicMovingObject extends BasicStepObject {
     this.collision = data.collision;
     this.velocity = point(data.velocity[0], data.velocity[1]);
     this._direction = data.direction;
+    this.forces = data.forces ?? [];
 
     loadChildren && super.loadChildren(data);
   }
