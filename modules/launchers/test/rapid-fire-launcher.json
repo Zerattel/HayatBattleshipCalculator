@@ -1,0 +1,114 @@
+{
+  "main": {
+    "name": "Ракетный комплекс «Рой»",
+    "type": "Стартовые площадки",
+    "category": "Ракетные комлексы",
+    "class": "SubgridLauncherModule",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["catapult", "subgrid"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 2,
+
+  "interference": 0,
+
+  "launcher": {
+    "heading": 0,
+    "instances": [
+      {
+        "vector": [0, 50],
+
+        "headingOffset": 70,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "rapid",
+          "delay": [0, 1, 2]
+        },
+
+        "subgrid": {
+          "class": "SelfguidedSubgridObject",
+          "dataRef": "[Test] Ракета типа \"Рой\""
+        }
+      },
+      {
+        "vector": [0, 50],
+
+        "headingOffset": -70,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "rapid",
+          "delay": [0, 1, 2]
+        },
+
+        "subgrid": {
+          "class": "SelfguidedSubgridObject",
+          "dataRef": "[Test] Ракета типа \"Рой\""
+        }
+      },
+      {
+        "vector": [0, 50],
+
+        "headingOffset": 80,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "rapid",
+          "delay": [0.5, 1.5]
+        },
+
+        "subgrid": {
+          "class": "SelfguidedSubgridObject",
+          "dataRef": "[Test] Ракета типа \"Рой\""
+        }
+      },
+      {
+        "vector": [0, 50],
+
+        "headingOffset": -80,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "rapid",
+          "delay": [0.5, 1.5]
+        },
+
+        "subgrid": {
+          "class": "SelfguidedSubgridObject",
+          "dataRef": "[Test] Ракета типа \"Рой\""
+        }
+      }
+    ]
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -15,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -40,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

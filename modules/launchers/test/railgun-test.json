@@ -16,12 +16,26 @@
   "interference": 0,
 
   "launcher": {
-    "vector": [0, 1600],
-    "headingOffset": 0,
-    "subgrid": {
-      "class": "ShellSubgridObject",
-      "dataRef": "Railgun Shell (10m)"
-    }
+    "heading": 0,
+    "instances": [
+      {
+        "vector": [0, 1600],
+
+        "headingOffset": 0,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "ShellSubgridObject",
+          "dataRef": "[Test] Railgun Shell (10m)"
+        }
+      }
+    ]
   },
 
   "modificators": {

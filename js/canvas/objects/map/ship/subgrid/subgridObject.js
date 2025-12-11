@@ -1,5 +1,6 @@
 import { ObjectConnection } from "../../../../../../libs/connection.js";
 import { objectFromPath } from "../../../../../../libs/pathResolver.js";
+import { EVENTS } from "../../../../../events.js";
 import { registerClass } from "../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../map.js";
 import { registerSteps } from "../../step/stepInfoCollector.js";
@@ -8,16 +9,74 @@ import ShipObject from "../shipObject.js";
 export default class SubgridObject extends ShipObject {
   controlledBy = new ObjectConnection(() => objects);
 
+  kill = false;
 
-  constructor(x, y, direction, velocity, controlledBy = null, battleshipChars = {}) {
+  active = false;
+  activationInfo = {
+    delay: 0,
+    correctionId: null,
+  };
+
+  constructor(x, y, direction, velocity, controlledBy = null, battleshipChars = {}, activationInfo = null) {
     super(x, y, direction, velocity, battleshipChars);
     this.controlledBy.Connection = controlledBy;
+
+    if (activationInfo) this.activationInfo = activationInfo;
+    if (this.activationInfo.delay <= 0 || this.activationInfo.correctionId === null) this.active = true;
+    else {
+      this.visible = false;
+      this.collision = false;
+    }
+  }
+
+
+  physicsSimulationStep(step, dt, objectsData) {
+    if (this.active) {
+      return super.physicsSimulationStep(step, dt, objectsData);
+    } else if (this.activationInfo.delay - this._livetime - dt*step <= 0) {
+      if (!this.controlledBy.Connection || this.activationInfo.correctionId === null) {
+        this.kill = true;
+        return;
+      }
+
+      this.controlledBy.Connection.applyCorrection(this.activationInfo.correctionId, this);
+
+      this.active = true;
+      this.visible = true;
+      this.collision = true;
+
+      const data = super.physicsSimulationStep(step, dt, objectsData);
+
+      return {
+        ...data,
+        register: true,
+      };
+    }
+  }
+
+
+  finalize(objectsData) {
+    if (this.kill || (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection)) {
+      document.dispatchEvent(
+        new CustomEvent(EVENTS.MAP.DELETE, {
+          detail: {
+            id: this.id,
+          },
+        })
+      );
+
+      return {};
+    } 
+
+    return super.finalize(objectsData);
   }
 
 
   save(realParent = null) {
     return {
       ...super.save(realParent),
+      active: this.active,
+      activationInfo: this.activationInfo,
       controlledBy: this.controlledBy.Connection?.path ?? null,
     };
   }
@@ -25,6 +84,8 @@ export default class SubgridObject extends ShipObject {
   load(data, loadChildren = false) {
     super.load(data, false);
     
+    this.active = data.active;
+    this.activationInfo = data.activationInfo;
     this.controlledBy.storeConnection(data.controlledBy ?? null);
 
     loadChildren && super.loadChildren(data);

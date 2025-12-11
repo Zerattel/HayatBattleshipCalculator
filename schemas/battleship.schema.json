@@ -1,0 +1,189 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Battleship",
+  "type": "object",
+  "required": ["dynamic", "constant"],
+  "properties": {
+    "dynamic": {
+      "type": "object",
+      "required": ["hp", "charge", "temperature"],
+      "properties": {
+        "hp": {
+          "type": "object",
+          "required": ["hull", "armor", "barrier"],
+          "properties": {
+            "hull": { "type": "number" },
+            "armor": { "type": "number" },
+            "barrier": { "type": "number" }
+          }
+        },
+        "temperature": { "type": "number" },
+        "charge": { "type": "number" },
+        "fuel": { "type": "number" }
+      }
+    },
+
+    "constant": {
+      "type": "object",
+      "required": ["body", "capacitor", "slots", "hp"],
+      "properties": {
+        "body": {
+          "type": "object",
+          "required": ["tonnage", "core", "mass", "signature"],
+          "properties": {
+            "tonnage": {
+              "type": ["number", "null"]
+            },
+            "core": { "type": "number" },
+            "mass": { "type": "number" },
+            "signature": { "type": "number" },
+
+            "containers": {
+              "type": "object",
+              "properties": {
+                "storage": { "type": "number" },
+                "hangar": { "type": "number" }
+              }
+            },
+
+            "subgrid": {
+              "type": "object",
+              "required": ["size", "autonomous"],
+              "properties": {
+                "size": { "type": "number" },
+                "category": { "type": "string" },
+                "autonomous": { "type": "boolean" },
+                "fuel": { "type": "number" },
+                "self_destruct_in": { "type": "number" },
+                "thrust": { "type": "number" },
+
+                "explosion": {
+                  "type": "object",
+                  "required": ["radius", "falloff", "damage"],
+                  "properties": {
+                    "radius": { "type": "number" },
+                    "damage": {
+                      "type": "object",
+                      "required": ["kinetic", "high_explosive", "electro_magnetic", "thermal"],
+                      "properties": {
+                        "kinetic": { "type": "number" },
+                        "high_explosive": { "type": "number" },
+                        "electro_magnetic": { "type": "number" },
+                        "thermal": { "type": "number" }
+                      }
+                    },
+                    "falloff": { "type": "number" }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "acceleration": { "type": "number" },
+        "jumpdistance": { "type": "number" },
+        "maneuverability": { "type": "number" },
+        "sensors_power": { "type": "number" },
+        "capture_range": { "type": "number" },
+
+        "capacitor": {
+          "type": "object",
+          "required": ["charge", "generation"],
+          "properties": {
+            "charge": { "type": "number" },
+            "generation": { "type": "number" }
+          }
+        },
+
+        "slots": {
+          "type": "object",
+          "required": ["external", "internal"],
+          "properties": {
+            "external": { "type": "number" },
+            "internal": { "type": "number" }
+          }
+        },
+
+        "hp": {
+          "type": "object",
+          "required": ["hull", "armor", "barrier"],
+          "properties": {
+            "hull": { "type": "number" },
+            "armor": { "type": "number" },
+            "barrier": { "type": "number" }
+          }
+        },
+
+        "collision_energy_distribution": {
+          "type": "object",
+          "properties": {
+            "damage": { "type": "number" },
+            "velocity": { "type": "number" },
+            "heat": { "type": "number" }
+          }
+        },
+
+        "temperature": { "type": "number" },
+        "heating": { "type": "number" },
+
+        "resistance": {
+          "type": "object",
+          "properties": {
+            "kinetic": {
+              "type": "object",
+              "properties": {
+                "hull": { "type": "number" },
+                "armor": { "type": "number" },
+                "barrier": { "type": "number" }
+              }
+            },
+            "high_explosive": {
+              "type": "object",
+              "properties": {
+                "hull": { "type": "number" },
+                "armor": { "type": "number" },
+                "barrier": { "type": "number" }
+              }
+            },
+            "electro_magnetic": {
+              "type": "object",
+              "properties": {
+                "hull": { "type": "number" },
+                "armor": { "type": "number" },
+                "barrier": { "type": "number" }
+              }
+            },
+            "thermal": {
+              "type": "object",
+              "properties": {
+                "hull": { "type": "number" },
+                "armor": { "type": "number" },
+                "barrier": { "type": "number" }
+              }
+            },
+            "EW": { "type": "number" }
+          }
+        },
+
+        "barrier": {
+          "type": "object",
+          "properties": {
+            "passive_regeneration": { "type": "number" },
+            "resonance": {
+              "type": "object",
+              "properties": {
+                "frequency": { "type": "number" },
+                "tendency": { "type": "number" },
+                "range": { "type": "number" }
+              }
+            }
+          }
+        },
+
+        "modulemodifier": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

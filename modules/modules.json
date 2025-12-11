@@ -1,7 +1,11 @@
 {
   "test": "test.json",
-  "Электромагнитная торпедная катапульта": "electromagnetic-catapult-test.json",
-  "Рельсотрон (10m снаряд)": "railgun-test.json",
+  "Электромагнитная торпедная катапульта": "launchers/test/electromagnetic-catapult-test.json",
+  "Рельсотрон (10m снаряд)": "launchers/test/railgun-test.json",
+  "Ракетный комплекс «Рой»": "launchers/test/rapid-fire-launcher.json",
+
+
+
   "Средний трюм M": "construction/cargohold.json",
   "Малый ангар M": "construction/hangar.json",
   "Золотая проточная катушка M": "energetics/golden-flowcoil.json",

@@ -160,6 +160,7 @@ export default class BasicMovingObject extends BasicStepObject {
   save(realParent = null) {
     return {
       ...super.save(realParent),
+      collision: this.collision,
       velocity: [this.velocity.x, this.velocity.y],
       direction: this._direction,
     };
@@ -167,6 +168,7 @@ export default class BasicMovingObject extends BasicStepObject {
 
   load(data, loadChildren = false) {
     super.load(data, false);
+    this.collision = data.collision;
     this.velocity = point(data.velocity[0], data.velocity[1]);
     this._direction = data.direction;
 

@@ -97,6 +97,10 @@ export default class PhysicsEngine {
       const callback = substepCallback?.(s) ?? {};
 
       for (const i of Object.keys(callback)) {
+        if (callback[i].register) {
+          this.registerIntent(callback[i].objectRef);
+        }
+
         if (!this.bodies.has(i)) continue;
 
         if (callback[i].delete === true) {

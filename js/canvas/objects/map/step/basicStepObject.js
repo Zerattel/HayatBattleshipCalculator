@@ -22,8 +22,6 @@ export default class BasicStepObject extends StandartObject {
     log(this.path, `next | function call`)
     this.state = "next";
 
-    this._livetime += this._step;
-
     for (let i in this.tasks) {
       if (!this.tasks[i].do(this)) {
         delete this.tasks[i];
@@ -79,6 +77,9 @@ export default class BasicStepObject extends StandartObject {
   finalize(objectsData) {
     log(this.path, `finalize | function call`)
     this.state = "finalize";
+
+    this._livetime += this._step;
+
     for (let i of Object.keys(this.children)) {
       "finalize" in this.children[i] && this.children[i].finalize(objectsData);
     }

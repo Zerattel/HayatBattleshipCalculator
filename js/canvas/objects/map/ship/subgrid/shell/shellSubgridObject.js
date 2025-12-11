@@ -7,7 +7,9 @@ export default class ShellSubgridObject extends SubgridObject {
   isCollided = false;
 
   physicsSimulationStep(step, dt, objectsData) {
-    if (this.isCollided) return;
+    const data = super.physicsSimulationStep(step, dt, objectsData);
+
+    if (this.isCollided || !this.active) return data;
 
     if (this.currentCharacteristics.dynamic.hp.hull <= 0) {
       this.isCollided = true;
@@ -17,8 +19,6 @@ export default class ShellSubgridObject extends SubgridObject {
         delete: true
       };
     }
-
-    const data = super.physicsSimulationStep(step, dt, objectsData);
 
     const collisions = objectsData._physics_collisions || [];
     for (const c of collisions) {
@@ -36,25 +36,15 @@ export default class ShellSubgridObject extends SubgridObject {
   }
 
   finalize(objectsData) {
-    let data = super.finalize(objectsData);
-
     const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in ?? 24;
 
-    if (
-      this._livetime >= selfDestruct ||
-      this.currentCharacteristics.dynamic.hp.hull <= 0 ||
+    this.kill = 
+      this.kill                                         ||
+      this._livetime >= selfDestruct                    ||
+      this.currentCharacteristics.dynamic.hp.hull <= 0  ||
       this.isCollided
-    ) {
-      document.dispatchEvent(
-        new CustomEvent(EVENTS.MAP.DELETE, {
-          detail: {
-            id: this.id,
-          },
-        })
-      );
-    }
 
-    return data;
+    return super.finalize(objectsData);
   }
 }
 

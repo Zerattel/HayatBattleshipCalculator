@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Module",
+  "type": "object",
+  "required": ["main", "activation", "modificators"],
+  "properties": {
+    "main": {
+      "type": "object",
+      "required": ["name", "type", "category", "size", "position"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "category": { "type": "string" },
+
+        "class": { "type": "string" },
+
+        "size": { "type": "number" },
+        "position": {
+          "type": "string",
+          "enum": ["internal", "external"]
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+
+    "activation": {
+      "type": "string",
+      "enum": ["passive", "active", "overload"]
+    },
+
+    "initFunctions": { "type": "string" },
+
+    "interference": { "type": "number" },
+
+    "cycle": { "type": "number" },
+    "reload": { "type": "number" },
+
+    "launcher": {
+      "type": "object",
+      "required": ["instances"],
+      "properties": {
+        "heading": { "type": "number" },
+        "instances": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["vector", "headingOffset", "distanceOffset", "subgrid"],
+            "properties": {
+              "vector": {
+                "type": "array",
+                "items": { "type": "number" },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "headingOffset": { "type": "number" },
+              "distanceOffset": { "type": "number" },
+              "subgridRotation": { "type": "number" },
+
+              "fire": {
+                "type": "object",
+                "required": ["type", "delay"],
+                "properties": {
+                  "type": { "type": "string" },
+                  "delay": {
+                    "oneOf": [
+                      { "type": "number" },
+                      {
+                        "type": "array",
+                        "items": { "type": "number" }
+                      }
+                    ]
+                  }
+                }
+              },
+
+              "subgrid": {
+                "type": "object",
+                "required": ["class", "dataRef"],
+                "properties": {
+                  "class": { "type": "string" },
+                  "dataRef": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "additionalInfo": {
+      "type": "object"
+    },
+
+    "modificators": {
+      "type": "object",
+      "required": ["offline", "online", "active", "overload"],
+      "properties": {
+        "offline": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/modRecord" }
+        },
+        "online": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/modRecord" }
+        },
+        "active": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/modRecord" }
+        },
+        "overload": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/modRecord" }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "modRecord": {
+      "type": "object",
+      "required": ["target", "characteristic", "modificationType", "modificator"],
+      "properties": {
+        "target": {
+          "type": "string",
+          "enum": ["this", "target", "area"]
+        },
+        "characteristic": { "type": "string" },
+
+        "modificationType": {
+          "type": "string",
+          "enum": ["number", "percent"]
+        },
+
+        "modificator": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "string" }
+          ]
+        },
+
+        "isAffectedByInterference": { "type": "boolean" }
+      }
+    }
+  }
+}

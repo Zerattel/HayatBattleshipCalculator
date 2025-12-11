@@ -12,8 +12,8 @@ export default class SelfguidedSubgridObject extends SubgridObject {
   isCollided = false;
 
 
-  constructor(x, y, direction, velocity, controlledBy = null, battleshipChars = {}) {
-    super(x, y, direction, velocity, controlledBy, battleshipChars);
+  constructor(x, y, direction, velocity, controlledBy = null, battleshipChars = {}, activationDelay = 0) {
+    super(x, y, direction, velocity, controlledBy, battleshipChars, activationDelay);
 
     this.target.Connection = controlledBy?.parent.children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER].target;
   }
@@ -61,7 +61,7 @@ export default class SelfguidedSubgridObject extends SubgridObject {
 
       const rx = obj._x - this._x;
       const ry = obj._y - this._y;
-      const range = rx*rx + ry*ry;
+      const range = rx*rx + ry*ry - Math.pow(obj.size ?? 0, 2);
 
       if (range > (radius*radius)) continue;
 
@@ -79,7 +79,9 @@ export default class SelfguidedSubgridObject extends SubgridObject {
 
 
   physicsSimulationStep(step, dt, objectsData) {
-    if (this.isCollided) return;
+    const data = super.physicsSimulationStep(step, dt, objectsData);
+
+    if (this.isCollided || !this.active) return data;
 
     if (this.currentCharacteristics.dynamic.hp.hull <= 0) {
       this.isCollided = true;
@@ -91,8 +93,6 @@ export default class SelfguidedSubgridObject extends SubgridObject {
         delete: true
       };
     }
-
-    const data = super.physicsSimulationStep(step, dt, objectsData);
 
     const collisions = objectsData._physics_collisions || [];
     for (const c of collisions) {
@@ -303,25 +303,15 @@ export default class SelfguidedSubgridObject extends SubgridObject {
 
 
   finalize(objectsData) {
-    let data = super.finalize(objectsData);
-
     const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in ?? 120;
 
-    if (
-      this._livetime >= selfDestruct ||
-      this.currentCharacteristics.dynamic.hp.hull <= 0 ||
+    this.kill = 
+      this.kill                                         ||
+      this._livetime >= selfDestruct                    ||
+      this.currentCharacteristics.dynamic.hp.hull <= 0  ||
       this.isCollided
-    ) {
-      document.dispatchEvent(
-        new CustomEvent(EVENTS.MAP.DELETE, {
-          detail: {
-            id: this.id,
-          },
-        })
-      );
-    }
 
-    return data;
+    return super.finalize(objectsData);
   }
 }
 

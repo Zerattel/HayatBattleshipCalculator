@@ -25,6 +25,7 @@
   "ZD - «Moth»": "destroers/zd-moth.json",
   "SSS - «Lurker MkII»": "frigates/sss-lurker-mk2.json",
 
-  "Torpedo T": "subships/test-torpedo.json",
-  "Railgun Shell (10m)": "subships/test-railgun-shell.json"
+  "[Test] Torpedo T": "subships/test/torpedo.json",
+  "[Test] Ракета типа \"Рой\"": "subships/test/missile-swarm.json",
+  "[Test] Railgun Shell (10m)": "subships/test/railgun-shell.json"
 }
