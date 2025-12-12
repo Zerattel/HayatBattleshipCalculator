@@ -94,8 +94,8 @@ export default class ShipStatsHUD extends StandartObject {
     ctx.lineWidth = toCurrentCanvasSize(canvas, 7);
     ctx.fillStyle = style.getPropertyValue("--hud");
 
-    const par_x = toCanvas(this.parent._x);
-    const par_y = toCanvas(this.parent._y);
+    const par_x = toCanvas({ x: this.parent._x });
+    const par_y = toCanvas({ y: this.parent._y });
     const c = this.parent.currentCharacteristics;
 
     this.drawBar(

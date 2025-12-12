@@ -3,6 +3,7 @@ export const EVENTS = {
   MAP_SET_CHANGED: 'mapSetChanged',
   CALCULATION_ENDED: 'calculationEnded',
   ON_MAP_CLICK: 'onMapClick',
+  ON_MAP_CLICK_DIFF: 'onMapClickDiff',
   RESET: 'reset',
   STEP_LOG: 'stepLog',
   MAP: {

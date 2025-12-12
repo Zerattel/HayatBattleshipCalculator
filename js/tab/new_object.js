@@ -92,6 +92,7 @@ export default function init() {
 
     if (modal.attr("data-active") == "true") {
       modal.attr("data-active", "false");
+      $("#tab-new_object").attr("data-active", "false");
 
       is_aiming = false;
       $('#modal-new_object-aim').attr('data-active', "false")
@@ -105,6 +106,7 @@ export default function init() {
       );
     } else {
       modal.attr("data-active", "true");
+      $("#tab-new_object").attr("data-active", "true");
 
       document.dispatchEvent(
         new CustomEvent(EVENTS.OVERLAY.NEW, {
@@ -146,7 +148,7 @@ export default function init() {
     $('#modal-new_object-aim').attr('data-active', is_aiming ? "true" : "false")
   })
 
-  $('#overlay').click(() => {
+  document.addEventListener(EVENTS.ON_MAP_CLICK, (e) => {
     is_aiming = false;
 
     $('#modal-new_object-aim').attr('data-active', "false")
@@ -157,8 +159,8 @@ export default function init() {
 
     const { x, y } = getMousePos($('#overlay')[0], e);
 
-    $("#modal-new_object-x").val(x * mapProps.size);
-    $("#modal-new_object-y").val(y * mapProps.size);
+    $("#modal-new_object-x").val(x);
+    $("#modal-new_object-y").val(y);
     onPosChange();
   })
 
@@ -223,6 +225,7 @@ export default function init() {
     );
 
     $("#modal-new_object").attr("data-active", "false");
+    $("#tab-new_object").attr("data-active", "false");
     is_aiming = false;
     $('#modal-new_object-aim').attr('data-active', "false")
     document.dispatchEvent(

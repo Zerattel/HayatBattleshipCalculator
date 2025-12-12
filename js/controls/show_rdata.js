@@ -35,7 +35,7 @@ export default function init() {
 
     if (Object.keys(objects).length <= 1) return;
 
-    const clicked = getInArea(x * mapProps.size, y * mapProps.size);
+    const clicked = getInArea(x, y);
 
     if (clicked.length == 0) return;
 

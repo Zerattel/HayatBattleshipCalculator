@@ -24,8 +24,7 @@ export default class TargetPoint extends StandartObject {
     ctx.lineWidth = toCurrentCanvasSize(canvas, this.lineWidth);
 
     const settings = settingsObjectToCanvasSize(canvas, this.settings);
-    const x = toCanvas(this._x);
-    const y = toCanvas(this._y);
+    const { x, y } = toCanvas({ x: this._x, y: this._y });
     
     ctx.beginPath();
     ctx.moveTo(x, y+settings.radius.inner);

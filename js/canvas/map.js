@@ -1,6 +1,7 @@
 import { mergeDeep } from "../../libs/deepMerge.js";
 import intentFromObject from "../../libs/generatePhysicsIntentFromObject.js";
 import { compareVersions } from "../../libs/utils.js";
+import { point } from "../../libs/vector/point.js";
 import { log } from "../controls/step-logs/log.js";
 import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
@@ -32,7 +33,36 @@ export default function init() {
 
   let raito = canvas.width / mapProps.size;
 
-  toCanvas = (pos) => pos * raito;
+  toCanvas = (pos) => {
+    if (typeof pos === "number") {
+      return pos * raito;
+    } else if (typeof pos === "object") {
+      let x = null, y = null;
+      let direction = false;
+
+      if ('point' in pos) {
+        x = pos.point.x;
+        y = pos.point.y;
+      } else if ('direction' in pos) {
+        x = pos.direction.x;
+        y = pos.direction.y;
+        direction = true;
+      } else {
+        x = pos.x ?? null;
+        y = pos.y ?? null;
+      }
+      
+      if (direction) {
+        return point((x ?? 0) * raito, (y ?? 0) * raito);
+      } else if (x !== null && y !== null) {
+        return point((mapProps.offset.x + x) * raito, (mapProps.offset.y + y) * raito);
+      } else if (x !== null) {
+        return (mapProps.offset.x + x) * raito;
+      } else if (y !== null) {
+        return (mapProps.offset.y + y) * raito;
+      }
+    }
+  };
 
   const redrawMap = () => {
     requestAnimationFrame(() => {

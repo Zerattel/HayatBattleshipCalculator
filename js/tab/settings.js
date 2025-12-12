@@ -6,7 +6,9 @@ export default function () {
   $('#tab-settings').on('click', () => {
     let modal = $("#modal-settings");
 
-    modal.attr("data-active", modal.attr("data-active") == "true" ? "false" : "true");
+    const setTo = modal.attr("data-active") == "true" ? "false" : "true";
+    modal.attr("data-active", setTo);
+    $('#tab-settings').attr("data-active", setTo);
   })
 
   $('#modal-settings-mapres').val(settings.mapResolution);
