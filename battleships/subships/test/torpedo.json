@@ -21,7 +21,6 @@
         "fuel": 102,
 
         "self_destruct_in": 120,
-        "thrust": 40000,
         "guidanceDelay": 3,
 
         "poximity_fuse": {
@@ -50,7 +49,7 @@
         }
       }
     },
-    "acceleration": 60,
+    "acceleration": 80,
     "maneuverability": 10,
     "capacitor": {
       "charge": 0,

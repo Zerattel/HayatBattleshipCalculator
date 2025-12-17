@@ -236,6 +236,12 @@
   .maneuver {
     width: 500px;
   }
+
+  .modal-new_object-template_loaded {
+    display: flex; 
+    flex-direction: row; 
+    justify-content:space-between;
+  }
 }
 
 #modal-maneuver-types-modules-contextmenu {

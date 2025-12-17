@@ -64,7 +64,6 @@
                 "fuel": { "type": "number" },
 
                 "self_destruct_in": { "type": "number" },
-                "thrust": { "type": "number" },
                 "guidanceDelay": { "type": "number" },
 
                 "poximity_fuse": {

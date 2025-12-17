@@ -13,6 +13,7 @@ import __maneuver from "./tabs/maneuver.js";
 import __modules from "./tabs/modules.js";
 import __override from "./tabs/override.js";
 import __tasks from "./tabs/tasks.js";
+import __template from "./tabs/template.js";
 
 let enableModifyModal = (id) => {};
 
@@ -25,6 +26,7 @@ export default function init() {
     override: new __override(),
     delete: new __delete(),
     contact: new __contact(),
+    template: new __template(),
   }
 
   const disableModal = (modal) => {

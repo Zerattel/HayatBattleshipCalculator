@@ -26,6 +26,10 @@ import { settings } from "../settings/settings.js";
 import { mapProps } from "../canvas/grid.js";
 import { ContactController } from "../canvas/objects/map/ship/hud/contactController.js";
 import MAP_OBJECTS_IDS from "../canvas/objects/map/mapObjectsIds.constant.js";
+import { load } from "../save&load/load.js";
+import { compareVersions } from "../../libs/utils.js";
+import ENV from "../enviroments/env.js";
+import { point } from "../../libs/vector/point.js";
 
 const SPRITES = [
   "ADS.png",
@@ -57,6 +61,9 @@ const SPRITES = [
 ];
 
 export default function init() {
+  let curJSONdata = null;
+
+
   $('#modal-new_object-img').html(SPRITES.map(v => `<option value='${v}'>${v.split('.').slice(undefined, -1).join('.')}</option>`))
   $('#modal-new_object-ships > .options').html(
     Object.keys(battleships)
@@ -182,37 +189,56 @@ export default function init() {
     let isDynamic = $('#modal-new_object-is_dynamic').is(':checked');
 
     let obj;
-    if (!isDynamic) {
-      obj = new BasicStaticObject(x, y);
-      obj.setChildren(MAP_OBJECTS_IDS.DATA_HUD, new BasicDataHud([
-        { func: (hud) => `${hud.parent.id}` },
-        { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
-      ]))
-      obj.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
-    } else {
-      obj = new ShipObject(x, y, dir, vel, battleships[$('#modal-new_object-ships').attr('value')] || {});
-      obj.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())
-      obj.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
-      obj.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud())
-      obj.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
-      obj.setChildren(MAP_OBJECTS_IDS.DATA_HUD,           new BasicDataHud([
-        { func: (hud) => `${hud.parent.id}` },
-        { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
-        { func: (hud) => `vel: ${Math.round(hud.parent.velocity.x)}m/s, ${Math.round(hud.parent.velocity.y)}m/s` },
-        { func: (hud) => `speed: ${Math.round(hud.parent.velocity.length)}m/s` },
-        { func: (hud) => `dir: ${Math.round(hud.parent.direction)}deg` },
-        { func: (hud) => `vdir: ${toRealDirection(Math.round(Math.atan2(hud.parent.velocity.x, hud.parent.velocity.y) / Math.PI * 180) || 0)}deg` }
-      ]))
-    }
 
-    obj.setChildren(
-      MAP_OBJECTS_IDS.SPRITE, 
-      new SpriteShower(
-        './img/'+$('#modal-new_object-img').val(), 
-        '#'+($('#modal-new_object-img-color').val() || 'ffffff'),
-        $('#modal-new_object-img-size').val() || 200,
+    if (curJSONdata) {
+      id = $('#modal-new_object-template-keep_id').is(':checked') ? curJSONdata.id : id;
+      
+      obj = load(id, curJSONdata, "module");
+      obj.id = id;
+
+      obj._x = x;
+      obj._y = y;
+
+      obj._livetime = 0;
+
+      obj.velocity && (obj.velocity = point(0, 0));
+      obj.forces   && (obj.forces = []);
+
+      obj.direction = +dir;
+      obj.applyForce?.(+vel);
+    } else {
+      if (!isDynamic) {
+        obj = new BasicStaticObject(x, y);
+        obj.setChildren(MAP_OBJECTS_IDS.DATA_HUD, new BasicDataHud([
+          { func: (hud) => `${hud.parent.id}` },
+          { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
+        ]))
+        obj.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
+      } else {
+        obj = new ShipObject(x, y, dir, vel, battleships[$('#modal-new_object-ships').attr('value')] || {});
+        obj.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())
+        obj.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
+        obj.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud())
+        obj.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
+        obj.setChildren(MAP_OBJECTS_IDS.DATA_HUD,           new BasicDataHud([
+          { func: (hud) => `${hud.parent.id}` },
+          { func: (hud) => `pos: ${Math.round(hud.parent._x)}m, ${Math.round(hud.parent._y)}m` },
+          { func: (hud) => `vel: ${Math.round(hud.parent.velocity.x)}m/s, ${Math.round(hud.parent.velocity.y)}m/s` },
+          { func: (hud) => `speed: ${Math.round(hud.parent.velocity.length)}m/s` },
+          { func: (hud) => `dir: ${Math.round(hud.parent.direction)}deg` },
+          { func: (hud) => `vdir: ${toRealDirection(Math.round(Math.atan2(hud.parent.velocity.x, hud.parent.velocity.y) / Math.PI * 180) || 0)}deg` }
+        ]))
+      }
+
+      obj.setChildren(
+        MAP_OBJECTS_IDS.SPRITE, 
+        new SpriteShower(
+          './img/'+$('#modal-new_object-img').val(), 
+          '#'+($('#modal-new_object-img-color').val() || 'ffffff'),
+          $('#modal-new_object-img-size').val() || 200,
+        )
       )
-    )
+    }
 
     document.dispatchEvent(
       new CustomEvent(EVENTS.MAP.NEW, {
@@ -236,5 +262,37 @@ export default function init() {
         },
       })
     );
+  })
+
+
+  $('#modal-new_object-load_template').on('change', (e) => {
+    const file = e.target.files[0];
+    console.log(file)
+
+    if (!file) {
+      return;
+    }
+
+    const fr = new FileReader();
+    fr.onload = (e) => {
+      curJSONdata = JSON.parse(fr.result);
+
+      const version = curJSONdata.__version ?? "0.0.0";
+      if (compareVersions(ENV.SUPPORTED_SAVE_VERSION, version) == 1) {
+        alert("Unsupported save version");
+        return;
+      }
+
+      $('.modal-new_object-template_loaded').show();
+      $('.modal-new_object-disable_on_template').attr('data-disabled', 'true');
+    }
+    fr.readAsText(file)
+  })
+
+  $('#modal-new_object-template-reset').on('click', (e) => {
+    $('.modal-new_object-template_loaded').hide();
+    curJSONdata = null;
+
+    $('.modal-new_object-disable_on_template').attr('data-disabled', 'false');
   })
 }

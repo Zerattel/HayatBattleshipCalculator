@@ -55,9 +55,10 @@ export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
     }
 
     // thrust — сила (Н), mass — масса (кг)
-    const thrust = (this.currentCharacteristics?.constant?.body?.subgrid?.thrust) ?? 100;
+    const maxAccel = this.currentCharacteristics?.constant?.acceleration ?? 50; // m/s^2
     const mass = (this.currentCharacteristics?.constant?.body?.mass) ?? 1;
-    const maxAccel = thrust / Math.max(mass, 1e-6); // m/s^2
+    const thrust = maxAccel * mass;
+    
 
     // Позиции и скорости
     const R = { x: this._x, y: this._y };
