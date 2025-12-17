@@ -78,6 +78,33 @@ export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
     const vrx = Vt.x - Vm.x;
     const vry = Vt.y - Vm.y;
 
+
+    const pf = this.currentCharacteristics.constant.body.subgrid.poximity_fuse;
+    if (pf) {
+      const ppf = pf.passive;
+      
+      if (ppf &&
+        (ppf.trigger_activation_delay ?? 0) - this._livetime - dt*step <= 0 &&
+        target.currentCharacteristics
+      ) {
+        const virtualSignature = target.currentCharacteristics.constant.body.signature;
+
+        if (virtualSignature != target.size) {
+          const md = ppf.min_distance;
+
+          if (range <= md && (vrx < 0 || vry < 0)) {
+            this.visible = false;
+            this.destroy();
+
+            return {
+              delete: true
+            };
+          }
+        }
+      }
+    }
+
+
     // Текущая скорость ракеты (модуль)
     const speedM = Math.hypot(Vm.x, Vm.y);
 

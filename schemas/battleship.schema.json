@@ -37,6 +37,13 @@
             "core": { "type": "number" },
             "mass": { "type": "number" },
             "signature": { "type": "number" },
+            "layers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["battleship", "missile", "drone", "shell"]
+              }
+            },
 
             "containers": {
               "type": "object",
@@ -52,11 +59,60 @@
               "properties": {
                 "size": { "type": "number" },
                 "category": { "type": "string" },
+
                 "autonomous": { "type": "boolean" },
                 "fuel": { "type": "number" },
+
                 "self_destruct_in": { "type": "number" },
                 "thrust": { "type": "number" },
                 "guidanceDelay": { "type": "number" },
+
+                "poximity_fuse": {
+                  "type": "object",
+                  "properties": {
+                    "passive": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "min_distance": { "type": "number" },
+                            "trigger_activation_delay": { "type": "number" }
+                          }
+                        }
+                      ]
+                    },
+                    "active": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "min_distance": { "type": "number" },
+                            "trigger_activation_delay": { "type": "number" },
+                            "triggers": { 
+                              "type": "object",
+                              "properties": {
+                                "layers": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": ["battleship", "missile", "drone", "shell"]
+                                  }
+                                },
+                                "min_size": { "type": "number" }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
 
                 "explosion": {
                   "type": "object",

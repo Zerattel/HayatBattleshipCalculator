@@ -67,6 +67,10 @@ export default class ShipObject extends BasicMovingObject {
     return this.currentCharacteristics.constant.collision_energy_distribution.velocity;
   }
 
+  get layers() {
+    return this.currentCharacteristics.constant.body.layers;
+  }
+
   typeToModules(type) {
     return {
       ext: this.externalModules,

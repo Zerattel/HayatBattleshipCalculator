@@ -96,6 +96,7 @@ const baseBattleshipCharacteristics = {
       core: 0,
       /** масса */
       mass: 0,
+      layers: ["battleship"],
       containers: {
         /** трюм */
         storage: 0,

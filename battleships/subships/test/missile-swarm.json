@@ -13,6 +13,8 @@
       "core": 0,
       "mass": 20,
       "signature": 2,
+      "layers": ["missile"],
+
       "subgrid": {
         "size": 4,
         "category": "battle",
@@ -22,6 +24,14 @@
         "self_destruct_in": 42,
         "thrust": 4000,
         "guidanceDelay": 2,
+
+        "poximity_fuse": {
+          "passive": {
+            "min_distance": 15,
+            "trigger_activation_delay": 1
+          },
+          "active": null
+        },
 
         "explosion": {
           "radius": 30,

@@ -13,6 +13,7 @@ export default class BasicStaticObject extends BasicStepObject {
   size = 30;
   mass = 1;
   bounciness = 0;
+  layers = ["static"];
 
 
   getOverridableValues() {

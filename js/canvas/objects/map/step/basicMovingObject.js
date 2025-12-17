@@ -79,6 +79,10 @@ export default class BasicMovingObject extends BasicStepObject {
     return 1;
   }
 
+  get layers() {
+    return [];
+  }
+
   get direction() {
     return toRealDirection(this._direction);
   }
