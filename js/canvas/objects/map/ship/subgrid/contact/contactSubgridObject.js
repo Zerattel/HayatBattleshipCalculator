@@ -3,6 +3,19 @@ import { registerSteps } from "../../../step/stepInfoCollector.js";
 import SubgridObject from "../subgridObject.js";
 
 export default class ContactSubgridObject extends SubgridObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    contactOptions: {
+      hide: true,
+      destroy: true,
+    }
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
+
   isCollided = false;
   contactOptions = {
     hide: true,
@@ -68,7 +81,7 @@ export default class ContactSubgridObject extends SubgridObject {
   load(data, loadChildren = false) {
     super.load(data, false);
     
-    this.contactOptions ??= data.contactOptions;
+    this.contactOptions = data.contactOptions;
 
     loadChildren && super.loadChildren(data);
   }

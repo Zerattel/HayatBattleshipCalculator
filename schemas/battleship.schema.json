@@ -66,6 +66,10 @@
                 "self_destruct_in": { "type": "number" },
                 "guidanceDelay": { "type": "number" },
 
+                "drone": {
+                  "safe_distance": { "type": "number" }
+                },
+
                 "poximity_fuse": {
                   "type": "object",
                   "properties": {

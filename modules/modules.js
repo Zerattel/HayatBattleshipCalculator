@@ -22,6 +22,17 @@ export default function init() {
     for (let [name, path] of Object.entries(list)) {
       const data = await (await fetch("./modules/" + path)).json();
 
+      if (data?.external) {
+        const out = {};
+        const parent = ("./modules/" + path).replace(/[^\/]+.json/, "");
+
+        for (let [k, v] of Object.entries(data.external)) {
+          out[k] = await (await fetch(parent + v)).json();
+        }
+
+        data.external = out;
+      }
+
       modules[name] = data;
 
       amount++;

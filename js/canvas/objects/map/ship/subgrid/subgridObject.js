@@ -8,6 +8,20 @@ import { registerSteps } from "../../step/stepInfoCollector.js";
 import ShipObject from "../shipObject.js";
 
 export default class SubgridObject extends ShipObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    activationInfo: {
+      delay: 0,
+      correctionId: null,
+    }
+  }
+
+  static LOAD_CRASH = new Set([
+    ...super.LOAD_CRASH,
+    'active',
+  ]);
+
+
   controlledBy = new ObjectConnection(() => objects);
 
   active = false;
@@ -29,8 +43,31 @@ export default class SubgridObject extends ShipObject {
   }
 
 
+  get isFueled() {
+    return (this.currentCharacteristics?.constant?.body?.subgrid?.fuel ?? -1) === -1 || 
+            this.currentCharacteristics?.dynamic?.fuel > 0
+  }
+
+
+  step(index, objectsData) {
+    if (index === 1 && this.isFueled) {
+      this.currentCharacteristics.dynamic.fuel -= this._step;
+    }
+
+    return super.step(index, objectsData);
+  }
+
+
   physicsSimulationStep(step, dt, objectsData) {
     if (this.active) {
+      if (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection) {
+        this.destroy();
+        this.visible = false;
+        this.active = false;
+        
+        return { delete: true };
+      }
+
       return super.physicsSimulationStep(step, dt, objectsData);
     } else if (this.activationInfo.delay - this._livetime - dt*step <= 0) {
       if (!this.controlledBy.Connection || this.activationInfo.correctionId === null) {

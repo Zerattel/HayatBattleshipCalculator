@@ -5,7 +5,8 @@
       "armor": 20,
       "barrier": 0
     },
-    "charge": 0
+    "charge": 0,
+    "fuel": 102
   },
   "constant": {
     "body": {

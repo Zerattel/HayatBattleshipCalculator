@@ -4,6 +4,16 @@ import { registerClass } from "../../../../../save&load/objectCollector.js";
 import StandartObject from "../../../standartObject.js";
 
 export default class SignatureShower extends StandartObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    lineWidth: 20,
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
+
   lineWidth = 20;
 
   constructor(lineWidth = 20) {

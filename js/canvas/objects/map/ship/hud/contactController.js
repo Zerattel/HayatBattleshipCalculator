@@ -11,6 +11,16 @@ import { registerSteps } from "../../step/stepInfoCollector.js";
 import { log } from "../../../../../controls/step-logs/log.js";
 
 export class ContactController extends BasicStepObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    capturedTargets: [],
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
+
   capturedTargets = [];
   currentTarget = null;
 
@@ -72,6 +82,11 @@ export class ContactController extends BasicStepObject {
 
   removeTarget(id) {
     this.capturedTargets = this.capturedTargets.filter(v => v != id);
+  }
+
+  clearTargets() {
+    this.capturedTargets = [];
+    this.currentTarget = null;
   }
 
   filterTargets() {
@@ -320,6 +335,8 @@ export class ContactController extends BasicStepObject {
   }
 
   afterLoad() {
+    super.afterLoad();
+
     this.listenForModifiers();
   }
 }

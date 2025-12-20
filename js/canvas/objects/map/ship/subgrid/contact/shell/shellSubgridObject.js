@@ -5,6 +5,19 @@ import ContactSubgridObject from "../contactSubgridObject.js";
 import SubgridObject from "../../subgridObject.js";
 
 export default class ShellSubgridObject extends ContactSubgridObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    contactOptions: {
+      hide: false,
+      destroy: false,
+    }
+  }
+
+  static LOAD_CRASH = new Set([
+    ...super.LOAD_CRASH,
+  ]);
+  
+
   isCollided = false;
   contactOptions = {
     hide: false,

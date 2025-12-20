@@ -21,7 +21,6 @@ export default class SubgridLauncherModule extends BaseModule {
       const sequenceId = uuid();
 
       for (let [k, launcher] of Object.entries(this.characteristics.launcher.instances)) {
-        console.log(launcher);
         const fireSegments = launcher.fire.type == "single" ? [launcher.fire.delay] : launcher.fire.delay;
 
         for (let delay of fireSegments) {
@@ -47,7 +46,7 @@ export default class SubgridLauncherModule extends BaseModule {
             new SpriteShower(
               './img/frigate.png', 
               '#ff0000',
-              200,
+              (object.size ?? 30) * 10,
             )
           )
 

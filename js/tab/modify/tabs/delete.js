@@ -19,9 +19,10 @@ export default class {
 
   onComplete(modal, id) {
     document.dispatchEvent(
-      new CustomEvent(EVENTS.MAP.DELETE, {
+      new CustomEvent(EVENTS.MAP.FUNCTION, {
         detail: {
           id: id,
+          func: (obj) => obj.destroy(),
           redraw: true,
         },
       })

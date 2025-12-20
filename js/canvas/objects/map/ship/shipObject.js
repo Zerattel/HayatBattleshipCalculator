@@ -24,6 +24,23 @@ import BasicMovingObject from "../step/basicMovingObject.js";
 import { registerSteps } from "../step/stepInfoCollector.js";
 
 export default class ShipObject extends BasicMovingObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    dices: {
+      contactQuality: 10,
+      maneuvering: 0,
+    },
+    externalModules: [],
+    internalModules: [],
+    otherModules: [],
+  }
+
+  static LOAD_CRASH = new Set([
+    ...super.LOAD_CRASH,
+    'baseCharacteristics',
+    'currentCharacteristics',
+  ]);
+
   baseCharacteristics = copy(baseBattleshipCharacteristics);
   currentCharacteristics = copy(baseBattleshipCharacteristics);
 
@@ -190,6 +207,16 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
     this.currentCharacteristics.dynamic.temperature += heat;
     this.applyDamage()
   }
+
+
+  afterSimulation(objectsData) {
+    super.afterSimulation(objectsData);
+
+    for (let m of this.allModules) {
+      m.afterSimulation?.(objectsData);
+    }
+  }
+
 
   finalize(objectsData) {
     let data = super.finalize(objectsData);
@@ -516,12 +543,12 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
     this.dices = data.dices;
 
     for (let md of ["externalModules", "internalModules", "otherModules"]) {
-      this[md] = data[md].map((v) => {
+      this[md] = data[md] ? data[md].map((v) => {
         const obj = load("", v, "module");
         obj.parent = this;
 
         return obj;
-      });
+      }) : [];
     }
 
     this.recalculateCharacteristics();
@@ -530,6 +557,8 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
   }
 
   afterLoad() {
+    super.afterLoad();
+
     for (let md of ["externalModules", "internalModules", "otherModules"]) {
       for (let module of this[md]) {
         module.afterLoad?.();

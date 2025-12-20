@@ -4,6 +4,23 @@ import { registerClass } from "../../../../../save&load/objectCollector.js";
 import StandartObject from "../../../standartObject.js";
 
 export default class ShipStatsHUD extends StandartObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    distance: -300,
+    bar: {
+      height: 250,
+      width: 40,
+      padding: 7,
+      border: 7,
+      gap: 30,
+    },
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
+
   distance = -300;
   bar = {
     height: 250,

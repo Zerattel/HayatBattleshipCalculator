@@ -3,6 +3,16 @@ import { registerClass } from "../../../save&load/objectCollector.js";
 import StandartObject from "../standartObject.js";
 
 export default class SpriteShower extends StandartObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    size: 200,
+    color: '#ffffff'
+  }
+
+  static LOAD_CRASH = new Set([
+    ...super.LOAD_CRASH,
+  ]);
+
   image = new Image();
   size = 200;
   isloaded = false;

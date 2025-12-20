@@ -5,6 +5,7 @@ import { objects } from "../../../canvas/map.js";
 import { check_id } from "../../../canvas/map/check_id.js";
 import BaseModule from "../../../canvas/objects/map/module/baseModule.js";
 import SubgridLauncherModule from "../../../canvas/objects/map/module/subgrid/subgridLauncherModule.js";
+import { DroneLauncherModule } from "../../../canvas/objects/map/module/subgrid/droneLauncherModule.js";
 import BasicTask from "../../../canvas/objects/map/tasks/basicTask.js";
 import { EVENTS } from "../../../events.js";
 import { createObject } from "../../../save&load/load.js";
