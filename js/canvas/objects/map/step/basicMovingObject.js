@@ -9,6 +9,18 @@ import { collisionPoint } from "../../../../../libs/math.js";
 import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from "./simulationStates.constant.js";
 
 export default class BasicMovingObject extends BasicStepObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    collision: true,
+    velocity: point(0, 0),
+    _direction: 0,
+    forces: [],
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
   velocity = point(0, 0);
   _direction = 0;
   forces = [];
@@ -212,7 +224,7 @@ export default class BasicMovingObject extends BasicStepObject {
     this.collision = data.collision;
     this.velocity = point(data.velocity[0], data.velocity[1]);
     this._direction = data.direction;
-    this.forces = data.forces ?? [];
+    this.forces = data.forces;
 
     loadChildren && super.loadChildren(data);
   }

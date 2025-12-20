@@ -7,6 +7,16 @@ import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from
 import { registerSteps } from "./stepInfoCollector.js";
 
 export default class BasicStepObject extends StandartObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    _step: 6,
+    _livetime: 0,
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
   _step = 6;
   _livetime = 0;
   _kill = false;

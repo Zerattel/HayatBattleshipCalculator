@@ -24,6 +24,23 @@ import BasicMovingObject from "../step/basicMovingObject.js";
 import { registerSteps } from "../step/stepInfoCollector.js";
 
 export default class ShipObject extends BasicMovingObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    dices: {
+      contactQuality: 10,
+      maneuvering: 0,
+    },
+    externalModules: [],
+    internalModules: [],
+    otherModules: [],
+  }
+
+  static LOAD_CRASH = new Set([
+    ...super.LOAD_CRASH,
+    'baseCharacteristics',
+    'currentCharacteristics',
+  ]);
+
   baseCharacteristics = copy(baseBattleshipCharacteristics);
   currentCharacteristics = copy(baseBattleshipCharacteristics);
 
@@ -530,6 +547,8 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
   }
 
   afterLoad() {
+    super.afterLoad();
+
     for (let md of ["externalModules", "internalModules", "otherModules"]) {
       for (let module of this[md]) {
         module.afterLoad?.();

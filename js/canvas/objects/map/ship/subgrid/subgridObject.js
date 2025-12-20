@@ -8,6 +8,17 @@ import { registerSteps } from "../../step/stepInfoCollector.js";
 import ShipObject from "../shipObject.js";
 
 export default class SubgridObject extends ShipObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+  }
+
+  static LOAD_CRASH = new Set([
+    ...super.LOAD_CRASH,
+    'active',
+    'activationInfo'
+  ]);
+
+
   controlledBy = new ObjectConnection(() => objects);
 
   active = false;

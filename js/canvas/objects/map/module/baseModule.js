@@ -9,6 +9,21 @@ import MAP_OBJECTS_IDS from "../mapObjectsIds.constant.js";
 import { registerSteps } from "../step/stepInfoCollector.js";
 
 export default class BaseModule {
+  static LOAD_FALLBACK = {
+    state: "offline",
+    previousState: "offline",
+    inOnlineSteps: 0,
+    inStageSteps: 0,
+    functionsSharedData: {
+      perStep: {},
+      perState: {},
+      uncleared: {},
+    },
+  }
+
+  static LOAD_CRASH = new Set(['uuid', 'characteristics', 'parent']);
+
+
   characteristics = copy(baseModuleCharacteristics);
 
   /** offline / online / active / overload */
@@ -198,6 +213,7 @@ export default class BaseModule {
 
       previousState: this.previousState,
       inOnlineSteps: this.inOnlineSteps,
+      inStageSteps: this.inStageSteps,
 
       functionsSharedData: this.functionsSharedData,
     };
@@ -206,10 +222,25 @@ export default class BaseModule {
   load(data) {
     this.characteristics = data.characteristics;
     this.uuid = data.uuid;
-    this.state ??= data.state;
-    this.previousState ??= data.previousState;
-    this.inOnlineSteps ??= data.inOnlineSteps;
-    this.functionsSharedData ??= data.functionsSharedData;
+    this.state = data.state;
+    this.previousState = data.previousState;
+    this.inOnlineSteps = data.inOnlineSteps;
+    this.inStageSteps = data.inStageSteps;
+    this.functionsSharedData = data.functionsSharedData;
+  }
+
+  afterLoad() {
+    for (let param of this.constructor.LOAD_CRASH) {
+      if (this[param] === null || this[param] === undefined) throw new Error(`${this.path} | Param ${param} not loaded.`);
+    }
+
+    for (let param in this.constructor.LOAD_FALLBACK) {
+      if (this[param] === null || this[param] === undefined) {
+        this[param] = this.constructor.LOAD_FALLBACK[param];
+
+        console.warn(`${this.path} | Param ${param} is corrupted and replaced with fallback.`)
+      }
+    }
   }
 }
 
