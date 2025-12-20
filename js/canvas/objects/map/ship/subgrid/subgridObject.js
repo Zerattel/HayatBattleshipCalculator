@@ -60,6 +60,14 @@ export default class SubgridObject extends ShipObject {
 
   physicsSimulationStep(step, dt, objectsData) {
     if (this.active) {
+      if (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection) {
+        this.destroy();
+        this.visible = false;
+        this.active = false;
+        
+        return { delete: true };
+      }
+
       return super.physicsSimulationStep(step, dt, objectsData);
     } else if (this.activationInfo.delay - this._livetime - dt*step <= 0) {
       if (!this.controlledBy.Connection || this.activationInfo.correctionId === null) {

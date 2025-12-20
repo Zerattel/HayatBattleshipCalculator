@@ -20,7 +20,11 @@
         "size": 30,
         "category": "battle",
         "autonomous": false,
-        "fuel": 1200
+        "fuel": 1200,
+
+        "drone": {
+          "safe_distance": 1500
+        }
       }
     },
     "acceleration": 100,
@@ -37,6 +41,7 @@
       "hull": 100,
       "armor": 20,
       "barrier": 50
-    }
+    },
+    "capture_range": 25000
   }
 }

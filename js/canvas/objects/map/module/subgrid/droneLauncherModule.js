@@ -1,6 +1,11 @@
 import { ObjectConnection } from "../../../../../../libs/connection.js";
+import copy from "../../../../../../libs/copy.js";
+import { mergeDeep } from "../../../../../../libs/deepMerge.js";
+import { uuidv4 } from "../../../../../../libs/uuid.js";
+import { point } from "../../../../../../libs/vector/point.js";
 import { EVENTS } from "../../../../../events.js";
 import { load } from "../../../../../save&load/load.js";
+import { registerClass } from "../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../map.js";
 import BasicDataHud from "../../hud/basicDataHud.js";
 import MAP_OBJECTS_IDS from "../../mapObjectsIds.constant.js";
@@ -9,6 +14,7 @@ import ShipStatsHUD from "../../ship/hud/shipStatsHud.js";
 import SignatureShower from "../../ship/hud/signatureShower.js";
 import DroneObject from "../../ship/subgrid/drone/droneObject.js";
 import SpriteShower from "../../spriteShow.js";
+import { registerSteps } from "../../step/stepInfoCollector.js";
 import BaseModule from "../baseModule.js";
 
 export class DroneLauncherModule extends BaseModule {
@@ -19,13 +25,14 @@ export class DroneLauncherModule extends BaseModule {
   constructor(data) {
     super(data)
 
-    this.storedDrone = data.external.battleship_template.dynamic;
+    data && (this.storedDrone = data.external.battleship_template.dynamicCharacteristics);
   }
 
 
   next() {
     super.next();
 
+    console.log(!this.launched.Connection, ["online", "active", "overload"].includes(this.state), this.parent)
     if (!this.launched.Connection && ["online", "active", "overload"].includes(this.state) && this.parent) {
       const id = `${uuidv4()}`;
       const template = mergeDeep(copy(this.characteristics.external.battleship_template), {
@@ -34,9 +41,10 @@ export class DroneLauncherModule extends BaseModule {
 
       const object = load(id, template, "module");
       object.id = id;
+      object.active = true;
       object.controlledBy.storeConnection(this.path);
 
-      this.applyCorrection(k, object);
+      this.applyCorrection(0, object);
 
       if (!object.children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER])
         object.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())
@@ -67,8 +75,11 @@ export class DroneLauncherModule extends BaseModule {
       const targetController = object.children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER];
       const parentTargetController = this.parent.children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER];
       targetController.clearTargets();
-      if (parentTargetController.target)
+      if (parentTargetController.target) {
         targetController.addTarget(parentTargetController.target.id);
+        targetController.addTarget(this.parent.id);
+      }
+        
 
       document.dispatchEvent(
         new CustomEvent(EVENTS.MAP.NEW, {
@@ -133,7 +144,7 @@ export class DroneLauncherModule extends BaseModule {
 
   droneDestroyed() {
     this.launched.Connection = null;
-    this.storedDrone = this.characteristics.external.battleship_template.dynamic;
+    this.storedDrone = this.characteristics.external.battleship_template.dynamicCharacteristics;
     this.setState("offline");
   }
 
@@ -146,7 +157,6 @@ export class DroneLauncherModule extends BaseModule {
     const drone = this.launched.Connection;
 
     this.storedDrone = drone.currentCharacteristics.dynamic;
-    drone.destroy();
     this.launched.Connection = null;
   }
 
@@ -159,13 +169,11 @@ export class DroneLauncherModule extends BaseModule {
     };
   }
 
-  load(data, loadChildren = false) {
-    super.load(data, false);
+  load(data) {
+    super.load(data);
     
     this.launched.storeConnection(data.launched ?? null);
     this.storedDrone = data.storedDrone || this.storedDrone;
-
-    loadChildren && super.loadChildren(data);
   }
 
   afterLoad() {
@@ -174,3 +182,6 @@ export class DroneLauncherModule extends BaseModule {
     super.afterLoad();
   }
 }
+
+registerClass(DroneLauncherModule);
+registerSteps(DroneLauncherModule, 1, []);

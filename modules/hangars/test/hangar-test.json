@@ -9,7 +9,7 @@
     "position": "internal",
     "tags": []
   },
-  "activation": "passive",
+  "activation": "active",
   "interference": 0,
 
   "launcher": {

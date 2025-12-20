@@ -46,14 +46,18 @@
           "size": 30,
           "category": "battle",
           "fuel": 1200,
-          "autonomous": false
+          "autonomous": false,
+
+          "drone": {
+            "safe_distance": 1500
+          }
         }
       },
-      "acceleration": 0,
+      "acceleration": 100,
       "jumpdistance": 0,
       "maneuverability": 10,
       "sensors_power": 0,
-      "capture_range": 0,
+      "capture_range": 25000,
       "capacitor": {
         "charge": 10,
         "generation": 2

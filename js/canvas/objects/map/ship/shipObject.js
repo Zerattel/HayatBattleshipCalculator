@@ -543,12 +543,12 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
     this.dices = data.dices;
 
     for (let md of ["externalModules", "internalModules", "otherModules"]) {
-      this[md] = data[md].map((v) => {
+      this[md] = data[md] ? data[md].map((v) => {
         const obj = load("", v, "module");
         obj.parent = this;
 
         return obj;
-      });
+      }) : [];
     }
 
     this.recalculateCharacteristics();
