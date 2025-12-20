@@ -51,6 +51,8 @@
               "maxItems": 2
             },
             "subgridRotation": { "type": "number" },
+            "distanceOffset": { "type": "number" },
+            "backupDistance": { "type": "number" },
             "recovery": {
               "type": "object",
               "properties": {

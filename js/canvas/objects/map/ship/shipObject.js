@@ -208,6 +208,16 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
     this.applyDamage()
   }
 
+
+  afterSimulation(objectsData) {
+    super.afterSimulation(objectsData);
+
+    for (let m of this.allModules) {
+      m.afterSimulation?.(objectsData);
+    }
+  }
+
+
   finalize(objectsData) {
     let data = super.finalize(objectsData);
 

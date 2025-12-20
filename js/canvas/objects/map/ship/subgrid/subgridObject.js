@@ -10,12 +10,15 @@ import ShipObject from "../shipObject.js";
 export default class SubgridObject extends ShipObject {
   static LOAD_FALLBACK = {
     ...super.LOAD_FALLBACK,
+    activationInfo: {
+      delay: 0,
+      correctionId: null,
+    }
   }
 
   static LOAD_CRASH = new Set([
     ...super.LOAD_CRASH,
     'active',
-    'activationInfo'
   ]);
 
 

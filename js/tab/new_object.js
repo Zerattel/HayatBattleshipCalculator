@@ -15,6 +15,7 @@ import ContactSubgridObject     from "../canvas/objects/map/ship/subgrid/contact
 import ExplosiveSubgridObject   from "../canvas/objects/map/ship/subgrid/contact/explosiveSubgridObject.js";
 import ShellSubgridObject       from "../canvas/objects/map/ship/subgrid/contact/shell/shellSubgridObject.js";
 import SelfguidedSubgridObject  from "../canvas/objects/map/ship/subgrid/contact/automatic/SelfguidedSubgridObject.js";
+import DroneObject from "../canvas/objects/map/ship/subgrid/drone/droneObject.js";
 
 import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";

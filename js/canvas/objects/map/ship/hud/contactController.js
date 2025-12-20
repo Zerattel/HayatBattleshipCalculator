@@ -84,6 +84,11 @@ export class ContactController extends BasicStepObject {
     this.capturedTargets = this.capturedTargets.filter(v => v != id);
   }
 
+  clearTargets() {
+    this.capturedTargets = [];
+    this.currentTarget = null;
+  }
+
   filterTargets() {
     this.capturedTargets = this.capturedTargets.filter(v => objects[v])
   }
