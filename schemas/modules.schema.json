@@ -38,56 +38,87 @@
     "cycle": { "type": "number" },
     "reload": { "type": "number" },
 
-    "launcher": {
-      "type": "object",
-      "required": ["instances"],
-      "properties": {
-        "heading": { "type": "number" },
-        "instances": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["vector", "headingOffset", "distanceOffset", "subgrid"],
-            "properties": {
-              "vector": {
-                "type": "array",
-                "items": { "type": "number" },
-                "minItems": 2,
-                "maxItems": 2
-              },
-              "headingOffset": { "type": "number" },
-              "distanceOffset": { "type": "number" },
-              "subgridRotation": { "type": "number" },
-
-              "fire": {
-                "type": "object",
-                "required": ["type", "delay"],
-                "properties": {
-                  "type": { "type": "string" },
-                  "delay": {
-                    "oneOf": [
-                      { "type": "number" },
-                      {
-                        "type": "array",
-                        "items": { "type": "number" }
-                      }
-                    ]
+    "launcher": { 
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "heading": { "type": "number" },
+            "vector": {
+              "type": "array",
+              "items": { "type": "number" },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "subgridRotation": { "type": "number" },
+            "recovery": {
+              "type": "object",
+              "properties": {
+                "fuel": { "type": "number" },
+                "hp": {
+                  "type": "object",
+                  "properties": {
+                    "hull": { "type": "number" },
+                    "armor": { "type": "number" },
+                    "barrier": { "type": "number" }
                   }
                 }
-              },
-
-              "subgrid": {
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["instances"],
+          "properties": {
+            "heading": { "type": "number" },
+            "instances": {
+              "type": "array",
+              "items": {
                 "type": "object",
-                "required": ["class", "dataRef"],
+                "required": ["vector", "headingOffset", "distanceOffset", "subgrid"],
                 "properties": {
-                  "class": { "type": "string" },
-                  "dataRef": { "type": "string" }
+                  "vector": {
+                    "type": "array",
+                    "items": { "type": "number" },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "headingOffset": { "type": "number" },
+                  "distanceOffset": { "type": "number" },
+                  "subgridRotation": { "type": "number" },
+
+                  "fire": {
+                    "type": "object",
+                    "required": ["type", "delay"],
+                    "properties": {
+                      "type": { "type": "string" },
+                      "delay": {
+                        "oneOf": [
+                          { "type": "number" },
+                          {
+                            "type": "array",
+                            "items": { "type": "number" }
+                          }
+                        ]
+                      }
+                    }
+                  },
+
+                  "subgrid": {
+                    "type": "object",
+                    "required": ["class", "dataRef"],
+                    "properties": {
+                      "class": { "type": "string" },
+                      "dataRef": { "type": "string" }
+                    }
+                  }
                 }
               }
             }
           }
         }
-      }
+      ]
     },
 
     "additionalInfo": {
@@ -113,6 +144,16 @@
         "overload": {
           "type": "array",
           "items": { "$ref": "#/definitions/modRecord" }
+        }
+      }
+    },
+
+    "external": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": { 
+          "type": "string",
+          "pattern": "^([\\w-_]+(\\/|.json))+$"
         }
       }
     }

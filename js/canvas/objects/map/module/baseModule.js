@@ -206,10 +206,10 @@ export default class BaseModule {
   load(data) {
     this.characteristics = data.characteristics;
     this.uuid = data.uuid;
-    this.state = data.state;
-    this.previousState = data.previousState;
-    this.inOnlineSteps = data.inOnlineSteps;
-    this.functionsSharedData = data.functionsSharedData;
+    this.state ??= data.state;
+    this.previousState ??= data.previousState;
+    this.inOnlineSteps ??= data.inOnlineSteps;
+    this.functionsSharedData ??= data.functionsSharedData;
   }
 }
 

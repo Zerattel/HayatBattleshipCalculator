@@ -29,6 +29,21 @@ export default class SubgridObject extends ShipObject {
   }
 
 
+  get isFueled() {
+    return (this.currentCharacteristics?.constant?.body?.subgrid?.fuel ?? -1) === -1 || 
+            this.currentCharacteristics?.dynamic?.fuel > 0
+  }
+
+
+  step(index, objectsData) {
+    if (index === 1 && this.isFueled) {
+      this.currentCharacteristics.dynamic.fuel -= this._step;
+    }
+
+    return super.step(index, objectsData);
+  }
+
+
   physicsSimulationStep(step, dt, objectsData) {
     if (this.active) {
       return super.physicsSimulationStep(step, dt, objectsData);
