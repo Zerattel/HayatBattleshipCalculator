@@ -1,0 +1,97 @@
+{
+  "main": {
+    "name": "Миноукладчик S (электромагнитный)",
+    "type": "Стартовые площадки",
+    "category": "Катапульты",
+    "class": "SubgridLauncherModule",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["catapult", "subgrid", "minelayer"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 4,
+
+  "interference": 0,
+
+  "launcher": {
+    "heading": 0,
+    "instances": [
+      {
+        "vector": [0, 200],
+
+        "headingOffset": -160,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "rapid",
+          "delay": [0, 2, 4]
+        },
+
+        "subgrid": {
+          "class": "MineSubgridObject",
+          "dataRef": "[Test] Мина S"
+        }
+      },
+      {
+        "vector": [0, 200],
+
+        "headingOffset": -180,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "rapid",
+          "delay": [0, 2, 4]
+        },
+
+        "subgrid": {
+          "class": "MineSubgridObject",
+          "dataRef": "[Test] Мина S"
+        }
+      },
+      {
+        "vector": [0, 200],
+
+        "headingOffset": 160,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "rapid",
+          "delay": [0, 2, 4]
+        },
+
+        "subgrid": {
+          "class": "MineSubgridObject",
+          "dataRef": "[Test] Мина S"
+        }
+      }
+    ]
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -5,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -15,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

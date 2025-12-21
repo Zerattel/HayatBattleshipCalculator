@@ -61,11 +61,15 @@ export default class ContactSubgridObject extends SubgridObject {
 
 
   finalize(objectsData) {
-    const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in ?? 24;
+    let destruct = false;
+    const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in;
+    if (selfDestruct && selfDestruct != -1) {
+      destruct = this._livetime >= this.currentCharacteristics.constant.body.subgrid?.self_destruct_in;
+    }
 
-    this._kill ||= 
-      this._livetime >= selfDestruct                    ||
-      this.currentCharacteristics.dynamic.hp.hull <= 0
+    
+
+    this._kill ||= destruct || this.currentCharacteristics.dynamic.hp.hull <= 0
     
     this.isCollided = false;
 
