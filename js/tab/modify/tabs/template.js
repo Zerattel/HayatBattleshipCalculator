@@ -18,14 +18,26 @@ export default class {
 
   onComplete(modal, id) {
     if (!objects[id]) return;
-    const obj = objects[id];
-
+    let obj = objects[id];
     const saved = {
       ...obj.save(),
       __version: ENV.CURRENT_VERSION,
     };
 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(saved, undefined, 2));
+    const asDrone = $('#modal-maneuver-types-template-as_drone').is(':checked');
+
+    let out;
+    if (asDrone) {
+      saved.class = "DroneObject";
+      saved.children = {};
+      saved.velocity = [0, 0];
+      let { x, y, step, livetime, dices, ...rest } = saved;
+      out = rest;
+    } else {
+      out = saved;
+    }
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(out, undefined, 2));
     const dlAnchorElem = document.getElementById('modal-maneuver-types-template-load_anchor');
     dlAnchorElem.setAttribute("href", dataStr);
     dlAnchorElem.setAttribute("download", `${obj.id}_${Date.now()}.json`);

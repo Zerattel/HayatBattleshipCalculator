@@ -2,6 +2,7 @@ import { mergeDeep } from "../../libs/deepMerge.js";
 import intentFromObject from "../../libs/generatePhysicsIntentFromObject.js";
 import { compareVersions } from "../../libs/utils.js";
 import { point } from "../../libs/vector/point.js";
+import { computeCenteredSquare } from "../controls/map.js";
 import { log } from "../controls/step-logs/log.js";
 import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
@@ -253,7 +254,27 @@ export default function init() {
       setTimeout(() => {
         const start = Date.now();
         const simResult = next();
-        redrawMap();
+        if (simResult !== false && simResult % settings.renderPerFrame == 0) {
+          if (settings.autoFocusOnSimulation) {
+            const size = computeCenteredSquare();
+            if (!size) return;
+
+            const data = { 
+              size: size.size, 
+              grid: mapProps.grid ?? 500, 
+              offset: { 
+                x: -size.x,
+                y: -size.y
+              },
+            }
+
+            document.dispatchEvent(new CustomEvent(
+              EVENTS.MAP_SET_CHANGED, { detail: data }
+            ));
+          } else {
+            redrawMap();
+          }
+        }
 
         const delta = Date.now() - start;
         log('system', `physics simulation ${simResult === false ? "last" : simResult} step, delta: ${delta}ms`);
