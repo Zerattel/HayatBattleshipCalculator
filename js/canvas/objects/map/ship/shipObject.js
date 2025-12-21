@@ -56,9 +56,7 @@ export default class ShipObject extends BasicMovingObject {
   constructor(x, y, direction, velocity, battleshipChars = {}) {
     super(x, y, direction, velocity);
 
-    console.log(battleshipChars);
     this.baseCharacteristics = mergeDeep(this.baseCharacteristics, battleshipChars);
-    console.log(this.baseCharacteristics);
 
     this.baseCharacteristics.constant.capture_range =
       tonnageToCaptureRange[this.baseCharacteristics.constant.body.tonnage];

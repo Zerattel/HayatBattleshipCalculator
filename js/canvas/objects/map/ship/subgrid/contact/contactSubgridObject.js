@@ -1,3 +1,4 @@
+import { log } from "../../../../../../controls/step-logs/log.js";
 import { registerClass } from "../../../../../../save&load/objectCollector.js";
 import { registerSteps } from "../../../step/stepInfoCollector.js";
 import SubgridObject from "../subgridObject.js";
@@ -31,7 +32,6 @@ export default class ContactSubgridObject extends SubgridObject {
     if (this.isCollided || !this.active) return data;
 
     if (this.currentCharacteristics.dynamic.hp.hull <= 0) {
-      this.visible = false;
       this.destroy();
 
       return {
@@ -45,7 +45,9 @@ export default class ContactSubgridObject extends SubgridObject {
         this.isCollided = true;
         this.visible = !this.contactOptions.hide;
 
-        this.onContact(c.a === this.id ? c.b : c.a);
+        const target = c.a === this.id ? c.b : c.a;
+        log(this.path, `Contact with ${target}`);
+        this.onContact(target);
         if (this.contactOptions.destroy) this._kill = true;
 
         return {

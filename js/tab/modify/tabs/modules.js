@@ -39,7 +39,6 @@ export default class {
         Object.entries(modules)
           .reduce((acc, [n, v]) => {
             if (v.main.type in acc) {
-              console.log(v.main.category, acc[v.main.type][v.main.category])
               if (v.main.category in acc[v.main.type]) {
                 acc[v.main.type][v.main.category].push(n);
               } else {

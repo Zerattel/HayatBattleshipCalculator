@@ -1,5 +1,6 @@
 import { limitVector } from "../../../../../../../libs/limitVector.js";
 import { calc, point } from "../../../../../../../libs/vector/point.js";
+import { log } from "../../../../../../controls/step-logs/log.js";
 import { registerClass } from "../../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../../map.js";
 import MAP_OBJECTS_IDS from "../../../mapObjectsIds.constant.js";
@@ -60,11 +61,10 @@ export default class DroneObject extends SubgridObject {
   physicsSimulationStep(step, dt, objectsData) {
     const data = super.physicsSimulationStep(step, dt, objectsData);
 
-    if (!this.active) return data;
+    if (!this.active || this.goToBackup) return data;
 
     if (this.checkArmor) {
       this.destroy();
-      this.visible = false;
 
       return { ...data, delete: true };
     }
@@ -86,8 +86,8 @@ export default class DroneObject extends SubgridObject {
 
     const state = this.controlledBy.Connection.state;
     if (state == "offline" && rpos.length - (saveDistance * 1.2) <= 0) {
+      log(this.path, `Backup was successfull to ${this.controlledBy.Connection.parent.id}`);
       this.destroy();
-      this.visible = false;
       this.goToBackup = true;
 
       return { ...data, delete: true };
@@ -189,7 +189,7 @@ export default class DroneObject extends SubgridObject {
 
       super.destroy();
     } else {
-      this._kill = true;
+      super.destroy();
     }
   }
 

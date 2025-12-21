@@ -32,7 +32,6 @@ export class DroneLauncherModule extends BaseModule {
   next() {
     super.next();
 
-    console.log(!this.launched.Connection, ["online", "active", "overload"].includes(this.state), this.parent)
     if (!this.launched.Connection && ["online", "active", "overload"].includes(this.state) && this.parent) {
       const id = `${uuidv4()}`;
       const template = mergeDeep(copy(this.characteristics.external.battleship_template), {
