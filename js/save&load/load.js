@@ -78,6 +78,7 @@ export function loadJSON(json) {
       detail: {
         size: json.map.size,
         grid: json.map.grid,
+        offset: json.map.offset ?? { x: 0, y: 0 },
       },
     })
   );
@@ -107,6 +108,10 @@ const DEFAULT_SAVE_FILE = {
   map: {
     size: 10000,
     grid: 500,
+    offset: {
+      x: 0,
+      y: 0,
+    },
   },
   logs: [],
   objects: [],

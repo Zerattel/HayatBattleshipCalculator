@@ -25,8 +25,7 @@ export default class VectorHud extends StandartObject {
 
     ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
-    const x = toCanvas(this.parent._x);
-    const y = toCanvas(this.parent._y);
+    const { x, y } = toCanvas({ x: this.parent._x, y: this.parent._y });
 
     if (this.settings.showRDirection) {
       ctx.strokeStyle = style.getPropertyValue("--direction");
@@ -47,12 +46,16 @@ export default class VectorHud extends StandartObject {
       ctx.stroke();
     }
 
+    const vl = toCanvas(this.parent.velocity.length),
+          vx = toCanvas(this.parent.velocity.x),
+          vy = toCanvas(this.parent.velocity.y);
+
     if (this.parent.velocity.length >= 1 && this.settings.showNextSteps) {
       const rectSize = toCurrentCanvasSize(canvas, this.settings.nextStepPointSize)
 
       ctx.setLineDash([
-        Math.abs((toCanvas(this.parent.velocity.length) * this.parent._step) / 16),
-        Math.abs((toCanvas(this.parent.velocity.length) * this.parent._step) / 8),
+        Math.abs((vl * this.parent._step) / 16),
+        Math.abs((vl * this.parent._step) / 8),
       ]);
       ctx.lineWidth = toCurrentCanvasSize(canvas, 7);
       ctx.strokeStyle = style.getPropertyValue("--direction");
@@ -60,8 +63,8 @@ export default class VectorHud extends StandartObject {
       ctx.beginPath();
       ctx.moveTo(x, y);
 
-      let curx = x + toCanvas(this.parent.velocity.x) * this.parent._step,
-        cury = y + toCanvas(this.parent.velocity.y) * this.parent._step;
+      let curx = x + vx * this.parent._step,
+        cury = y + vy * this.parent._step;
 
       ctx.lineTo(curx, cury);
       ctx.fillRect(curx - rectSize/2, cury - rectSize/2, rectSize, rectSize);
@@ -71,8 +74,8 @@ export default class VectorHud extends StandartObject {
       while (curx > 0 && curx < canvas.width && cury > 0 && cury < canvas.height) {
         step++;
 
-        curx = x + toCanvas(this.parent.velocity.x) * this.parent._step * step;
-        cury = y + toCanvas(this.parent.velocity.y) * this.parent._step * step;
+        curx = x + vx * this.parent._step * step;
+        cury = y + vy * this.parent._step * step;
 
         ctx.lineTo(curx, cury);
         ctx.fillRect(curx - rectSize/2, cury - rectSize/2, rectSize, rectSize);
@@ -89,8 +92,8 @@ export default class VectorHud extends StandartObject {
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.lineTo(
-        x + toCanvas(this.parent.velocity.x) * this.parent._step,
-        y + toCanvas(this.parent.velocity.y) * this.parent._step
+        x + vx * this.parent._step,
+        y + vy * this.parent._step
       );
       ctx.stroke();
     }

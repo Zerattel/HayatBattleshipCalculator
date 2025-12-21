@@ -6,7 +6,7 @@
   "properties": {
     "dynamic": {
       "type": "object",
-      "required": ["hp", "charge", "temperature"],
+      "required": ["hp"],
       "properties": {
         "hp": {
           "type": "object",
@@ -37,6 +37,13 @@
             "core": { "type": "number" },
             "mass": { "type": "number" },
             "signature": { "type": "number" },
+            "layers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["battleship", "missile", "drone", "shell"]
+              }
+            },
 
             "containers": {
               "type": "object",
@@ -52,24 +59,92 @@
               "properties": {
                 "size": { "type": "number" },
                 "category": { "type": "string" },
+
                 "autonomous": { "type": "boolean" },
                 "fuel": { "type": "number" },
+
                 "self_destruct_in": { "type": "number" },
-                "thrust": { "type": "number" },
+                "guidanceDelay": { "type": "number" },
+
+                "drone": {
+                  "safe_distance": { "type": "number" }
+                },
+
+                "poximity_fuse": {
+                  "type": "object",
+                  "properties": {
+                    "passive": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "min_distance": { "type": "number" },
+                            "trigger_activation_delay": { "type": "number" }
+                          }
+                        }
+                      ]
+                    },
+                    "active": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "min_distance": { "type": "number" },
+                            "trigger_activation_delay": { "type": "number" },
+                            "triggers": { 
+                              "type": "object",
+                              "properties": {
+                                "layers": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": ["battleship", "missile", "drone", "shell"]
+                                  }
+                                },
+                                "min_size": { "type": "number" }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
 
                 "explosion": {
                   "type": "object",
-                  "required": ["radius", "falloff", "damage"],
+                  "required": ["radius", "falloff", "effect"],
                   "properties": {
                     "radius": { "type": "number" },
-                    "damage": {
+                    "effect": {
                       "type": "object",
-                      "required": ["kinetic", "high_explosive", "electro_magnetic", "thermal"],
                       "properties": {
-                        "kinetic": { "type": "number" },
-                        "high_explosive": { "type": "number" },
-                        "electro_magnetic": { "type": "number" },
-                        "thermal": { "type": "number" }
+                        "damage": {
+                          "type": "object",
+                          "required": ["kinetic", "high_explosive", "electro_magnetic", "thermal"],
+                          "properties": {
+                            "kinetic": { "type": "number" },
+                            "high_explosive": { "type": "number" },
+                            "electro_magnetic": { "type": "number" },
+                            "thermal": { "type": "number" }
+                          }
+                        },
+                        "heal": {
+                          "type": "object",
+                          "properties": {
+                            "hull": { "type": "number" },
+                            "armor": { "type": "number" },
+                            "barrier": { "type": "number" }
+                          }
+                        },
+                        "temperature": { "type": "number" },
+                        "charge": { "type": "number" }
                       }
                     },
                     "falloff": { "type": "number" }

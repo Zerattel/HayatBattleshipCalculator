@@ -1,0 +1,66 @@
+{
+  "main": {
+    "name": "Ангар дрона «Миллер»",
+    "type": "Ангары",
+    "category": "Малые ангары",
+    "class": "DroneLauncherModule",
+
+    "size": 1,
+    "position": "internal",
+    "tags": []
+  },
+  "activation": "active",
+  "interference": 0,
+
+  "launcher": {
+    "vector": [0, 50],
+    "heading": 180,
+
+    "subgridRotation": 0,
+    "distanceOffset": 0,
+    
+    "backupDistance": 100,
+    "recovery": {
+      "fuel": 12,
+      "hp": {
+        "armor": 4,
+        "hull": 10
+      }
+    }
+  },
+
+  "modificators": {
+    "offline": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -2,
+        "isAffectedByInterference": false
+      }
+    ],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -8,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -15,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  },
+
+  "external": {
+    "battleship_template": "templates/miller-drone-test.json"
+  }
+}

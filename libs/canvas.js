@@ -9,11 +9,10 @@ import { settings } from "../js/settings/settings.js";
  * @returns {{x: number, y: number}}
  */
 export function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
-  return {
-    x: fromCanvas(((evt.clientX - rect.left) / (rect.right - rect.left)) * canvas.width),
-    y: fromCanvas(((evt.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height),
-  };
+  const rect = canvas.getBoundingClientRect();
+  const pixelX = ((evt.clientX - rect.left) / (rect.right - rect.left)) * canvas.width;
+  const pixelY = ((evt.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height;
+  return fromCanvas({ x: pixelX, y: pixelY });
 }
 
 /**

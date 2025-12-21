@@ -61,6 +61,7 @@
           <label>Map Resolution: </label><input type="number" id="modal-settings-mapres" class="small" placeholder="8000" />px
           <label>Grid Resolution: </label><input type="number" id="modal-settings-gridres" class="small" placeholder="2000" />px
           <label>Overlay Resolution: </label><input type="number" id="modal-settings-overlayres" class="small" placeholder="2000" />px
+          <label>Auto focus on sim.</label><input type="checkbox" id="modal-settings-auto_focus" /><span></span>
         </div>
         <button id="modal-settings-updateres" class="fit">Update Resolutions</button>
         <div style="
@@ -69,6 +70,7 @@
           margin-top: 20px;
         ">
           <label>Simulation Speedup (mult): </label><input type="number" id="modal-settings-sim_speedup" class="small" placeholder="4" /><span></span>
+          <label>Call render every </label><input type="number" id="modal-settings-render_per_frame" class="small" placeholder="1" /><span>fr.</span>
           <label>Instant simulation</label><input type="checkbox" id="modal-settings-instant_sim" />
         </div>
         <div style="margin-top: 20px;">
@@ -118,6 +120,11 @@
           <label>Size: </label><input type="number" id="modal-map_set-size" class="fit" placeholder="10000m" />
           <label>Grid: </label><input type="number" id="modal-map_set-grid" class="fit" placeholder="500m" />
         </div>
+        <label>Offset:</label>
+        <div class="gridded">
+          <label>X: </label><input type="number" id="modal-map_set-offx" class="fit" placeholder="0m" />
+          <label>Y: </label><input type="number" id="modal-map_set-offy" class="fit" placeholder="0m" />
+        </div>
 
         <button id="modal-map_set-complete">Set</button>
 
@@ -140,7 +147,7 @@
           <label>Dir: </label><input type="number" class="fit" id="modal-new_object-dir" placeholder="0deg" />
           <input type="checkbox" id="modal-new_object-is_dynamic" checked>
         </div>
-        <div class="ui-multilayered-select" id="modal-new_object-ships">
+        <div class="ui-multilayered-select modal-new_object-disable_on_template" id="modal-new_object-ships">
           <label>Test</label>
           <div class="options">
             
@@ -148,8 +155,8 @@
         </div><br>
 
         <div><label>Sprite</label></div>
-        <select id="modal-new_object-img"></select>
-        <div class="gridded">
+        <select class="modal-new_object-disable_on_template" id="modal-new_object-img"></select>
+        <div class="gridded modal-new_object-disable_on_template">
           <label>Color:</label>
           <div>
             <label>#</label><input placeholder="ffffff" id="modal-new_object-img-color" class="small" />
@@ -159,6 +166,22 @@
           <div>
             <input placeholder="200" id="modal-new_object-img-size" class="small" /><label>px</label>
           </div>
+        </div>
+
+        <br>
+        <label>Load template</label>
+        <div>
+          <label for="modal-new_object-load_template" class="fit">
+            <input type="file" id="modal-new_object-load_template" />
+            Upload
+          </label>
+        </div>
+        <div class="modal-new_object-template_loaded" style="display: none;">
+          <div>
+            <label for="modal-new_object-template-keep_id">Keep ID</label>
+            <input type="checkbox" id="modal-new_object-template-keep_id" checked>
+          </div>
+          <button id="modal-new_object-template-reset">Reset</button>
         </div>
 
         <button id="modal-new_object-complete">Set</button>
@@ -180,13 +203,28 @@
           <option disabled>────────────────────</option>
           <option value="tasks">Tasks</option>
           <option value="override">Override</option>
+          <option value="template">Template</option>
           <option value="delete">Delete</option>
         </select>
 
         <div id="modal-maneuver-types" class="sub">
-          <div id="modal-maneuver-types-maneuver" class="gridded" data-active="true">
-            <label>Vel: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
-            <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
+          <div id="modal-maneuver-types-maneuver" data-active="true">
+            <select id="modal-maneuver-types-maneuver-type" class="fit">
+              <option value="instant" selected>Instant</option> 
+              <option value="continious">Continious</option> 
+            </select>
+            <div class="gridded" style="margin-top: 5px;">
+              <label>Vel: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
+              <label>Dir: </label><input type="number" class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
+            </div>
+
+            <label 
+              for="modal-maneuver-types-maneuver-applied" 
+              style="margin-top: 20px; display: block;"
+            >Currnetly applied continious forces:</label>
+            <div id="modal-maneuver-types-maneuver-applied">
+
+            </div>
           </div>
           <div id="modal-maneuver-types-hud" data-active="false">
             
@@ -241,6 +279,13 @@
             <div id="modal-maneuver-types-override-container">
 
             </div>
+          </div>
+          <div id="modal-maneuver-types-template" data-active="false">
+            <p>Press button to download the template</p>
+            <div style="font-size: 14px;">
+              <label>Save as drone</label><input type="checkbox" id="modal-maneuver-types-template-as_drone" />
+            </div>
+            <a style="display: none;" id="modal-maneuver-types-template-load_anchor"></a>
           </div>
           <div id="modal-maneuver-types-delete" data-active="false">
             <p>Press the button to delete</p>

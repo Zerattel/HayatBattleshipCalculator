@@ -7,6 +7,6 @@ export default function intentFromObject(obj) {
     radius:     typeof obj.size === "function" ? obj.size : (obj.size ?? 10),
     bounciness: typeof obj.bounciness === "function" ? obj.bounciness : (obj.bounciness ?? 0.2),
     type: obj.constructor?.name || "object",
-    forces: []
+    forces: obj.forces ?? [],
   };
 }

@@ -5,7 +5,8 @@
       "armor": 20,
       "barrier": 0
     },
-    "charge": 0
+    "charge": 0,
+    "fuel": 102
   },
   "constant": {
     "body": {
@@ -13,6 +14,7 @@
       "core": 0,
       "mass": 500,
       "signature": 10,
+      "layers": ["missile"],
       "subgrid": {
         "size": 40,
         "category": "battle",
@@ -20,21 +22,35 @@
         "fuel": 102,
 
         "self_destruct_in": 120,
-        "thrust": 40000,
+        "guidanceDelay": 3,
+
+        "poximity_fuse": {
+          "passive": null,
+          "active": {
+            "min_distance": 100,
+            "trigger_activation_delay": 3,
+            "triggers": {
+              "layers": ["battleship", "drone"]
+            }
+          }
+        },
 
         "explosion": {
           "radius": 200,
-          "damage": {
-            "kinetic": 0,
-            "high_explosive": 350,
-            "electro_magnetic": 0,
-            "thermal": 100
+          "effect": {
+            "damage": {
+              "kinetic": 0,
+              "high_explosive": 350,
+              "electro_magnetic": 0,
+              "thermal": 100
+            },
+            "temperature": 0.1
           },
           "falloff": 2
         }
       }
     },
-    "acceleration": 60,
+    "acceleration": 80,
     "maneuverability": 10,
     "capacitor": {
       "charge": 0,

@@ -1,0 +1,416 @@
+{
+  "class": "DroneObject",
+  "visible": true,
+  "id": "b59b7",
+  "parent": null,
+  "children": {},
+  "tasks": [],
+  "collision": true,
+  "velocity": [
+    0,
+    0
+  ],
+  "direction": 180,
+  "forces": [],
+  "baseCharacteristics": {
+    "dynamic": {
+      "recived_damage": {
+        "kinetic": 0,
+        "high_explosive": 0,
+        "electro_magnetic": 0,
+        "thermal": 0
+      },
+      "hp": {
+        "hull": 100,
+        "armor": 20,
+        "barrier": 50
+      },
+      "temperature": 0,
+      "charge": 10,
+      "fuel": 1200
+    },
+    "constant": {
+      "body": {
+        "tonnage": -1,
+        "core": 3,
+        "mass": 400,
+        "layers": [
+          "drone"
+        ],
+        "containers": {
+          "storage": 0,
+          "hangar": 0
+        },
+        "signature": 10,
+        "subgrid": {
+          "size": 30,
+          "category": "battle",
+          "fuel": 1200,
+          "autonomous": false,
+
+          "drone": {
+            "safe_distance": 1500
+          }
+        }
+      },
+      "acceleration": 100,
+      "jumpdistance": 0,
+      "maneuverability": 10,
+      "sensors_power": 0,
+      "capture_range": 25000,
+      "capacitor": {
+        "charge": 10,
+        "generation": 2
+      },
+      "slots": {
+        "external": 1,
+        "internal": 2
+      },
+      "hp": {
+        "hull": 100,
+        "armor": 20,
+        "barrier": 50
+      },
+      "collision_energy_distribution": {
+        "damage": 0.69,
+        "velocity": 0.3,
+        "heat": 0.01
+      },
+      "temperature": 1,
+      "heating": 0,
+      "resistance": {
+        "kinetic": {
+          "hull": 0,
+          "armor": 0,
+          "barrier": 0
+        },
+        "high_explosive": {
+          "hull": 0,
+          "armor": 0,
+          "barrier": 0
+        },
+        "electro_magnetic": {
+          "hull": 0,
+          "armor": 0,
+          "barrier": 0
+        },
+        "thermal": {
+          "hull": 0,
+          "armor": 0,
+          "barrier": 0
+        },
+        "EW": 0
+      },
+      "barrier": {
+        "passive_regeneration": 0.01,
+        "resonance": {
+          "frequency": 0.3,
+          "tendency": 0.01,
+          "range": 0.4
+        }
+      },
+      "modulemodifier": {
+        "offence": {
+          "ballistic": {
+            "effective_distance_modifier": 1,
+            "damage_modifier": 1,
+            "tracking_modifier": 1,
+            "capacitor_consumption_modifier": 1,
+            "heating_modifier": 1,
+            "target_heating_modifier": 1
+          },
+          "laser": {
+            "effective_distance_modifier": 1,
+            "damage_modifier": 1,
+            "tracking_modifier": 1,
+            "capacitor_consumption_modifier": 1,
+            "heating_modifier": 1,
+            "target_heating_modifier": 1
+          },
+          "launcher": {
+            "on_hit_damage_modifier": 1,
+            "fuel_modifier": 1,
+            "acceleration_modifier": 1,
+            "explosion_signature_modifier": 1,
+            "capacitor_consumption_modifier": 1,
+            "heating_modifier": 1,
+            "on_hitheating_modifier": 1
+          },
+          "bomb": {
+            "effective_distance_modifier": 1,
+            "damage_modifier": 1,
+            "capacitor_consumption_modifier": 1,
+            "heating_modifier": 1
+          },
+          "desintegrator": {
+            "effective_distance_modifier": 1,
+            "damage_modifier": 1,
+            "tracking_modifier": 1,
+            "capacitor_consumption_modifier": 1,
+            "heating_modifier": 1,
+            "target_heating_modifier": 1,
+            "per_shot_bonus_modifier": 1,
+            "max_stack_modifier": 1
+          },
+          "EW": {
+            "effective_distance_modifier": 1,
+            "capacitor_consumption_modifier": 1,
+            "heating_modifier": 1,
+            "target_heating_modifier": 1,
+            "EW_strenght_modifier": 1,
+            "tracking_disruption_modifier": 1,
+            "stasis_modifier": 1,
+            "maneuverability_disruption_modifier": 1,
+            "contact_quality_disruption_modifier": 1,
+            "signature_painting_modifier": 1,
+            "capacitor_disruption_modifier": 1
+          },
+          "vehicle": {
+            "vehicle_damage_modifier": 1,
+            "vehicle_acceleration_modifier": 1,
+            "vehicle_target_heating_modifier": 1,
+            "vehicle_effective_distance_modifier": 1,
+            "vehicle_signature_modifier": 1,
+            "vehicle_maneuverability_modifier": 1,
+            "vehicle_hp_modifier": 1
+          }
+        },
+        "engineering": {
+          "barrier": {
+            "passive_recharge_modifier": 1,
+            "active_recharge_modifier": 1,
+            "active_recharge_consumption": 1,
+            "active_recharge_heating": 1,
+            "resonance": {
+              "frequency": 0.3,
+              "tendency": 0.01,
+              "range": 0.4
+            }
+          },
+          "armor": {
+            "active_repair_modifier": 1,
+            "active_repair_consumption": 1,
+            "active_repair_heating": 1
+          },
+          "hardener": {
+            "active": {
+              "barrier": {
+                "effectiveness_modifier": 1,
+                "capacitor_consumption_modifier": 1,
+                "heating_modifier": 1
+              },
+              "armor": {
+                "effectiveness_modifier": 1,
+                "capacitor_consumption_modifier": 1,
+                "heating_modifier": 1
+              }
+            },
+            "passive": {
+              "barrier": {
+                "effectiveness_modifier": 1
+              },
+              "armor": {
+                "effectiveness_modifier": 1
+              }
+            }
+          },
+          "mobility": {
+            "micro_distortion_drive": {
+              "effectiveness_modifier": 1,
+              "capacitor_consumption_modifier": 1,
+              "heating_modifier": 1,
+              "signature_penalty_modifier": 1
+            },
+            "afterburner": {
+              "effectiveness_modifier": 1,
+              "capacitor_consumption_modifier": 1,
+              "heating_modifier": 1
+            }
+          },
+          "thermodynamic": {
+            "radiation_modifier": 1,
+            "consumption_modifier": 1,
+            "signature_penalty_modifier": 1
+          }
+        },
+        "support": {
+          "effective_distance_modifier": 1,
+          "capacitor_consumption_modifier": 1,
+          "heating_modifier": 1,
+          "support_strenght_modifier": 1,
+          "tracking_support_modifier": 1,
+          "acceleration_support_modifier": 1,
+          "maneuverability_support_modifier": 1,
+          "contact_quality_support_modifier": 1,
+          "signature_suppression_modifier": 1,
+          "capacitor_injection_modifier": 1,
+          "shield_injection_modifier": 1,
+          "armor_repair_modifier": 1
+        },
+        "precursor": {
+          "desintegrator": {
+            "bonus_cap_modifier": 1,
+            "per_step_bonus_modifier": 1
+          },
+          "membrane": {
+            "bonus_cap_modifier": 1,
+            "per_step_bonus_modifier": 1
+          }
+        }
+      }
+    }
+  },
+  "dynamicCharacteristics": {
+    "recived_damage": {
+      "kinetic": 0,
+      "high_explosive": 0,
+      "electro_magnetic": 0,
+      "thermal": 0
+    },
+    "hp": {
+      "hull": 100,
+      "armor": 20,
+      "barrier": 50
+    },
+    "temperature": 0.01,
+    "charge": 10,
+    "fuel": 1200
+  },
+  "externalModules": [
+    {
+      "class": "BaseModule",
+      "state": "offline",
+      "uuid": "ee21f28a-511d-42c8-ab16-5737bd0ac499-1766250909137",
+      "characteristics": {
+        "main": {
+          "name": "ИК Лазер «Фонарь»",
+          "type": "Орудия",
+          "category": "Лазеры",
+          "size": 1,
+          "position": "external",
+          "tags": [
+            "gun",
+            "offencive",
+            "laser"
+          ]
+        },
+        "activation": "active",
+        "modificators": {
+          "offline": [],
+          "online": [],
+          "active": [
+            {
+              "target": "this",
+              "characteristic": "constant.heating",
+              "modificationType": "number",
+              "modificator": 0.06,
+              "isAffectedByInterference": false
+            },
+            {
+              "target": "this",
+              "characteristic": "constant.capacitor.generation",
+              "modificationType": "number",
+              "modificator": -4,
+              "isAffectedByInterference": false
+            },
+            {
+              "target": "target",
+              "characteristic": "dynamic.recived_damage.thermal",
+              "modificationType": "number",
+              "modificator": "module.functionsSharedData.perStep.damage",
+              "isAffectedByInterference": false
+            },
+            {
+              "target": "target",
+              "characteristic": "dynamic.temperature",
+              "modificationType": "number",
+              "modificator": "module.functionsSharedData.perStep.heating",
+              "isAffectedByInterference": false
+            }
+          ],
+          "overload": []
+        },
+        "cycle": 1,
+        "reload": 0,
+        "interference": 0,
+        "additionalInfo": {
+          "baseDamage": 24,
+          "targetHeating": 0.02,
+          "effectiveRange": 8000,
+          "maxRange": 12000,
+          "tracking": 45
+        },
+        "initFunctions": "<[LaserAttack]>"
+      },
+      "previousState": "offline",
+      "inOnlineSteps": 0,
+      "inStageSteps": 2,
+      "functionsSharedData": {
+        "perStep": {},
+        "perState": {},
+        "uncleared": {}
+      }
+    }
+  ],
+  "internalModules": [
+    {
+      "class": "BaseModule",
+      "state": "offline",
+      "uuid": "a296a410-98b1-4efa-b277-032e16b3edf5-1766250930101",
+      "characteristics": {
+        "main": {
+          "name": "Система целеуказания",
+          "type": "РЭБ",
+          "category": "Системы целеуказания",
+          "size": 2,
+          "position": "internal",
+          "tags": [
+            "targetpainer",
+            "ew"
+          ]
+        },
+        "activation": "active",
+        "modificators": {
+          "offline": [],
+          "online": [],
+          "active": [
+            {
+              "target": "this",
+              "characteristic": "constant.heating",
+              "modificationType": "number",
+              "modificator": 0.01,
+              "isAffectedByInterference": false
+            },
+            {
+              "target": "this",
+              "characteristic": "constant.capacitor.generation",
+              "modificationType": "number",
+              "modificator": -3,
+              "isAffectedByInterference": false
+            },
+            {
+              "target": "target",
+              "characteristic": "constant.body.signature",
+              "modificationType": "percent",
+              "modificator": 1.7,
+              "isAffectedByInterference": false
+            }
+          ],
+          "overload": []
+        },
+        "cycle": 1,
+        "reload": 0,
+        "interference": 0
+      },
+      "previousState": "offline",
+      "inOnlineSteps": 0,
+      "inStageSteps": 0,
+      "functionsSharedData": {
+        "perStep": {},
+        "perState": {},
+        "uncleared": {}
+      }
+    }
+  ],
+  "__version": "1.7.0"
+}

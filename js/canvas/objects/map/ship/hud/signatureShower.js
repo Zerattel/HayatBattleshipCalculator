@@ -4,6 +4,16 @@ import { registerClass } from "../../../../../save&load/objectCollector.js";
 import StandartObject from "../../../standartObject.js";
 
 export default class SignatureShower extends StandartObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    lineWidth: 20,
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
+
   lineWidth = 20;
 
   constructor(lineWidth = 20) {
@@ -28,12 +38,14 @@ export default class SignatureShower extends StandartObject {
         : 1;
     const length = 2 * Math.PI * (s / 2)
 
+    const { x, y } = toCanvas({ x: this.parent._x, y: this.parent._y });
+
     ctx.setLineDash([
       toCurrentCanvasSize(canvas, clamp(length / 20, 5, 60)),
       toCurrentCanvasSize(canvas, clamp(length / 20, 5, 150)),
     ]);
     ctx.beginPath();
-    ctx.arc(toCanvas(this.parent._x), toCanvas(this.parent._y), toCanvas(s), 0, Math.PI * 2);
+    ctx.arc(x, y, toCanvas(s), 0, Math.PI * 2);
     ctx.closePath();
     ctx.stroke();
     ctx.setLineDash([]);
@@ -53,7 +65,7 @@ export default class SignatureShower extends StandartObject {
         toCurrentCanvasSize(canvas, clamp(lengthb / 20, 5, 150)),
       ]);
       ctx.beginPath();
-      ctx.arc(toCanvas(this.parent._x), toCanvas(this.parent._y), toCanvas(sb), 0, Math.PI * 2);
+      ctx.arc(x, y, toCanvas(sb), 0, Math.PI * 2);
       ctx.closePath();
       ctx.stroke();
       ctx.setLineDash([]);

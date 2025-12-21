@@ -87,7 +87,7 @@ const baseBattleshipCharacteristics = {
     temperature: 0,
     /** заряд конденсатора */
     charge: 0,
-    /** количество топлива у субтела */
+    /** остаток топлива (только для субгридов) */
     fuel: 0,
   },
   constant: {
@@ -98,6 +98,7 @@ const baseBattleshipCharacteristics = {
       core: 0,
       /** масса */
       mass: 0,
+      layers: ["battleship"],
       containers: {
         /** трюм */
         storage: 0,
@@ -108,10 +109,9 @@ const baseBattleshipCharacteristics = {
       signature: 0,
       /** параметры если это субтело */
       subgrid: {
-        effective_distance: 0,
         size: 0,
         category: 'battle',
-        fuel: 0,
+        fuel: -1,
       },
     },
     /** максимальное ускорение */
@@ -379,6 +379,7 @@ const battleshipCharacteristicsClampRules = {
     },
     temperature: (c, v) => v < 0 ? 0 : v,
     charge: (c, v) => clamp(v, 0, c.constant.capacitor.charge),
+    fuel: (c, v) => clamp(v, 0, (c.constant.body.subgrid.fuel === -1 ? 1 : c.constant.body.subgrid.fuel))
   },
   constant: {
     body: {

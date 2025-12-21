@@ -62,3 +62,8 @@ label:has(> input[type="file"]) {
   padding: 6px 12px;
   cursor: pointer;
 }
+
+*[data-disabled="true"] {
+  filter: brightness(0.7);
+  pointer-events: none;
+}

@@ -11,6 +11,16 @@ import { registerSteps } from "../../step/stepInfoCollector.js";
 import { log } from "../../../../../controls/step-logs/log.js";
 
 export class ContactController extends BasicStepObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    capturedTargets: [],
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
+
   capturedTargets = [];
   currentTarget = null;
 
@@ -72,6 +82,11 @@ export class ContactController extends BasicStepObject {
 
   removeTarget(id) {
     this.capturedTargets = this.capturedTargets.filter(v => v != id);
+  }
+
+  clearTargets() {
+    this.capturedTargets = [];
+    this.currentTarget = null;
   }
 
   filterTargets() {
@@ -173,44 +188,50 @@ export class ContactController extends BasicStepObject {
     ) {
       const dist = toCurrentCanvasSize(canvas, 40);
 
-      const l1_offset = point(() =>
-        toCanvas(point(lines[0].p1.x, lines[0].p1.y) - point(this.parent._x, this.parent._y))
-      ).normalize();
-      const l2_offset = point(() =>
-        toCanvas(point(lines[1].p1.x, lines[1].p1.y) - point(this.parent._x, this.parent._y))
-      ).normalize();
+      const l1_offset = toCanvas({ direction: calc(() => point(lines[0].p1.x, lines[0].p1.y) - point(this.parent._x, this.parent._y))}).normalize();
+      const l2_offset = toCanvas({ direction: calc(() => point(lines[1].p1.x, lines[1].p1.y) - point(this.parent._x, this.parent._y))}).normalize();
 
       ctx.strokeStyle = isMain ? style.getPropertyValue("--accent") : style.getPropertyValue("--target-non-active");
       ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
       ctx.setLineDash([toCurrentCanvasSize(canvas, 60), toCurrentCanvasSize(canvas, 60)]);
 
+      const p01 = toCanvas(lines[0].p1),
+            p02 = toCanvas(lines[0].p2),
+            p11 = toCanvas(lines[1].p1),
+            p12 = toCanvas(lines[1].p2);
+
       posl1 = [
-        toCanvas(lines[0].p1.x) + l1_offset.x * dist,
-        toCanvas(lines[0].p1.y) + l1_offset.y * dist,
-        toCanvas(lines[0].p2.x) + l1_offset.x * dist,
-        toCanvas(lines[0].p2.y) + l1_offset.y * dist,
+        p01.x + l1_offset.x * dist,
+        p01.y + l1_offset.y * dist,
+        p02.x + l1_offset.x * dist,
+        p02.y + l1_offset.y * dist,
       ];
       posl2 = [
-        toCanvas(lines[1].p1.x) + l2_offset.x * dist,
-        toCanvas(lines[1].p1.y) + l2_offset.y * dist,
-        toCanvas(lines[1].p2.x) + l2_offset.x * dist,
-        toCanvas(lines[1].p2.y) + l2_offset.y * dist,
+        p11.x + l2_offset.x * dist,
+        p11.y + l2_offset.y * dist,
+        p12.x + l2_offset.x * dist,
+        p12.y + l2_offset.y * dist,
       ];
     } else {
       ctx.strokeStyle = isMain ? style.getPropertyValue("--accent") : style.getPropertyValue("--target-non-active");
       ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
+      const p01 = toCanvas(lines[0].p1),
+            p02 = toCanvas(lines[0].p2),
+            p11 = toCanvas(lines[1].p1),
+            p12 = toCanvas(lines[1].p2);
+
       posl1 = [
-        toCanvas(lines[0].p1.x),
-        toCanvas(lines[0].p1.y),
-        toCanvas(lines[0].p2.x),
-        toCanvas(lines[0].p2.y),
+        p01.x,
+        p01.y,
+        p02.x,
+        p02.y,
       ];
       posl2 = [
-        toCanvas(lines[1].p1.x),
-        toCanvas(lines[1].p1.y),
-        toCanvas(lines[1].p2.x),
-        toCanvas(lines[1].p2.y),
+        p11.x,
+        p11.y,
+        p12.x,
+        p12.y,
       ];
     }
 
@@ -314,6 +335,8 @@ export class ContactController extends BasicStepObject {
   }
 
   afterLoad() {
+    super.afterLoad();
+
     this.listenForModifiers();
   }
 }

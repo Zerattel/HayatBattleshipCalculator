@@ -4,6 +4,23 @@ import { registerClass } from "../../../../../save&load/objectCollector.js";
 import StandartObject from "../../../standartObject.js";
 
 export default class ShipStatsHUD extends StandartObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    distance: -300,
+    bar: {
+      height: 250,
+      width: 40,
+      padding: 7,
+      border: 7,
+      gap: 30,
+    },
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
+
   distance = -300;
   bar = {
     height: 250,
@@ -94,8 +111,8 @@ export default class ShipStatsHUD extends StandartObject {
     ctx.lineWidth = toCurrentCanvasSize(canvas, 7);
     ctx.fillStyle = style.getPropertyValue("--hud");
 
-    const par_x = toCanvas(this.parent._x);
-    const par_y = toCanvas(this.parent._y);
+    const par_x = toCanvas({ x: this.parent._x });
+    const par_y = toCanvas({ y: this.parent._y });
     const c = this.parent.currentCharacteristics;
 
     this.drawBar(

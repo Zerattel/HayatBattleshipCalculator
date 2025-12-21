@@ -1,4 +1,5 @@
 import { getMousePos } from "../../libs/canvas.js";
+import { point } from "../../libs/vector/point.js";
 import { EVENTS } from "../events.js";
 import { settings } from "../settings/settings.js";
 import { mapProps } from "./grid.js";
@@ -22,8 +23,66 @@ export default function init() {
 
   let raito = canvas.width / mapProps.size;
 
-  const toCanvas = (pos) => pos * raito;
-  fromCanvas = (pos) => pos / settings.overlayResolution;
+  const toCanvas = (pos) => {
+    if (typeof pos === "number") {
+      return pos * raito;
+    } else if (typeof pos === "object") {
+      let x = null, y = null;
+      let direction = false;
+
+      if ('point' in pos) {
+        x = pos.point.x;
+        y = pos.point.y;
+      } else if ('direction' in pos) {
+        x = pos.direction.x;
+        y = pos.direction.y;
+        direction = true;
+      } else {
+        x = pos.x ?? null;
+        y = pos.y ?? null;
+      }
+      
+      if (direction) {
+        return point((x ?? 0) * raito, (y ?? 0) * raito);
+      } else if (x !== null && y !== null) {
+        return point((mapProps.offset.x + x) * raito, (mapProps.offset.y + y) * raito);
+      } else if (x !== null) {
+        return (mapProps.offset.x + x) * raito;
+      } else if (y !== null) {
+        return (mapProps.offset.y + y) * raito;
+      }
+    }
+  };
+  fromCanvas = (pos) => {
+    if (typeof pos === "number") {
+      return pos / raito;
+    } else if (typeof pos === "object") {
+      let x = null, y = null;
+      let direction = false;
+
+      if ('point' in pos) {
+        x = pos.point.x;
+        y = pos.point.y;
+      } else if ('direction' in pos) {
+        x = pos.direction.x;
+        y = pos.direction.y;
+        direction = true;
+      } else {
+        x = pos.x ?? null;
+        y = pos.y ?? null;
+      }
+      
+      if (direction) {
+        return point((x ?? 0) / raito, (y ?? 0) / raito);
+      } else if (x !== null && y !== null) {
+        return point(x / raito - mapProps.offset.x, y / raito - mapProps.offset.y);
+      } else if (x !== null) {
+        return x / raito - mapProps.offset.x;
+      } else if (y !== null) {
+        return y / raito - mapProps.offset.y;
+      }
+    }
+  }
 
   const redrawOverlay = () => {
     requestAnimationFrame(() => {

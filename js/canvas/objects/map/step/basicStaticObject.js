@@ -5,6 +5,19 @@ import BasicStepObject from "./basicStepObject.js";
 import { registerSteps } from "./stepInfoCollector.js";
 
 export default class BasicStaticObject extends BasicStepObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    collision: true,
+    size: 30,
+    mass: 1,
+    bounciness: 0,
+    layers: ["static"],
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
   constructor(x, y) {
     super(x, y);
   }
@@ -13,6 +26,7 @@ export default class BasicStaticObject extends BasicStepObject {
   size = 30;
   mass = 1;
   bounciness = 0;
+  layers = ["static"];
 
 
   getOverridableValues() {
@@ -111,6 +125,7 @@ export default class BasicStaticObject extends BasicStepObject {
       size: this.size,
       mass: this.mass,
       bounciness: this.bounciness,
+      layers: this.layers,
     };
   }
 
@@ -120,6 +135,7 @@ export default class BasicStaticObject extends BasicStepObject {
     this.size = data.size;
     this.mass = data.mass;
     this.bounciness = data.bounciness;
+    this.layers = data.layers;
 
     loadChildren && super.loadChildren(data);
   }

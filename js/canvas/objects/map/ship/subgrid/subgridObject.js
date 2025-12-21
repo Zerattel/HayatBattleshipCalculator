@@ -3,13 +3,26 @@ import { objectFromPath } from "../../../../../../libs/pathResolver.js";
 import { EVENTS } from "../../../../../events.js";
 import { registerClass } from "../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../map.js";
+import { generateSimulationState } from "../../step/simulationStates.constant.js";
 import { registerSteps } from "../../step/stepInfoCollector.js";
 import ShipObject from "../shipObject.js";
 
 export default class SubgridObject extends ShipObject {
-  controlledBy = new ObjectConnection(() => objects);
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    activationInfo: {
+      delay: 0,
+      correctionId: null,
+    }
+  }
 
-  kill = false;
+  static LOAD_CRASH = new Set([
+    ...super.LOAD_CRASH,
+    'active',
+  ]);
+
+
+  controlledBy = new ObjectConnection(() => objects);
 
   active = false;
   activationInfo = {
@@ -30,12 +43,36 @@ export default class SubgridObject extends ShipObject {
   }
 
 
+  get isFueled() {
+    return (this.currentCharacteristics?.constant?.body?.subgrid?.fuel ?? -1) === -1 || 
+            this.currentCharacteristics?.dynamic?.fuel > 0
+  }
+
+
+  step(index, objectsData) {
+    if (index === 1 && this.isFueled) {
+      this.currentCharacteristics.dynamic.fuel -= this._step;
+    }
+
+    return super.step(index, objectsData);
+  }
+
+
   physicsSimulationStep(step, dt, objectsData) {
     if (this.active) {
+      if (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection) {
+        this.destroy();
+        this.visible = false;
+        this.active = false;
+        
+        return { delete: true };
+      }
+
       return super.physicsSimulationStep(step, dt, objectsData);
     } else if (this.activationInfo.delay - this._livetime - dt*step <= 0) {
       if (!this.controlledBy.Connection || this.activationInfo.correctionId === null) {
-        this.kill = true;
+        this.destroy();
+
         return;
       }
 
@@ -56,17 +93,7 @@ export default class SubgridObject extends ShipObject {
 
 
   finalize(objectsData) {
-    if (this.kill || (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection)) {
-      document.dispatchEvent(
-        new CustomEvent(EVENTS.MAP.DELETE, {
-          detail: {
-            id: this.id,
-          },
-        })
-      );
-
-      return {};
-    } 
+    this._kill ||= !this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection;
 
     return super.finalize(objectsData);
   }

@@ -12,9 +12,7 @@ export default function () {
 
     for (let i of Object.keys(objects)) {
       if (objects[i].visible) {
-        const length = point(() =>
-          toCanvas(point(objects[i]._x, objects[i]._y) - point(x, y))
-        ).length;
+        const length = toCanvas({ direction: calc(() => point(objects[i]._x, objects[i]._y) - point(x, y)) }).length;
 
         if (length <= CLICK_AREA) {
           clicked.push([objects[i], length]);

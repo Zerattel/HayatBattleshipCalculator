@@ -5,7 +5,7 @@
   flex-wrap: wrap;
   gap: 10px;
 
-  left: 40px;
+  left: 60px;
   top: 50%;
 
   transform: translate(0, -50%);
@@ -235,6 +235,12 @@
 
   .maneuver {
     width: 500px;
+  }
+
+  .modal-new_object-template_loaded {
+    display: flex; 
+    flex-direction: row; 
+    justify-content:space-between;
   }
 }
 

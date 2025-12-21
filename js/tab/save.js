@@ -8,7 +8,9 @@ export default function init() {
   $('#tab-save').on('click', () => {
     let modal = $("#modal-map_load");
 
-    modal.attr("data-active", modal.attr("data-active") == "true" ? "false" : "true");
+    const setTo = modal.attr("data-active") == "true" ? "false" : "true";
+    modal.attr("data-active", setTo);
+    $('#tab-save').attr("data-active", setTo);
   })
 
   let curJSONdata = {"map": {"size": 10000, "grid": 500}, "objects": {}}

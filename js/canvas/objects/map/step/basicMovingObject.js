@@ -6,16 +6,53 @@ import { registerSteps } from "./stepInfoCollector.js";
 import { log } from "../../../../controls/step-logs/log.js";
 import { objects } from "../../../map.js";
 import { collisionPoint } from "../../../../../libs/math.js";
+import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from "./simulationStates.constant.js";
 
 export default class BasicMovingObject extends BasicStepObject {
+  static LOAD_FALLBACK = {
+    ...super.LOAD_FALLBACK,
+    collision: true,
+    velocity: point(0, 0),
+    _direction: 0,
+    forces: [],
+  }
+
+  static LOAD_CRASH = new Set(
+    super.LOAD_CRASH
+  );
+
   velocity = point(0, 0);
   _direction = 0;
+  forces = [];
 
   constructor(x, y, direction, velocity) {
     super(x, y, 6);
 
     this.direction = direction || 0;
     if (velocity) this.applyForce(velocity);
+  }
+
+
+  applyContiniousForce(amount) {
+    const dirRad = (this._direction / 180) * Math.PI;
+
+    let force;
+
+    if (typeof amount === "number") {
+      force = calc(() => point(
+        Math.sin(dirRad),
+        Math.cos(dirRad)
+      ) * amount * this.mass);
+    } else {
+      const rotated = calc(() => point(
+        amount.x * Math.cos(-dirRad) - amount.y * Math.sin(-dirRad),
+        amount.x * Math.sin(-dirRad) + amount.y * Math.cos(-dirRad)
+      ) * this.mass);
+
+      force = rotated;
+    }
+
+    this.forces.push(force);
   }
 
   applyForce(amount) {
@@ -54,6 +91,10 @@ export default class BasicMovingObject extends BasicStepObject {
     return 1;
   }
 
+  get layers() {
+    return [];
+  }
+
   get direction() {
     return toRealDirection(this._direction);
   }
@@ -66,6 +107,8 @@ export default class BasicMovingObject extends BasicStepObject {
 
 
   physicsSimulationStep(step, delta, objectsData) {
+    this.state = generateSimulationState(SIMULATION_STATES.PHYSICS_SIMULATION, step);
+
     const phys = objectsData[this.id]?._physics;
     if (phys) {
       this._x = phys.pos.x;
@@ -76,6 +119,8 @@ export default class BasicMovingObject extends BasicStepObject {
 
 
   afterSimulation(objectsData) {
+    this.state = generateSimulationState(SIMULATION_STATES.AFTER_SIMULATION);
+
     const phys = objectsData[this.id]?._physics;
     if (phys) {
       this._x = phys.pos.x;
@@ -95,6 +140,13 @@ export default class BasicMovingObject extends BasicStepObject {
         );
       }
     }
+  }
+
+
+  finalize(objectsData) {
+    this.forces = [];
+
+    return super.finalize(objectsData);
   }
 
 
@@ -163,6 +215,7 @@ export default class BasicMovingObject extends BasicStepObject {
       collision: this.collision,
       velocity: [this.velocity.x, this.velocity.y],
       direction: this._direction,
+      forces: this.forces,
     };
   }
 
@@ -171,6 +224,7 @@ export default class BasicMovingObject extends BasicStepObject {
     this.collision = data.collision;
     this.velocity = point(data.velocity[0], data.velocity[1]);
     this._direction = data.direction;
+    this.forces = data.forces;
 
     loadChildren && super.loadChildren(data);
   }

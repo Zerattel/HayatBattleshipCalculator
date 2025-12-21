@@ -22,8 +22,7 @@ export default class AccentPoint extends StandartObject {
     ctx.strokeStyle = style.getPropertyValue("--accent");
     ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
-    const x = toCanvas(this._x);
-    const y = toCanvas(this._y);
+    const { x, y } = toCanvas({ x: this._x, y: this._y });
     const radius = toCurrentCanvasSize(canvas, this.radius)
     const crossSize = toCurrentCanvasSize(canvas, this.crossSize)
 
@@ -51,7 +50,7 @@ export default class AccentPoint extends StandartObject {
       toCurrentCanvasSize(canvas, 280)
     ])
     ctx.beginPath();
-    ctx.moveTo(toCanvas(this.oX), toCanvas(this.oY));
+    ctx.moveTo(toCanvas({ x: this.oX }), toCanvas({ y: this.oY }));
     ctx.lineTo(
       x - dir_norm.x * radius,
       y - dir_norm.y * radius

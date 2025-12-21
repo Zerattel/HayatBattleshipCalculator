@@ -21,5 +21,6 @@
       ],
       "url": "./schemas/registration.schema.json"
     }
-  ]
+  ],
+  "liveServer.settings.port": 5501
 }

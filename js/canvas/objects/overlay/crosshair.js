@@ -17,8 +17,7 @@ export default class CrosshairObject extends StandartObject {
     ctx.strokeStyle = style.getPropertyValue("--main");
     ctx.lineWidth = toCurrentCanvasSize(canvas, 20);
 
-    const x = toCanvas(this._x);
-    const y = toCanvas(this._y);
+    const { x, y } = toCanvas({ x: this._x, y: this._y });
 
     const size = toCurrentCanvasSize(canvas, this.size);
 

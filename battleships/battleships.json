@@ -27,5 +27,6 @@
 
   "[Test] Torpedo T": "subships/test/torpedo.json",
   "[Test] Ракета типа \"Рой\"": "subships/test/missile-swarm.json",
-  "[Test] Railgun Shell (10m)": "subships/test/railgun-shell.json"
+  "[Test] Railgun Shell (10m)": "subships/test/railgun-shell.json",
+  "[Test] Дрон «Миллер»": "subships/test/miller-drone-test.json"
 }

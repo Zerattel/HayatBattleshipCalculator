@@ -4,10 +4,12 @@ let settings = {
   gridResolution: 2000,
   mapResolution: 8000,
   overlayResolution: 2000,
+  autoFocusOnSimulation: false,
 
   hudSize: 1,
 
   physicsSimulationSpeedupMultiplier: 20,
+  renderPerFrame: 1,
   instantSimulation: false,
 
   saveLastState: true,
@@ -20,10 +22,12 @@ const fromString = {
   gridResolution: Number,
   mapResolution: Number,
   overlayResolution: Number,
+  autoFocusOnSimulation: (v) => v === "true",
 
   hudSize: Number,
 
   physicsSimulationSpeedupMultiplier: Number,
+  renderPerFrame: Number,
   instantSimulation: (v) => v === "true",
 
   saveLastState: (v) => v === "true",

@@ -1,6 +1,8 @@
 import { mergeDeep } from "../../libs/deepMerge.js";
 import intentFromObject from "../../libs/generatePhysicsIntentFromObject.js";
 import { compareVersions } from "../../libs/utils.js";
+import { point } from "../../libs/vector/point.js";
+import { computeCenteredSquare } from "../controls/map.js";
 import { log } from "../controls/step-logs/log.js";
 import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
@@ -32,7 +34,36 @@ export default function init() {
 
   let raito = canvas.width / mapProps.size;
 
-  toCanvas = (pos) => pos * raito;
+  toCanvas = (pos) => {
+    if (typeof pos === "number") {
+      return pos * raito;
+    } else if (typeof pos === "object") {
+      let x = null, y = null;
+      let direction = false;
+
+      if ('point' in pos) {
+        x = pos.point.x;
+        y = pos.point.y;
+      } else if ('direction' in pos) {
+        x = pos.direction.x;
+        y = pos.direction.y;
+        direction = true;
+      } else {
+        x = pos.x ?? null;
+        y = pos.y ?? null;
+      }
+      
+      if (direction) {
+        return point((x ?? 0) * raito, (y ?? 0) * raito);
+      } else if (x !== null && y !== null) {
+        return point((mapProps.offset.x + x) * raito, (mapProps.offset.y + y) * raito);
+      } else if (x !== null) {
+        return (mapProps.offset.x + x) * raito;
+      } else if (y !== null) {
+        return (mapProps.offset.y + y) * raito;
+      }
+    }
+  };
 
   const redrawMap = () => {
     requestAnimationFrame(() => {
@@ -197,7 +228,7 @@ export default function init() {
       for (let i of Object.keys(objects)) {
         const f = objects[i].physicsSimulationStep?.(step, dt, prevData);
 
-        if (f !== undefined) callback[i] = {
+        if (f !== undefined && objects[i]) callback[i] = {
           ...f,
           objectRef: intentFromObject(objects[i]),
         };
@@ -223,7 +254,27 @@ export default function init() {
       setTimeout(() => {
         const start = Date.now();
         const simResult = next();
-        redrawMap();
+        if (simResult !== false && simResult % settings.renderPerFrame == 0) {
+          if (settings.autoFocusOnSimulation) {
+            const size = computeCenteredSquare();
+            if (!size) return;
+
+            const data = { 
+              size: size.size, 
+              grid: mapProps.grid ?? 500, 
+              offset: { 
+                x: -size.x,
+                y: -size.y
+              },
+            }
+
+            document.dispatchEvent(new CustomEvent(
+              EVENTS.MAP_SET_CHANGED, { detail: data }
+            ));
+          } else {
+            redrawMap();
+          }
+        }
 
         const delta = Date.now() - start;
         log('system', `physics simulation ${simResult === false ? "last" : simResult} step, delta: ${delta}ms`);

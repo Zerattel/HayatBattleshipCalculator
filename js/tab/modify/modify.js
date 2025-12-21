@@ -13,6 +13,7 @@ import __maneuver from "./tabs/maneuver.js";
 import __modules from "./tabs/modules.js";
 import __override from "./tabs/override.js";
 import __tasks from "./tabs/tasks.js";
+import __template from "./tabs/template.js";
 
 let enableModifyModal = (id) => {};
 
@@ -25,12 +26,14 @@ export default function init() {
     override: new __override(),
     delete: new __delete(),
     contact: new __contact(),
+    template: new __template(),
   }
 
   const disableModal = (modal) => {
     is_aiming = false;
     $("#modal-maneuver-aim").attr("data-active", "false");
     modal.attr("data-active", "false");
+    $('#tab-maneuver').attr("data-active", "false");
     tabs[currentType].onSelectionEnded('');
 
     document.dispatchEvent(
@@ -51,6 +54,7 @@ export default function init() {
 
   const enableModal = (modal) => {
     modal.attr("data-active", "true");
+    $('#tab-maneuver').attr("data-active", "true");
     tabs[currentType].onSelectionStarted('');
 
     document.dispatchEvent(
@@ -91,11 +95,10 @@ export default function init() {
     $("#modal-maneuver-aim").attr("data-active", is_aiming ? "true" : "false");
   });
 
-  $("#overlay").click((e) => {
+  document.addEventListener(EVENTS.ON_MAP_CLICK, (e) => {
     if (!is_aiming) return;
 
-    const { x, y } = getMousePos($("#overlay")[0], e);
-    const clicked = getInArea(x * mapProps.size, y * mapProps.size);
+    const clicked = getInArea(e.detail.x, e.detail.y);
 
     if (clicked.length == 0) return;
 

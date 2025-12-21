@@ -53,11 +53,10 @@ export default class {
       this.onBothIdsRight(id, tid);
     });
 
-    $("#overlay").click((e) => {
+    document.addEventListener(EVENTS.ON_MAP_CLICK, (e) => {
       if (!this.isAiming) return;
 
-      const { x, y } = getMousePos($("#overlay")[0], e);
-      const clicked = getInArea(x * mapProps.size, y * mapProps.size);
+      const clicked = getInArea(e.detail.x, e.detail.y);
 
       if (clicked.length == 0) return;
 

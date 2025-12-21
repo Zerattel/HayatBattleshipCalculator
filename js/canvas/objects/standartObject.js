@@ -1,7 +1,18 @@
+import { EVENTS } from "../../events.js";
 import { load } from "../../save&load/load.js";
 import { registerClass } from "../../save&load/objectCollector.js";
 
 export default class StandartObject {
+  static LOAD_FALLBACK = {
+    _x: 0,
+    _y: 0,
+    visible: true,
+    children: {}
+  }
+
+  static LOAD_CRASH = new Set(['id']);
+
+
   _x = 0;
   _y = 0;
   visible = true;
@@ -130,9 +141,32 @@ export default class StandartObject {
 
 
   afterLoad() {
-    for (let i of Object.keys(data.children)) {
-      data.children[i].afterLoad?.();
+    for (let param of this.constructor.LOAD_CRASH) {
+      if (this[param] === null || this[param] === undefined) throw new Error(`${this.path} | Param ${param} not loaded.`);
     }
+
+    for (let param in this.constructor.LOAD_FALLBACK) {
+      if (this[param] === null || this[param] === undefined) {
+        this[param] = this.constructor.LOAD_FALLBACK[param];
+
+        console.warn(`${this.path} | Param ${param} is corrupted and replaced with fallback.`)
+      }
+    }
+
+    for (let i of Object.keys(this.children)) {
+      this.children[i].afterLoad?.();
+    }
+  }
+
+
+  destroy() {
+    document.dispatchEvent(
+      new CustomEvent(EVENTS.MAP.DELETE, {
+        detail: {
+          id: this.id,
+        },
+      })
+    );
   }
 }
 

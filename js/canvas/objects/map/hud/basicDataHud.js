@@ -45,8 +45,8 @@ export default class BasicDataHud extends StandartObject {
     const x_offset = Math.sin((this.direction / 180) * Math.PI);
     const y_offset = Math.cos((this.direction / 180) * Math.PI);
 
-    const par_x = toCanvas(this.parent._x)
-    const par_y = toCanvas(this.parent._y)
+    const par_x = toCanvas({ x: this.parent._x })
+    const par_y = toCanvas({ y: this.parent._y })
 
     ctx.beginPath();
 

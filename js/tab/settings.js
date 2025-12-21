@@ -6,12 +6,19 @@ export default function () {
   $('#tab-settings').on('click', () => {
     let modal = $("#modal-settings");
 
-    modal.attr("data-active", modal.attr("data-active") == "true" ? "false" : "true");
+    const setTo = modal.attr("data-active") == "true" ? "false" : "true";
+    modal.attr("data-active", setTo);
+    $('#tab-settings').attr("data-active", setTo);
   })
 
   $('#modal-settings-mapres').val(settings.mapResolution);
   $('#modal-settings-gridres').val(settings.gridResolution);
   $('#modal-settings-overlayres').val(settings.overlayResolution);
+  $('#modal-settings-auto_focus').prop('checked', settings.autoFocusOnSimulation);
+  $('#modal-settings-auto_focus').on('change', (e) => {
+    settings.autoFocusOnSimulation = $('#modal-settings-auto_focus').is(':checked');
+    saveSettings();
+  })
 
   $('#modal-settings-updateres').on('click', () => {
     settings.mapResolution = $('#modal-settings-mapres').val() || settings.mapResolution;
@@ -37,6 +44,14 @@ export default function () {
     const val = Number($('#modal-settings-sim_speedup').val());
 
     settings.physicsSimulationSpeedupMultiplier = Number.isNaN(val) ? 4 : val;
+    saveSettings();
+  })
+
+  $('#modal-settings-render_per_frame').val(settings.renderPerFrame);
+  $('#modal-settings-render_per_frame').on('change', (e) => {
+    const val = Number($('#modal-settings-render_per_frame').val());
+
+    settings.renderPerFrame = Number.isNaN(val) ? 1 : val;
     saveSettings();
   })
 
