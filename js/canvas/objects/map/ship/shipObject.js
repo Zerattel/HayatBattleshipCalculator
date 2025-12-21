@@ -56,14 +56,16 @@ export default class ShipObject extends BasicMovingObject {
   constructor(x, y, direction, velocity, battleshipChars = {}) {
     super(x, y, direction, velocity);
 
+    console.log(battleshipChars);
     this.baseCharacteristics = mergeDeep(this.baseCharacteristics, battleshipChars);
+    console.log(this.baseCharacteristics);
 
     this.baseCharacteristics.constant.capture_range =
       tonnageToCaptureRange[this.baseCharacteristics.constant.body.tonnage];
     this.baseCharacteristics.constant.maneuverability +=
       tonnageToManeuverabilityBonus[this.baseCharacteristics.constant.body.tonnage];
-    this.baseCharacteristics.constant.acceleration =
-      tonnageToAcceleration[this.baseCharacteristics.constant.body.tonnage];
+    this.baseCharacteristics.constant.acceleration = this.baseCharacteristics.constant.acceleration == 0 ?
+      tonnageToAcceleration[this.baseCharacteristics.constant.body.tonnage] : this.baseCharacteristics.constant.acceleration;
 
     this.currentCharacteristics = copy(this.baseCharacteristics);
   }

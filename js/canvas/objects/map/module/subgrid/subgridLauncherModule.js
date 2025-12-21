@@ -26,6 +26,7 @@ export default class SubgridLauncherModule extends BaseModule {
         for (let delay of fireSegments) {
           const id = `SG[${sequenceId}] ${uuidv4()}`;
           const subgridData = battleships[launcher.subgrid.dataRef];
+          console.log(subgridData)
 
 
           const object = createObject(

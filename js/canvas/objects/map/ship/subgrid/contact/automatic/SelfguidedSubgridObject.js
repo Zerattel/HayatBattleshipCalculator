@@ -49,6 +49,7 @@ export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
     const target = this.target?.Connection;
     const guidanceDelay = this.currentCharacteristics?.constant?.body?.subgrid?.guidanceDelay ?? 0;
 
+    console.log(!target, !this.isFueled, (guidanceDelay - this._livetime - dt*step) > 0)
     if (!target || !this.isFueled || (guidanceDelay - this._livetime - dt*step) > 0) {
       return data;
     }
