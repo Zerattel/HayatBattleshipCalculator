@@ -12,15 +12,35 @@ import { DEFAULT_SAVE_FILE, loadJSON } from "../save&load/load.js";
 import { settings } from "../settings/settings.js";
 import { mapProps } from "./grid.js";
 import check_id from "./map/check_id.js";
+import layers from './layers/main.js';
 
 import get_in_area from "./map/get_in_area.js";
 import { MAX_INTER_STEPS } from "./objects/map/step/stepInfoCollector.js";
+import { checkObjectRenderVisibility, getZIndexes, getZIndexIfCorrectLayer } from "./layers/layersInfoCollector.js";
+import { addRecordStringAny } from "../../libs/addRecordStringAny.js";
+import { activeLayers } from "../tab/render.js";
 
 let canvas;
 let ctx;
 let style;
 let objects;
 let toCanvas;
+
+
+function collectRenderObjects(obj, layers, renderRowAcc) {
+  if (obj.visible) {
+    const z = getZIndexIfCorrectLayer(obj, layers);
+    if (z !== null) {
+      if (!renderRowAcc[z]) renderRowAcc[z] = [];
+      renderRowAcc[z].push(
+        (canvas, ctx, toCanvas, style) => obj.draw(canvas, ctx, toCanvas, style)
+      );
+
+      obj.getChildrenRenderRow(layers, renderRowAcc)
+    }
+  }
+}
+
 
 export default function init() {
   canvas = document.getElementById("map");
@@ -69,14 +89,25 @@ export default function init() {
     requestAnimationFrame(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let i of Object.keys(objects)) {
-        objects[i].visible && objects[i].draw(canvas, ctx, toCanvas, style);
+      const layers = activeLayers;
+      const renderRow = {};
+
+      for (let i in objects) {
+        collectRenderObjects(objects[i], layers, renderRow);
+      }
+
+      const sortedKeys = Object.keys(renderRow).map(Number).sort((a, b) => a - b);
+      for (let i of sortedKeys) {
+        for (let render of renderRow[i]) {
+          render(canvas, ctx, toCanvas, style);
+        }
       }
     })
   };
 
   get_in_area();
   check_id(objects);
+  layers();
 
 
   document.addEventListener(EVENTS.MAP_SET_CHANGED, (e) => {
