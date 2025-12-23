@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./styles/main.css" />
     <script type="module" src="./libs/jquery.js"></script>
   </head>
-  <body>
+  <body class="scrollbar">
 
 
 
@@ -49,15 +49,15 @@
 
       <!-- -------------------------------- Logs --------------------------------- -->
 
-      <div class="step-logs" id="main_controls-step_logs">
+      <div class="step-logs" id="main_controls-step_logs" data-active="false">
         <div class="step-logs-hide" id="step-logs_hide">
-          <span>⬆</span>
-          <span>⬆</span>
-          <span>⬆</span>
-          <span>⬆</span>
-          <span>⬆</span>
+          <span class="mgc_arrow_down_line"></span>
+          <span class="mgc_arrow_down_line"></span>
+          <span class="mgc_arrow_down_line"></span>
+          <span class="mgc_arrow_down_line"></span>
+          <span class="mgc_arrow_down_line"></span>
         </div>
-        <div class="chat-container" id="step-logs_chat-container">
+        <div class="chat-container scrollbar" id="step-logs_chat-container">
 
         </div>
         <div class="progress-bar" id="step-process-bar">
@@ -69,9 +69,9 @@
 
     <!-- ---------------------------- Relative Data ---------------------------- -->
 
-    <div class="relative" id="relative" data-active="true">
-      <div>
-        <button>✖</button>
+    <div class="relative" id="relative" data-active="false">
+      <button><span class="mgc_close_line"></span></button>
+      <div class="scrollbar">
         <div id="relative-contains" class="contains">
 
         </div>
@@ -90,190 +90,42 @@
 
       <!-- ---------------------------- Map Settings ----------------------------- -->
 
-      <div class="modal map-settings" id="modal-settings" data-active="false">
-        <div style="
-          display: grid;
-          grid-template-columns: 1fr 60px 20px
-        ">
-          <label for="modal-settings-mapres"
-            >Map Resolution: </label
-          ><input type="number" id="modal-settings-mapres" class="small" placeholder="8000" />px
-          <label for="modal-settings-gridres"
-            >Grid Resolution: </label
-          ><input type="number" id="modal-settings-gridres" class="small" placeholder="2000" />px
-          <label for="modal-settings-overlayres"
-            >Overlay Resolution: </label
-          ><input type="number" id="modal-settings-overlayres" class="small" placeholder="2000" />px
-          <label for="modal-settings-auto_focus"
-            >Auto focus on sim.</label
-          ><input type="checkbox" id="modal-settings-auto_focus" /><span></span>
-        </div>
-        <button id="modal-settings-updateres" class="fit">Update Resolutions</button>
-
-        <div style="
-          display: grid;
-          grid-template-columns: 1fr 60px 20px;
-          margin-top: 20px;
-        ">
-          <label for="modal-settings-sim_speedup"
-            >Simulation Speedup (mult): </label
-          ><input type="number" id="modal-settings-sim_speedup" class="small" placeholder="4" /><span></span>
-          <label for="modal-settings-render_per_frame"
-            >Call render every </label
-          ><input type="number" id="modal-settings-render_per_frame" class="small" placeholder="1" /><span>fr.</span>
-          <label for="modal-settings-instant_sim"
-            >Instant simulation</label
-          ><input type="checkbox" id="modal-settings-instant_sim" />
-        </div>
-
-        <div style="margin-top: 20px;">
-          <label for="modal-settings-savestate"
-            >Save state on exit?</label
-          ><input type="checkbox" id="modal-settings-savestate" />
-        </div>
-
-        <div>
-          <label for="modal-settings-savelogs"
-            >Save logs in state/files?</label
-          ><input type="checkbox" id="modal-settings-savelogs" />
-        </div>
-
-        <div style="margin-top: 20px;">
-          <label for="modal-settings-hudsize"
-            >Hud Size: </label
-          ><input class="small" type="number" id="modal-settings-hudsize" />
-        </div>
-      </div>
+      <div 
+        class="modal map-settings" 
+        id="modal-settings" 
+        data-active="false"
+        data-html="./html/modal/settings.html"
+      ></div>
 
 
       <!-- ----------------------------- Save & Load ----------------------------- -->
 
-      <div class="modal map-load" id="modal-map_load" data-active="false">
-        <select id="modal-map_load-type">
-          <option value="load" selected>Load</option>
-          <option value="save">Save</option>
-        </select>
-
-        <div id="modal-map_load-types" class="sub">
-          <div id="modal-map_load-types-load" data-active="true">
-            <label for="modal-map_load-types-load-file">
-              <input type="file" id="modal-map_load-types-load-file" />
-              Upload
-            </label>
-            <div class="loading" id="modal-map_load-file_load" data-active="false">
-              <span class="l1"></span>
-              <span class="l2"></span>
-              <span class="l3"></span>
-              <span class="l4"></span>
-            </div>
-          </div>
-          <div id="modal-map_load-types-save" data-active="false">
-            <p>Press button to download the file</p>
-            <a style="display: none; " id="modal-map_load-types-load-anchor"></a>
-          </div>
-        </div>
-        <div id="modal-map_load-file_info" class="sub" data-active="false">
-
-        </div>
-
-        <button id="modal-map_load-complete">Do</button>
-      </div>
+      <div 
+        class="modal map-load" 
+        id="modal-map_load" 
+        data-active="false"
+        data-html="./html/modal/map-load.html"
+      ></div>
 
       
       <!-- ------------------------------ Map View ------------------------------- -->
 
-      <div class="modal map-set" id="modal-map_set" data-active="false">
-        <div class="gridded">
-          <label for="modal-map_set-size"
-            >Size: </label
-          ><input type="number" id="modal-map_set-size" class="fit" placeholder="10000m" />
-          <label for="modal-map_set-grid"
-            >Grid: </label
-          ><input type="number" id="modal-map_set-grid" class="fit" placeholder="500m" />
-        </div>
-        <span>Offset:</span>
-        <div class="gridded">
-          <label for="modal-map_set-offx"
-            >X: </label
-          ><input type="number" id="modal-map_set-offx" class="fit" placeholder="0m" />
-          <label for="modal-map_set-offy"
-            >Y: </label
-          ><input type="number" id="modal-map_set-offy" class="fit" placeholder="0m" />
-        </div>
-
-        <button id="modal-map_set-complete">Set</button>
-
-        <button style="margin-top: 20px;" id="modal-map_set-reset">Reset Map</button>
-      </div>
+      <div 
+        class="modal map-set" 
+        id="modal-map_set" 
+        data-active="false"
+        data-html="./html/modal/map-set.html"
+      ></div>
 
 
       <!-- ----------------------------- Add Object ------------------------------ -->
 
-      <div class="modal new-object" id="modal-new_object" data-active="false">
-        <div>
-          <label for="modal-new_object-id"
-            >ID: </label
-          ><input id="modal-new_object-id" class="fit" placeholder="random uuid" />
-        </div>
-
-        <div class="gridded">
-          <label for="modal-new_object-x"
-            >X: </label
-          ><input type="number" class="fit" id="modal-new_object-x" placeholder="500m" />
-          <label for="modal-new_object-y"
-            >Y: </label
-          ><input type="number" class="fit" id="modal-new_object-y" placeholder="500m" />
-          <button class="inline aim" id="modal-new_object-aim">⊹</button>
-        </div>
-
-        <div class="gridded">
-          <label for="modal-new_object-vel"
-            >Vel: </label
-          ><input type="number" class="fit" id="modal-new_object-vel" placeholder="0m/s" />
-          <label for="modal-new_object-dir"
-            >Dir: </label
-          ><input type="number" class="fit" id="modal-new_object-dir" placeholder="0deg" />
-          <input type="checkbox" id="modal-new_object-is_dynamic" checked>
-        </div>
-        <div class="ui-multilayered-select modal-new_object-disable_on_template" id="modal-new_object-ships">
-          <label>Test</label>
-          <div class="options">
-            
-          </div>
-        </div><br>
-
-        <div><label for="modal-new_object-img">Sprite</label></div>
-        <select class="modal-new_object-disable_on_template" id="modal-new_object-img"></select>
-        <div class="gridded modal-new_object-disable_on_template">
-          <label for="modal-new_object-img-color">Color:</label>
-          <div>
-            <span>#</span><input placeholder="ffffff" id="modal-new_object-img-color" class="small" />
-          </div>
-          
-          <label for="modal-new_object-img-size">Size: </label>
-          <div>
-            <input placeholder="200" id="modal-new_object-img-size" class="small" /><span>px</span>
-          </div>
-        </div>
-
-        <br>
-        <span>Load template</span>
-        <div>
-          <label for="modal-new_object-load_template" class="fit">
-            <input type="file" id="modal-new_object-load_template" />
-            Upload
-          </label>
-        </div>
-        <div class="modal-new_object-template_loaded" style="display: none;">
-          <div>
-            <label for="modal-new_object-template-keep_id">Keep ID</label>
-            <input type="checkbox" id="modal-new_object-template-keep_id" checked>
-          </div>
-          <button id="modal-new_object-template-reset">Reset</button>
-        </div>
-
-        <button id="modal-new_object-complete">Set</button>
-      </div>
+      <div 
+        class="modal new-object" 
+        id="modal-new_object" 
+        data-active="false"
+        data-html="./html/modal/new-object.html"
+      ></div>
 
 
 
@@ -291,7 +143,7 @@
           <label for="modal-maneuver-id"
             >ID: </label
           ><input id="modal-maneuver-id" class="fit" placeholder="" />
-          <button class="inline aim" id="modal-maneuver-aim">⊹</button>
+          <button class="inline aim" id="modal-maneuver-aim"><span class="mgc_aiming_line"></span></button>
         </div>
 
 
@@ -319,28 +171,11 @@
 
           <!-- ------------------------------ Maneuver ------------------------------- -->
 
-          <div id="modal-maneuver-types-maneuver" data-active="true">
-            <select id="modal-maneuver-types-maneuver-type" class="fit">
-              <option value="instant" selected>Instant</option> 
-              <option value="continious">Continious</option> 
-            </select>
-            <div class="gridded" style="margin-top: 5px;">
-              <label for="modal-maneuver-types-maneuver-vel"
-                >Vel: </label
-              ><input type="number" class="small" id="modal-maneuver-types-maneuver-vel" placeholder="0m/s" />
-              <label for="modal-maneuver-types-maneuver-dir"
-                >Dir: </label
-              ><input type="number" class="small" id="modal-maneuver-types-maneuver-dir" placeholder="0deg" />
-            </div>
-
-            <label 
-              for="modal-maneuver-types-maneuver-applied" 
-              style="margin-top: 20px; display: block;"
-            >Currnetly applied continious forces:</label>
-            <div id="modal-maneuver-types-maneuver-applied">
-
-            </div>
-          </div>
+          <div 
+            id="modal-maneuver-types-maneuver" 
+            data-active="true" 
+            data-html="./html/modal/maneuver/maneuver.html"
+          ></div>
 
 
           <!-- ---------------------------- Hud (unused) ----------------------------- -->
@@ -352,57 +187,29 @@
 
           <!-- -------------------------- Jump Calculation --------------------------- -->
 
-          <div id="modal-maneuver-types-jump_calc" data-active="false">
-            <label for="modal-maneuver-types-jump_cal-dist"
-              >Dist: </label
-            ><input type="number" class="fit" id="modal-maneuver-types-jump_cal-dist" placeholder="0m" />
-            <div>
-              <span>X: </span><span id="modal-maneuver-types-jump_cal-x">0</span>
-            </div>
-            <div>
-              <span>Y: </span><span id="modal-maneuver-types-jump_cal-y">0</span>
-            </div>
-          </div>
+          <div 
+            id="modal-maneuver-types-jump_calc" 
+            data-active="false"
+            data-html="./html/modal/maneuver/jump_calc.html"
+          ></div>
 
 
           <!-- ------------------------------- Contact ------------------------------- -->
 
-          <div id="modal-maneuver-types-contact" data-active="false">
-            <div id="modal-maneuver-types-contact-data" data-active="true">
-              
-            </div>
-            <div style="
-              display: grid;
-              grid-template-columns: 1fr 5fr 20px;
-            ">
-              <label for="modal-maneuver-types-contact-id"
-                >Target: </label
-              ><input id="modal-maneuver-types-contact-id" class="fit" placeholder="" />
-              <button class="inline aim" id="modal-maneuver-types-contact-aim">⊹</button>
-            </div>
-            <div id="modal-maneuver-types-contact-contains">
-
-            </div>
-          </div>
+          <div 
+            id="modal-maneuver-types-contact" 
+            data-active="false"
+            data-html="./html/modal/maneuver/contact.html"
+          ></div>
 
 
           <!-- ------------------------------- Modules ------------------------------- -->
 
-          <div id="modal-maneuver-types-modules" data-active="false">
-            <div id="modal-maneuver-types-modules-container">
-              
-            </div>
-            <div class="ui-multilayered-select" id="modal-maneuver-types-modules-all">
-              <label>Test</label>
-              <div class="options"></div>
-            </div>
-            <select id="modal-maneuver-types-modules-pos">
-              <option value="int">Internal</option>
-              <option value="ext">External</option>
-              <option value="otr">Other</option>
-            </select
-            ><button id="modal-maneuver-types-modules-add" class="aim">+</button>
-          </div>
+          <div 
+            id="modal-maneuver-types-modules" 
+            data-active="false"
+            data-html="./html/modal/maneuver/modules.html"
+          ></div>
 
 
           <!-- -------------------------------- Tasks -------------------------------- -->
@@ -410,26 +217,24 @@
           <div id="modal-maneuver-types-tasks" data-active="false">
             
           </div>
-          <div id="modal-maneuver-types-override" data-active="false">
-            <div class="ui-multilayered-select" id="modal-maneuver-types-override-target">
-              <label>Test</label>
-              <div class="options"></div>
-            </div>
-            <div id="modal-maneuver-types-override-container">
 
-            </div>
-          </div>
+
+          <!-- ------------------------------ Override ------------------------------- -->
+
+          <div 
+            id="modal-maneuver-types-override" 
+            data-active="false"
+            data-html="./html/modal/maneuver/override.html"
+          ></div>
 
 
           <!-- ------------------------------ Template ------------------------------- -->
 
-          <div id="modal-maneuver-types-template" data-active="false">
-            <p>Press button to download the template</p>
-            <div style="font-size: 14px;">
-              <label>Save as drone</label><input type="checkbox" id="modal-maneuver-types-template-as_drone" />
-            </div>
-            <a style="display: none;" id="modal-maneuver-types-template-load_anchor"></a>
-          </div>
+          <div 
+            id="modal-maneuver-types-template" 
+            data-active="false"
+            data-html="./html/modal/maneuver/template.html"
+          ></div>
 
 
           <!-- ------------------------------- Delete -------------------------------- -->
@@ -502,7 +307,14 @@
     <!--                                 SCRIPTS                                 -->
     <!-- ----------------------------------------------------------------------- -->
 
-
+    <script>
+      console.log(' ------ templates load ------ ')
+      document.querySelectorAll('[data-html]').forEach(async elem => {
+        console.log(elem.dataset.html);
+        const response = await fetch(elem.dataset.html);
+        elem.innerHTML = await response.text();
+      });
+    </script>
     <script type="module" src="./js/main.js"></script>
   </body>
 </html>

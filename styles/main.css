@@ -73,3 +73,26 @@ label:has(> input[type="file"]) {
 [class*=' mgc_']::before {
   color: inherit !important;
 }
+
+.scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+
+  transition: .2s;
+}
+.scrollbar::-webkit-scrollbar-track {
+  border-radius: 0;
+  background: var(--bg);
+
+  transition: .2s;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--bg-elem);
+  border-radius: 0;
+  border: 1px solid var(--border);
+
+  transition: .2s;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--main);
+}

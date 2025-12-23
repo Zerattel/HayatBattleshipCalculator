@@ -11,14 +11,30 @@
 
   transition: .15s;
 
+  user-select: none;
+
   &::after {
-    content: ">";
+    font-family: 'MingCute' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    content: "\f28f";
     
     position: absolute;
-    right: 1px;
-    top: 5px;
+    right: 5px;
+    top: 2px;
+    
+    transition: .15s;
 
-    transform: rotate(90deg);
+    transform: rotate(0deg);
 
     height: 10px;
     width: 10px;
@@ -66,10 +82,22 @@
       transition: .15s;
 
       &::after {
-        content: ">";
+        font-family: 'MingCute' !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+
+        /* Better Font Rendering =========== */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        
+        content: "\f28f";
         
         position: absolute;
-        right: 1px;
+        right: 2px;
 
         height: 10px;
         width: 10px;
@@ -84,7 +112,7 @@
         flex-direction: column;
         gap: 5px;
 
-        min-width: 100px;
+        min-width: 200px;
 
         border: 1px solid var(--border);
         background-color: var(--bg-elem);
@@ -108,6 +136,13 @@
   &[data-active="true"] {
     .options {
       display: flex;
+    }
+
+    &::after {
+      transform: rotate(90deg);
+
+      right: 1px;
+      top: 2px;
     }
   }
 }

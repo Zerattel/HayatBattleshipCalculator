@@ -10,10 +10,25 @@
     justify-content: left;
     align-items: center;
 
-    padding: 4px 0px;
+    padding: 4px 20px 4px 0px;
+
+    cursor: pointer;
+    > * { cursor: pointer; }
 
     &::after {
-      content: "<";
+      font-family: 'MingCute' !important;
+      speak: never;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+
+      /* Better Font Rendering =========== */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      
+      content: "\eff7";
       position: absolute;
 
       transition: .15s;
