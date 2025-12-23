@@ -13,7 +13,7 @@ function getSquared(v1, v2) {
   return point(v2.x, v1.y + (v2.y - v1.y >= 0 ? a : -a));
 }
 
-function computeCenteredSquare() {
+export function computeCenteredSquare() {
   const items = Object.values(objects).filter(o => o.visible);
   const padding = fromCanvas(200);
 
@@ -64,6 +64,16 @@ export default function init() {
 
   const history = new LinkedList();
   document.addEventListener('keydown', (event) => {
+    const activeElement = document.activeElement;
+
+    if (
+      activeElement.tagName === 'INPUT'     || 
+      activeElement.tagName === 'TEXTAREA'  || 
+      activeElement.tagName === 'SELECT'
+    ) {
+      return;
+    }
+
     if (event.ctrlKey) {
       if (event.key === 'z' || event.key === 'Z' || event.key === 'я' || event.key === 'Я') {
         const historyPart = history.removeHead();

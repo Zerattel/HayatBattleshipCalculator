@@ -1,5 +1,6 @@
 import { ObjectConnection } from "../../../../../../../../libs/connection.js";
 import { calc, point } from "../../../../../../../../libs/vector/point.js";
+import { log } from "../../../../../../../controls/step-logs/log.js";
 import { EVENTS } from "../../../../../../../events.js";
 import { registerClass } from "../../../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../../../map.js";
@@ -93,7 +94,7 @@ export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
           const md = ppf.min_distance;
 
           if (range <= md && (vrx < 0 || vry < 0)) {
-            this.visible = false;
+            log(this.path, `Passive PF triggered by ${obj.id}`);
             this.destroy();
 
             return {

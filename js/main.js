@@ -11,10 +11,14 @@ import ReadyFunctionsCombiner from '../libs/combineReadyFunctions.js'
 import ui from './ui/ui.js'
 import settings from './settings/settings.js'
 
+console.log(" ------ loading ------ ")
+
 settings();
 loading();
 
 new ReadyFunctionsCombiner(() => {
+  console.log(" ------ init ------ ")
+
   ui();
   tab();
   controls();

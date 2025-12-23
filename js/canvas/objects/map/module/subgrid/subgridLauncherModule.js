@@ -94,30 +94,33 @@ export default class SubgridLauncherModule extends BaseModule {
   getOverridableValues() {
     return [
       ...super.getOverridableValues(),
-      {
-        name: "launchVectorX",
-        type: "number",
-        current: () => this.characteristics.launcher.vector[0],
-        func: (val) => {
-          this.characteristics.launcher.vector = [+val, this.characteristics.launcher.vector[1]];
+      ...this.characteristics.launcher.instances.flatMap((v, i) => [
+        {
+          name: i+"-launchX",
+          type: "number",
+          current: () => v.vector[0],
+          func: (val) => {
+            this.characteristics.launcher.instances[i].vector = [+val, this.characteristics.launcher.instances[i].vector[1]];
+          },
         },
-      },
-      {
-        name: "launchVectorY",
-        type: "number",
-        current: () => this.characteristics.launcher.vector[1],
-        func: (val) => {
-          this.characteristics.launcher.vector = [this.characteristics.launcher.vector[0], +val];
+        {
+          name: i+"-launchY",
+          type: "number",
+          current: () => v.vector[1],
+          func: (val) => {
+            this.characteristics.launcher.instances[i].vector = [this.characteristics.launcher.instances[i].vector[0], +val];
+          },
         },
-      },
-      {
-        name: "headingOffset",
-        type: "number",
-        current: () => this.characteristics.launcher.headingOffset,
-        func: (val) => {
-          this.characteristics.launcher.headingOffset = +val;
+        {
+          name: i+"-headingOffset",
+          type: "number",
+          current: () => v.headingOffset,
+          func: (val) => {
+            this.characteristics.launcher.instances[i].headingOffset = +val;
+          },
         },
-      },
+      ])
+      
     ];
   }
 }

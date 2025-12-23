@@ -1,28 +1,34 @@
-/**
- * Simple object check.
- * @param item
- * @returns {boolean}
- */
-export function isObject(item) {
-  return (item && typeof item === 'object' && !Array.isArray(item));
+function isPlainObject(value) {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    Object.prototype.toString.call(value) === '[object Object]'
+  );
 }
-/**
- * Deep merge two objects.
- * @param target
- * @param ...sources
- */
+
 export function mergeDeep(target, ...sources) {
   if (!sources.length) return target;
+
   const source = sources.shift();
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
-        mergeDeep(target[key], source[key]);
+
+  if (isPlainObject(target) && isPlainObject(source)) {
+    const result = { ...target };
+
+    for (const key of Object.keys(source)) {
+      const sourceValue = source[key];
+      const targetValue = result[key];
+
+      if (isPlainObject(sourceValue)) {
+        result[key] = isPlainObject(targetValue)
+          ? mergeDeep(targetValue, sourceValue)
+          : mergeDeep({}, sourceValue);
       } else {
-        Object.assign(target, { [key]: source[key] });
+        result[key] = sourceValue;
       }
     }
+
+    return mergeDeep(result, ...sources);
   }
-  return mergeDeep(target, ...sources);
+
+  return mergeDeep(source, ...sources);
 }

@@ -1,9 +1,10 @@
 import { ObjectConnection } from "../../../../../../libs/connection.js";
 import { objectFromPath } from "../../../../../../libs/pathResolver.js";
+import { log } from "../../../../../controls/step-logs/log.js";
 import { EVENTS } from "../../../../../events.js";
 import { registerClass } from "../../../../../save&load/objectCollector.js";
 import { objects } from "../../../../map.js";
-import { generateSimulationState } from "../../step/simulationStates.constant.js";
+import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from "../../step/simulationStates.constant.js";
 import { registerSteps } from "../../step/stepInfoCollector.js";
 import ShipObject from "../shipObject.js";
 
@@ -62,8 +63,6 @@ export default class SubgridObject extends ShipObject {
     if (this.active) {
       if (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection) {
         this.destroy();
-        this.visible = false;
-        this.active = false;
         
         return { delete: true };
       }
@@ -96,6 +95,16 @@ export default class SubgridObject extends ShipObject {
     this._kill ||= !this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection;
 
     return super.finalize(objectsData);
+  }
+
+
+  destroy() {
+    if (parceSimulationState(this.state)[0] == SIMULATION_STATES.PHYSICS_SIMULATION) {
+      this.visible = false;
+      this.collision = false;
+    }
+
+    super.destroy();
   }
 
 

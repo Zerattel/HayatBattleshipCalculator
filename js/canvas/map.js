@@ -2,6 +2,7 @@ import { mergeDeep } from "../../libs/deepMerge.js";
 import intentFromObject from "../../libs/generatePhysicsIntentFromObject.js";
 import { compareVersions } from "../../libs/utils.js";
 import { point } from "../../libs/vector/point.js";
+import { computeCenteredSquare } from "../controls/map.js";
 import { log } from "../controls/step-logs/log.js";
 import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
@@ -119,6 +120,10 @@ export default function init() {
   });
 
   document.addEventListener(EVENTS.MAP.STEP, (e) => {
+    console.log(" ========================== ")
+    console.log(" ------ step started ------ ")
+    console.log(" ========================== ")
+
     console.log(objects);
 
     updateLoading(
@@ -131,6 +136,8 @@ export default function init() {
       0
     );
 
+    console.log(" ------ next ------ ")
+
     let data = {};
     for (let i of Object.keys(objects)) {
       data[i] = objects[i].next();
@@ -138,9 +145,11 @@ export default function init() {
     }
 
     stepLoading('step', 1);
+    console.log(" ------ steps ------ ")
 
     let prevData = {...data};
     for (let step=0; step < MAX_INTER_STEPS(); step++) {
+      console.log(` ------ step ${step} ------ `)
       log('system', `starting ${step} inter step`)
       console.log(prevData)
 
@@ -152,6 +161,7 @@ export default function init() {
       prevData = mergeDeep(prevData, data);
     }
 
+    console.log(" ------ physics init ------ ")
     stepLoading('step', 1);
     log('system', `init physics engine`);
 
@@ -161,12 +171,14 @@ export default function init() {
     stepLoading('step', 1);
     log('system', `gather object infos`);
 
+    console.log(" ------ register objects ------ ")
 
     for (let id of Object.keys(objects)) {
       if (!objects[id].collision) continue;
       physics.registerIntent(intentFromObject(objects[id]));
     }
 
+    console.log(" ------ setup sim ------ ")
 
     stepLoading('step', 1);
     log('system', `physics simulation...`);
@@ -187,11 +199,17 @@ export default function init() {
       prevData._physics_collisions = physRes.collisions;
     }
 
+    console.log(" ------ finalize func ------ ")
+
     const finalize = () => {
+      console.log(" ------ finalize simulation ------ ")
+
       log('system', `done! export states...`);
     
       exportPhysicsState();
       
+      console.log(" ------ after simulation ------ ")
+
       for (let i of Object.keys(objects)) {
         objects[i].afterSimulation?.(prevData);
 
@@ -202,22 +220,32 @@ export default function init() {
       stepLoading('step', 1);
 
 
+      console.log(" ------ finalize ------ ")
+
       for (let i of Object.keys(objects)) {
         objects[i].finalize(prevData);
 
         stepLoading('step', 1);
       }
 
+      console.log(" ------ calculations ended ------ ")
+
       document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))
 
       stepLoading('step', 1);
 
+      console.log(" ------ redraw ------ ")
       log('sys', 'map redraw...')
       redrawMap();
 
       stepLoading('step', 1);
+
+      console.log(" ======================== ")
+      console.log(" ------ step ended ------ ")
+      console.log(" ======================== ")
     }
 
+    console.log(" ------ onStep func ------ ")
 
     const dt = ENV.STEP / ENV.PHYSICS_ENGINE_STEPS;
     const onStep = (step) => {
@@ -239,6 +267,8 @@ export default function init() {
     }
 
     if (settings.instantSimulation) {
+      console.log(" ------ instant simulation ------ ")
+
       physics.instantSimulate(onStep);
 
       return finalize();
@@ -253,7 +283,27 @@ export default function init() {
       setTimeout(() => {
         const start = Date.now();
         const simResult = next();
-        redrawMap();
+        if (simResult !== false && simResult % settings.renderPerFrame == 0) {
+          if (settings.autoFocusOnSimulation) {
+            const size = computeCenteredSquare();
+            if (!size) return;
+
+            const data = { 
+              size: size.size, 
+              grid: mapProps.grid ?? 500, 
+              offset: { 
+                x: -size.x,
+                y: -size.y
+              },
+            }
+
+            document.dispatchEvent(new CustomEvent(
+              EVENTS.MAP_SET_CHANGED, { detail: data }
+            ));
+          } else {
+            redrawMap();
+          }
+        }
 
         const delta = Date.now() - start;
         log('system', `physics simulation ${simResult === false ? "last" : simResult} step, delta: ${delta}ms`);

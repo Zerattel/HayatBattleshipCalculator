@@ -26,6 +26,7 @@
   "SSS - «Lurker MkII»": "frigates/sss-lurker-mk2.json",
 
   "[Test] Torpedo T": "subships/test/torpedo.json",
+  "[Test] Мина S": "subships/test/mine.json",
   "[Test] Ракета типа \"Рой\"": "subships/test/missile-swarm.json",
   "[Test] Railgun Shell (10m)": "subships/test/railgun-shell.json",
   "[Test] Дрон «Миллер»": "subships/test/miller-drone-test.json"

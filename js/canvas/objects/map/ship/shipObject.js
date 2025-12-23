@@ -62,8 +62,8 @@ export default class ShipObject extends BasicMovingObject {
       tonnageToCaptureRange[this.baseCharacteristics.constant.body.tonnage];
     this.baseCharacteristics.constant.maneuverability +=
       tonnageToManeuverabilityBonus[this.baseCharacteristics.constant.body.tonnage];
-    this.baseCharacteristics.constant.acceleration =
-      tonnageToAcceleration[this.baseCharacteristics.constant.body.tonnage];
+    this.baseCharacteristics.constant.acceleration = this.baseCharacteristics.constant.acceleration == 0 ?
+      tonnageToAcceleration[this.baseCharacteristics.constant.body.tonnage] : this.baseCharacteristics.constant.acceleration;
 
     this.currentCharacteristics = copy(this.baseCharacteristics);
   }

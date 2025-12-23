@@ -3,11 +3,14 @@ import { objects } from "../../../../../map.js";
 import SIMULATION_STATES, { parceSimulationState } from "../../../step/simulationStates.constant.js";
 import { registerSteps } from "../../../step/stepInfoCollector.js";
 import ContactSubgridObject from "./contactSubgridObject.js";
+import { log } from "../../../../../../controls/step-logs/log.js";
 
 export default class ExplosiveSubgridObject extends ContactSubgridObject {
+  exploded = false;
+
   physicsSimulationStep(step, dt, objectsData) {
     const data = super.physicsSimulationStep(step, dt, objectsData);
-    if (this.isCollided || !this.active) return data;
+    if (this.isCollided || !this.active || this.exploded) return data;
 
     const pf = this.currentCharacteristics.constant.body.subgrid.poximity_fuse;
     if (pf) {
@@ -29,7 +32,7 @@ export default class ExplosiveSubgridObject extends ContactSubgridObject {
         if (range > mdsqr) continue;
         if ((obj.size ?? 0) < minSize) continue;
         if (noLayerFilter || (obj.layers).some(v => layers.includes(v))) {
-          this.visible = false;
+          log(this.path, `Active PF triggered by ${obj.id}`);
           this.destroy();
 
           return {
@@ -43,6 +46,8 @@ export default class ExplosiveSubgridObject extends ContactSubgridObject {
   }
 
   applyExplosiveDamage() {
+    if (this.exploded) return;
+
     const { radius, falloff, effect } 
       = this.currentCharacteristics.constant.body.subgrid.explosion 
       ?? { 
@@ -60,6 +65,7 @@ export default class ExplosiveSubgridObject extends ContactSubgridObject {
 
     
     for (let obj of Object.values(objects)) {
+      if (obj.id === this.id || !obj.collision) continue;
       if (!("applyDamage" in obj) || !("currentCharacteristics" in obj)) continue;
 
       const rx = obj._x - this._x;
@@ -69,32 +75,53 @@ export default class ExplosiveSubgridObject extends ContactSubgridObject {
       if (range > (radius*radius)) continue;
 
       const mult = Math.pow(1 - Math.sqrt(range) / radius, falloff)
+      const l = {};
 
       if (effect.damage) {
+        l.damage = {};
         for (let [k, v] of Object.entries(effect.damage)) {
           if (!obj.currentCharacteristics.dynamic.recived_damage[k])
             obj.currentCharacteristics.dynamic.recived_damage[k] = 0;
 
-          obj.currentCharacteristics.dynamic.recived_damage[k] += v * mult;
+          const val = v * mult;
+          obj.currentCharacteristics.dynamic.recived_damage[k] += val;
+          l.damage[k] = val;
         }
 
         obj.applyDamage();
       }
       
       if (effect.temperature) {
-        obj.currentCharacteristics.dynamic.temperature += effect.temperature * mult;
+        const val = effect.temperature * mult;
+        obj.currentCharacteristics.dynamic.temperature += val;
+        l.temperature = val;
       }
 
       if (effect.charge) {
-        obj.currentCharacteristics.dynamic.charge += effect.charge * mult;
+        const val = effect.charge * mult;
+        obj.currentCharacteristics.dynamic.charge += val;
+        l.charge = val;
       }
 
       if (effect.heal) {
+        l.hp = {};
         for (let [k, v] of Object.entries(effect.heal)) {
+          const val = v * mult;
           obj.currentCharacteristics.dynamic.hp[k] += v * mult;
+          l.hp[k] = val;
         }
       }
+
+      log(this.path, `explosion damage:<br>
+to: ${obj.id}<br>
+${Object.entries(l).map(([k, v]) => 
+  typeof v == "object" 
+    ? `${k}: ` + Object.entries(v).map(([k1, v1]) => `${k1} - ${v1}` ).join(', ')
+    : `${k}: ${v}`
+).join('<br>')}`)
     }
+
+    this.exploded = true;
   }
 
   onContact() {
