@@ -1,4 +1,5 @@
 @import url(./../js/ui/ui.css);
+@import url(./mingcute/MingCute.css);
 
 @import url(./map.css);
 @import url(./tab-controls.css);
@@ -66,4 +67,9 @@ label:has(> input[type="file"]) {
 *[data-disabled="true"] {
   filter: brightness(0.7);
   pointer-events: none;
+}
+
+[class^='mgc_']::before,
+[class*=' mgc_']::before {
+  color: inherit !important;
 }
