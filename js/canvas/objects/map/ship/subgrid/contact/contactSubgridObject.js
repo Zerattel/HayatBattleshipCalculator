@@ -1,4 +1,6 @@
+import { log } from "../../../../../../controls/step-logs/log.js";
 import { registerClass } from "../../../../../../save&load/objectCollector.js";
+import { registerLayers } from "../../../../../layers/layersInfoCollector.js";
 import { registerSteps } from "../../../step/stepInfoCollector.js";
 import SubgridObject from "../subgridObject.js";
 
@@ -31,7 +33,6 @@ export default class ContactSubgridObject extends SubgridObject {
     if (this.isCollided || !this.active) return data;
 
     if (this.currentCharacteristics.dynamic.hp.hull <= 0) {
-      this.visible = false;
       this.destroy();
 
       return {
@@ -45,7 +46,9 @@ export default class ContactSubgridObject extends SubgridObject {
         this.isCollided = true;
         this.visible = !this.contactOptions.hide;
 
-        this.onContact(c.a === this.id ? c.b : c.a);
+        const target = c.a === this.id ? c.b : c.a;
+        log(this.path, `Contact with ${target}`);
+        this.onContact(target);
         if (this.contactOptions.destroy) this._kill = true;
 
         return {
@@ -59,11 +62,15 @@ export default class ContactSubgridObject extends SubgridObject {
 
 
   finalize(objectsData) {
-    const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in ?? 24;
+    let destruct = false;
+    const selfDestruct = this.currentCharacteristics.constant.body.subgrid?.self_destruct_in;
+    if (selfDestruct && selfDestruct != -1) {
+      destruct = this._livetime >= this.currentCharacteristics.constant.body.subgrid?.self_destruct_in;
+    }
 
-    this._kill ||= 
-      this._livetime >= selfDestruct                    ||
-      this.currentCharacteristics.dynamic.hp.hull <= 0
+    
+
+    this._kill ||= destruct || this.currentCharacteristics.dynamic.hp.hull <= 0
     
     this.isCollided = false;
 
@@ -89,3 +96,4 @@ export default class ContactSubgridObject extends SubgridObject {
 
 registerClass(ContactSubgridObject);
 registerSteps(ContactSubgridObject, 0, []);
+registerLayers(ContactSubgridObject, ['subgrid', 'subgrid-contact', 'dynamic'], 0);

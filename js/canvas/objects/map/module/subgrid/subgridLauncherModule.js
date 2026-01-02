@@ -26,7 +26,6 @@ export default class SubgridLauncherModule extends BaseModule {
         for (let delay of fireSegments) {
           const id = `SG[${sequenceId}] ${uuidv4()}`;
           const subgridData = battleships[launcher.subgrid.dataRef];
-          console.log(subgridData)
 
 
           const object = createObject(
@@ -45,9 +44,9 @@ export default class SubgridLauncherModule extends BaseModule {
           ]))
           object.setChildren(MAP_OBJECTS_IDS.SPRITE, 
             new SpriteShower(
-              './img/frigate.png', 
+              './img/Projectail.svg', 
               '#ff0000',
-              (object.size ?? 30) * 10,
+              (object.size ?? 30) * 20,
             )
           )
 
@@ -95,30 +94,46 @@ export default class SubgridLauncherModule extends BaseModule {
   getOverridableValues() {
     return [
       ...super.getOverridableValues(),
-      {
-        name: "launchVectorX",
-        type: "number",
-        current: () => this.characteristics.launcher.vector[0],
-        func: (val) => {
-          this.characteristics.launcher.vector = [+val, this.characteristics.launcher.vector[1]];
+      ...Object.entries(this.characteristics.launcher.instances).flatMap(([key, instance], index) => [
+        {
+          name: `instance-${index}-launchX`,
+          type: "number",
+          current: () => instance.vector?.[0] ?? 0,
+          func: (val) => {
+            if (!this.characteristics.launcher.instances[key].vector) {
+              this.characteristics.launcher.instances[key].vector = [0, 0];
+            }
+            this.characteristics.launcher.instances[key].vector[0] = +val;
+          },
         },
-      },
-      {
-        name: "launchVectorY",
-        type: "number",
-        current: () => this.characteristics.launcher.vector[1],
-        func: (val) => {
-          this.characteristics.launcher.vector = [this.characteristics.launcher.vector[0], +val];
+        {
+          name: `instance-${index}-launchY`,
+          type: "number",
+          current: () => instance.vector?.[1] ?? 0,
+          func: (val) => {
+            if (!this.characteristics.launcher.instances[key].vector) {
+              this.characteristics.launcher.instances[key].vector = [0, 0];
+            }
+            this.characteristics.launcher.instances[key].vector[1] = +val;
+          },
         },
-      },
-      {
-        name: "headingOffset",
-        type: "number",
-        current: () => this.characteristics.launcher.headingOffset,
-        func: (val) => {
-          this.characteristics.launcher.headingOffset = +val;
+        {
+          name: `instance-${index}-headingOffset`,
+          type: "number",
+          current: () => instance.headingOffset ?? 0,
+          func: (val) => {
+            this.characteristics.launcher.instances[key].headingOffset = +val;
+          },
         },
-      },
+        {
+          name: `instance-${index}-distanceOffset`,
+          type: "number",
+          current: () => instance.distanceOffset ?? 0,
+          func: (val) => {
+            this.characteristics.launcher.instances[key].distanceOffset = +val;
+          },
+        },
+      ]),
     ];
   }
 }

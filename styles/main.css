@@ -1,4 +1,5 @@
 @import url(./../js/ui/ui.css);
+@import url(./mingcute/MingCute.css);
 
 @import url(./map.css);
 @import url(./tab-controls.css);
@@ -66,4 +67,32 @@ label:has(> input[type="file"]) {
 *[data-disabled="true"] {
   filter: brightness(0.7);
   pointer-events: none;
+}
+
+[class^='mgc_']::before,
+[class*=' mgc_']::before {
+  color: inherit !important;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+
+  transition: .2s;
+}
+.scrollbar::-webkit-scrollbar-track {
+  border-radius: 0;
+  background: var(--bg);
+
+  transition: .2s;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--bg-elem);
+  border-radius: 0;
+  border: 1px solid var(--border);
+
+  transition: .2s;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--main);
 }

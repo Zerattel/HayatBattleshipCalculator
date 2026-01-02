@@ -1,7 +1,9 @@
 import { ObjectConnection } from "../../../../../../../../libs/connection.js";
 import { calc, point } from "../../../../../../../../libs/vector/point.js";
+import { log } from "../../../../../../../controls/step-logs/log.js";
 import { EVENTS } from "../../../../../../../events.js";
 import { registerClass } from "../../../../../../../save&load/objectCollector.js";
+import { registerLayers } from "../../../../../../layers/layersInfoCollector.js";
 import { objects } from "../../../../../../map.js";
 import MAP_OBJECTS_IDS from "../../../../mapObjectsIds.constant.js";
 import { registerSteps } from "../../../../step/stepInfoCollector.js";
@@ -49,7 +51,6 @@ export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
     const target = this.target?.Connection;
     const guidanceDelay = this.currentCharacteristics?.constant?.body?.subgrid?.guidanceDelay ?? 0;
 
-    console.log(!target, !this.isFueled, (guidanceDelay - this._livetime - dt*step) > 0)
     if (!target || !this.isFueled || (guidanceDelay - this._livetime - dt*step) > 0) {
       return data;
     }
@@ -94,7 +95,7 @@ export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
           const md = ppf.min_distance;
 
           if (range <= md && (vrx < 0 || vry < 0)) {
-            this.visible = false;
+            log(this.path, `Passive PF triggered by ${obj.id}`);
             this.destroy();
 
             return {
@@ -276,3 +277,4 @@ export default class SelfguidedSubgridObject extends ExplosiveSubgridObject {
 
 registerClass(SelfguidedSubgridObject);
 registerSteps(SelfguidedSubgridObject, 0, []);
+registerLayers(SelfguidedSubgridObject, ['subgrid', 'subgrid-contact', 'subgrid-explosive', 'missile', 'dynamic'], 0);

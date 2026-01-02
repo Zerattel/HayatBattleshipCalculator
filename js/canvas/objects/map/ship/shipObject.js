@@ -19,6 +19,7 @@ import { calc, point } from "../../../../../libs/vector/point.js";
 import { log } from "../../../../controls/step-logs/log.js";
 import { load } from "../../../../save&load/load.js";
 import { registerClass } from "../../../../save&load/objectCollector.js";
+import { registerLayers } from "../../../layers/layersInfoCollector.js";
 import { objects } from "../../../map.js";
 import BasicMovingObject from "../step/basicMovingObject.js";
 import { registerSteps } from "../step/stepInfoCollector.js";
@@ -56,9 +57,7 @@ export default class ShipObject extends BasicMovingObject {
   constructor(x, y, direction, velocity, battleshipChars = {}) {
     super(x, y, direction, velocity);
 
-    console.log(battleshipChars);
     this.baseCharacteristics = mergeDeep(this.baseCharacteristics, battleshipChars);
-    console.log(this.baseCharacteristics);
 
     this.baseCharacteristics.constant.capture_range =
       tonnageToCaptureRange[this.baseCharacteristics.constant.body.tonnage];
@@ -305,7 +304,7 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
       {
         id: "externalModules",
         children: this.externalModules.map((v) => ({
-          id: v.characteristics.main.name,
+          id: v.name,
           getValues: () => v.getOverridableValues(),
           children: [],
         })),
@@ -313,7 +312,7 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
       {
         id: "internalModules",
         children: this.internalModules.map((v) => ({
-          id: v.characteristics.main.name,
+          id: v.name,
           getValues: () => v.getOverridableValues(),
           children: [],
         })),
@@ -321,7 +320,7 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
       {
         id: "otherModules",
         children: this.otherModules.map((v) => ({
-          id: v.characteristics.main.name,
+          id: v.name,
           getValues: () => v.getOverridableValues(),
           children: [],
         })),
@@ -571,3 +570,4 @@ damage.map(([n, v])=> `------ | - | ${n}: ${v}`).join('<br>')}<br>
 
 registerClass(ShipObject);
 registerSteps(ShipObject, 3, []);
+registerLayers(ShipObject, ['battleship', 'dynamic'], 0);

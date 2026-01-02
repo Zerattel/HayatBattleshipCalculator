@@ -12,15 +12,35 @@ import { DEFAULT_SAVE_FILE, loadJSON } from "../save&load/load.js";
 import { settings } from "../settings/settings.js";
 import { mapProps } from "./grid.js";
 import check_id from "./map/check_id.js";
+import layers from './layers/main.js';
 
 import get_in_area from "./map/get_in_area.js";
 import { MAX_INTER_STEPS } from "./objects/map/step/stepInfoCollector.js";
+import { checkObjectRenderVisibility, getZIndexes, getZIndexIfCorrectLayer } from "./layers/layersInfoCollector.js";
+import { addRecordStringAny } from "../../libs/addRecordStringAny.js";
+import { activeLayers } from "../tab/render.js";
 
 let canvas;
 let ctx;
 let style;
 let objects;
 let toCanvas;
+
+
+function collectRenderObjects(obj, layers, renderRowAcc) {
+  if (obj.visible) {
+    const z = getZIndexIfCorrectLayer(obj, layers);
+    if (z !== null) {
+      if (!renderRowAcc[z]) renderRowAcc[z] = [];
+      renderRowAcc[z].push(
+        (canvas, ctx, toCanvas, style) => obj.draw(canvas, ctx, toCanvas, style)
+      );
+
+      obj.getChildrenRenderRow(layers, renderRowAcc)
+    }
+  }
+}
+
 
 export default function init() {
   canvas = document.getElementById("map");
@@ -69,14 +89,25 @@ export default function init() {
     requestAnimationFrame(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let i of Object.keys(objects)) {
-        objects[i].visible && objects[i].draw(canvas, ctx, toCanvas, style);
+      const layers = activeLayers;
+      const renderRow = {};
+
+      for (let i in objects) {
+        collectRenderObjects(objects[i], layers, renderRow);
+      }
+
+      const sortedKeys = Object.keys(renderRow).map(Number).sort((a, b) => a - b);
+      for (let i of sortedKeys) {
+        for (let render of renderRow[i]) {
+          render(canvas, ctx, toCanvas, style);
+        }
       }
     })
   };
 
   get_in_area();
   check_id(objects);
+  layers();
 
 
   document.addEventListener(EVENTS.MAP_SET_CHANGED, (e) => {
@@ -120,6 +151,10 @@ export default function init() {
   });
 
   document.addEventListener(EVENTS.MAP.STEP, (e) => {
+    console.log(" ========================== ")
+    console.log(" ------ step started ------ ")
+    console.log(" ========================== ")
+
     console.log(objects);
 
     updateLoading(
@@ -132,6 +167,8 @@ export default function init() {
       0
     );
 
+    console.log(" ------ next ------ ")
+
     let data = {};
     for (let i of Object.keys(objects)) {
       data[i] = objects[i].next();
@@ -139,9 +176,11 @@ export default function init() {
     }
 
     stepLoading('step', 1);
+    console.log(" ------ steps ------ ")
 
     let prevData = {...data};
     for (let step=0; step < MAX_INTER_STEPS(); step++) {
+      console.log(` ------ step ${step} ------ `)
       log('system', `starting ${step} inter step`)
       console.log(prevData)
 
@@ -153,6 +192,7 @@ export default function init() {
       prevData = mergeDeep(prevData, data);
     }
 
+    console.log(" ------ physics init ------ ")
     stepLoading('step', 1);
     log('system', `init physics engine`);
 
@@ -162,12 +202,14 @@ export default function init() {
     stepLoading('step', 1);
     log('system', `gather object infos`);
 
+    console.log(" ------ register objects ------ ")
 
     for (let id of Object.keys(objects)) {
       if (!objects[id].collision) continue;
       physics.registerIntent(intentFromObject(objects[id]));
     }
 
+    console.log(" ------ setup sim ------ ")
 
     stepLoading('step', 1);
     log('system', `physics simulation...`);
@@ -188,11 +230,17 @@ export default function init() {
       prevData._physics_collisions = physRes.collisions;
     }
 
+    console.log(" ------ finalize func ------ ")
+
     const finalize = () => {
+      console.log(" ------ finalize simulation ------ ")
+
       log('system', `done! export states...`);
     
       exportPhysicsState();
       
+      console.log(" ------ after simulation ------ ")
+
       for (let i of Object.keys(objects)) {
         objects[i].afterSimulation?.(prevData);
 
@@ -203,22 +251,32 @@ export default function init() {
       stepLoading('step', 1);
 
 
+      console.log(" ------ finalize ------ ")
+
       for (let i of Object.keys(objects)) {
         objects[i].finalize(prevData);
 
         stepLoading('step', 1);
       }
 
+      console.log(" ------ calculations ended ------ ")
+
       document.dispatchEvent(new Event(EVENTS.CALCULATION_ENDED))
 
       stepLoading('step', 1);
 
+      console.log(" ------ redraw ------ ")
       log('sys', 'map redraw...')
       redrawMap();
 
       stepLoading('step', 1);
+
+      console.log(" ======================== ")
+      console.log(" ------ step ended ------ ")
+      console.log(" ======================== ")
     }
 
+    console.log(" ------ onStep func ------ ")
 
     const dt = ENV.STEP / ENV.PHYSICS_ENGINE_STEPS;
     const onStep = (step) => {
@@ -240,6 +298,8 @@ export default function init() {
     }
 
     if (settings.instantSimulation) {
+      console.log(" ------ instant simulation ------ ")
+
       physics.instantSimulate(onStep);
 
       return finalize();

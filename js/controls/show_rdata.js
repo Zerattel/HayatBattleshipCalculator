@@ -22,7 +22,7 @@ import { mapProps } from "../canvas/grid.js";
 let calculateRelativeData = (obj1, obj2) => {}
 
 export default function init() {
-  $("#relative > div > button").click(() => {
+  $("#relative > button").click(() => {
     let modal = $("#relative");
 
     modal.attr("data-active", modal.attr("data-active") == "true" ? "false" : "true");

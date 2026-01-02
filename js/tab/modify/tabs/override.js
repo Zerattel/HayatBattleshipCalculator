@@ -18,6 +18,7 @@ export default class {
         let curObj = this.targets;
 
         for (let p of path.replace('.this.', '').split(".")) {
+          console.log(p, curObj);
           curObj = curObj.children.find(v => v.id == p);
         }
 
@@ -52,7 +53,16 @@ export default class {
       let text = "";
 
       if ('getValues' in obj) {
-        text += format(optionHTMLTemplate, path+"."+obj.id, obj.id)
+        /** @type {string} */
+        let name = obj.id;
+        if (name.startsWith('module')) {
+          console.log(name)
+          name = name.replace('module ', '');
+          const splitted = name.split(' ');
+          name = `[${splitted[0].split('-')[0]}] ${splitted.slice(1).join(' ')}`;
+        }
+
+        text += format(optionHTMLTemplate, path+"."+obj.id, name)
       }
 
       if (obj.children.length != 0) {
@@ -119,7 +129,11 @@ export default class {
 
       const input = document.createElement('input');
       input.type = data.type;
-      input.placeholder = data.current();
+      if (data.type === "color") {
+        input.value = data.current();
+      } else {
+        input.placeholder = data.current();
+      }
       input.classList = 'fit';
 
       if (data.type == 'checkbox') {

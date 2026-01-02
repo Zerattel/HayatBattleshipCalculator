@@ -15,7 +15,8 @@ import ContactSubgridObject     from "../canvas/objects/map/ship/subgrid/contact
 import ExplosiveSubgridObject   from "../canvas/objects/map/ship/subgrid/contact/explosiveSubgridObject.js";
 import ShellSubgridObject       from "../canvas/objects/map/ship/subgrid/contact/shell/shellSubgridObject.js";
 import SelfguidedSubgridObject  from "../canvas/objects/map/ship/subgrid/contact/automatic/SelfguidedSubgridObject.js";
-import DroneObject from "../canvas/objects/map/ship/subgrid/drone/droneObject.js";
+import MineSubgridObject        from "../canvas/objects/map/ship/subgrid/contact/automatic/MineSubgridObject.js";
+import DroneObject              from "../canvas/objects/map/ship/subgrid/drone/droneObject.js";
 
 import SpriteShower from "../canvas/objects/map/spriteShow.js";
 import CrosshairObject from "../canvas/objects/overlay/crosshair.js";
@@ -31,6 +32,22 @@ import { load } from "../save&load/load.js";
 import { compareVersions } from "../../libs/utils.js";
 import ENV from "../enviroments/env.js";
 import { point } from "../../libs/vector/point.js";
+
+const BATTLESHIP_ICONS = [
+  "Projectail.svg",
+  "Apparatus.svg",
+  "Corvett.svg",
+  "Fregate.svg",
+  "Destroyer.svg",
+  "Сruiser.svg",
+  "Battle Сruiser.svg",
+  "Battleship.svg",
+  "Dreadnought.svg",
+  "KBT.svg",
+  "Titan.svg",
+  "ind. KMT.svg",
+  "ind. KST.svg"
+]
 
 const SPRITES = [
   "ADS.png",
@@ -65,7 +82,23 @@ export default function init() {
   let curJSONdata = null;
 
 
-  $('#modal-new_object-img').html(SPRITES.map(v => `<option value='${v}'>${v.split('.').slice(undefined, -1).join('.')}</option>`))
+  $('#modal-new_object-img > .options').html(
+    format(
+      groupHTMLTemplate, 
+      "Battleships", 
+      BATTLESHIP_ICONS.map(v => 
+        format(optionHTMLTemplate, v, v.split('.').slice(undefined, -1).join('.'))
+      ).join('\n')
+    ) + format(
+      groupHTMLTemplate, 
+      "Icons", 
+      SPRITES.map(v => 
+        format(optionHTMLTemplate, v, v.split('.').slice(undefined, -1).join('.'))
+      ).join('\n')
+    )
+  )
+  registerSelect('#modal-new_object-img');
+
   $('#modal-new_object-ships > .options').html(
     Object.keys(battleships)
       .reduce((acc, v) => {
@@ -234,9 +267,9 @@ export default function init() {
       obj.setChildren(
         MAP_OBJECTS_IDS.SPRITE, 
         new SpriteShower(
-          './img/'+$('#modal-new_object-img').val(), 
-          '#'+($('#modal-new_object-img-color').val() || 'ffffff'),
-          $('#modal-new_object-img-size').val() || 200,
+          './img/'+$('#modal-new_object-img').attr('value'), 
+          ($('#modal-new_object-img-color').val() || '#ffffff'),
+          $('#modal-new_object-img-size').val() || (obj.size ?? 30),
         )
       )
     }

@@ -1,5 +1,6 @@
 import { toCurrentCanvasSize } from "../../../../libs/canvas.js";
 import { registerClass } from "../../../save&load/objectCollector.js";
+import { registerLayers } from "../../layers/layersInfoCollector.js";
 import StandartObject from "../standartObject.js";
 
 export default class SpriteShower extends StandartObject {
@@ -66,8 +67,8 @@ export default class SpriteShower extends StandartObject {
     ctx.save();
     var { x, y } = toCanvas({ x: this.parent._x, y: this.parent._y });
     var ratio = this.image.width / this.image.height;
-    var width = toCanvas(this.size) * ratio;
-    var height = toCanvas(this.size) / ratio;
+    var width = toCanvas(this.size);
+    var height = width / ratio;
     var angleInRadians = (this.parent.direction || 0) * Math.PI / 180;
 
     ctx.translate(x, y);
@@ -99,10 +100,11 @@ export default class SpriteShower extends StandartObject {
       },
       {
         name: "color",
-        type: "text",
+        type: "color",
         current: () => this.color,
         func: (val) => {
           this.color = val;
+          this.lastImage = undefined;
         },
       },
     ];
@@ -130,3 +132,4 @@ export default class SpriteShower extends StandartObject {
 }
 
 registerClass(SpriteShower)
+registerLayers(SpriteShower, ['hud', 'sprite'], 0);

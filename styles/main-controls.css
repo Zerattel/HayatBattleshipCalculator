@@ -72,11 +72,16 @@
     .step-logs-hide {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 3px 7px;
 
       box-sizing: border-box;
       background-color: var(--bg-elem);
       border-bottom: 1px solid var(--border);
+
+      span {
+        transition: .15s;
+      }
 
       &:hover {
         filter: brightness(0.9);
@@ -125,6 +130,10 @@
 
       .chat-container {
         padding: 0;
+      }
+
+      .step-logs-hide span {
+        transform: rotate(180deg);
       }
     }
   }

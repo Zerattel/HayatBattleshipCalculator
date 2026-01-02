@@ -1,0 +1,52 @@
+<div style="
+  display: grid;
+  grid-template-columns: 1fr 60px 20px
+">
+  <label for="modal-settings-mapres"
+    >Map Resolution: </label
+  ><input type="number" id="modal-settings-mapres" class="small" placeholder="8000" />px
+  <label for="modal-settings-gridres"
+    >Grid Resolution: </label
+  ><input type="number" id="modal-settings-gridres" class="small" placeholder="2000" />px
+  <label for="modal-settings-overlayres"
+    >Overlay Resolution: </label
+  ><input type="number" id="modal-settings-overlayres" class="small" placeholder="2000" />px
+  <label for="modal-settings-auto_focus"
+    >Auto focus on sim.</label
+  ><input type="checkbox" id="modal-settings-auto_focus" /><span></span>
+</div>
+<button id="modal-settings-updateres" class="fit">Update Resolutions</button>
+
+<div style="
+  display: grid;
+  grid-template-columns: 1fr 60px 20px;
+  margin-top: 20px;
+">
+  <label for="modal-settings-sim_speedup"
+    >Simulation Speedup (mult): </label
+  ><input type="number" id="modal-settings-sim_speedup" class="small" placeholder="4" /><span></span>
+  <label for="modal-settings-render_per_frame"
+    >Call render every </label
+  ><input type="number" id="modal-settings-render_per_frame" class="small" placeholder="1" /><span>fr.</span>
+  <label for="modal-settings-instant_sim"
+    >Instant simulation</label
+  ><input type="checkbox" id="modal-settings-instant_sim" />
+</div>
+
+<div style="margin-top: 20px;">
+  <label for="modal-settings-savestate"
+    >Save state on exit?</label
+  ><input type="checkbox" id="modal-settings-savestate" />
+</div>
+
+<div>
+  <label for="modal-settings-savelogs"
+    >Save logs in state/files?</label
+  ><input type="checkbox" id="modal-settings-savelogs" />
+</div>
+
+<div style="margin-top: 20px;">
+  <label for="modal-settings-hudsize"
+    >Hud Size: </label
+  ><input class="small" type="number" id="modal-settings-hudsize" />
+</div>

@@ -1,9 +1,11 @@
 import { ObjectConnection } from "../../../../../../libs/connection.js";
 import { objectFromPath } from "../../../../../../libs/pathResolver.js";
+import { log } from "../../../../../controls/step-logs/log.js";
 import { EVENTS } from "../../../../../events.js";
 import { registerClass } from "../../../../../save&load/objectCollector.js";
+import { registerLayers } from "../../../../layers/layersInfoCollector.js";
 import { objects } from "../../../../map.js";
-import { generateSimulationState } from "../../step/simulationStates.constant.js";
+import SIMULATION_STATES, { generateSimulationState, parceSimulationState } from "../../step/simulationStates.constant.js";
 import { registerSteps } from "../../step/stepInfoCollector.js";
 import ShipObject from "../shipObject.js";
 
@@ -62,8 +64,6 @@ export default class SubgridObject extends ShipObject {
     if (this.active) {
       if (!this.currentCharacteristics.constant.body.subgrid.autonomus && !this.controlledBy.Connection) {
         this.destroy();
-        this.visible = false;
-        this.active = false;
         
         return { delete: true };
       }
@@ -99,6 +99,31 @@ export default class SubgridObject extends ShipObject {
   }
 
 
+  destroy() {
+    if (parceSimulationState(this.state)[0] == SIMULATION_STATES.PHYSICS_SIMULATION) {
+      this.visible = false;
+      this.collision = false;
+    }
+
+    super.destroy();
+  }
+
+
+  getOverridableValues() {
+    return [
+      ...super.getOverridableValues(),
+      {
+        name: "active",
+        type: "checkbox",
+        current: () => this.active,
+        func: (val) => {
+          this.active = val;
+        },
+      }
+    ];
+  }
+
+
   save(realParent = null) {
     return {
       ...super.save(realParent),
@@ -127,3 +152,4 @@ export default class SubgridObject extends ShipObject {
 
 registerClass(SubgridObject);
 registerSteps(SubgridObject, 1, []);
+registerLayers(SubgridObject, ['subgrid', 'dynamic'], 0);

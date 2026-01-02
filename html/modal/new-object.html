@@ -1,0 +1,68 @@
+<div>
+  <label for="modal-new_object-id"
+    >ID: </label
+  ><input id="modal-new_object-id" class="fit" placeholder="random uuid" />
+</div>
+
+<div class="gridded">
+  <label for="modal-new_object-x"
+    >X: </label
+  ><input type="number" class="fit" id="modal-new_object-x" placeholder="500m" />
+  <label for="modal-new_object-y"
+    >Y: </label
+  ><input type="number" class="fit" id="modal-new_object-y" placeholder="500m" />
+  <button class="inline aim" id="modal-new_object-aim"><span class="mgc_aiming_line"></span></button>
+</div>
+
+<div class="gridded">
+  <label for="modal-new_object-vel"
+    >Vel: </label
+  ><input type="number" class="fit" id="modal-new_object-vel" placeholder="0m/s" />
+  <label for="modal-new_object-dir"
+    >Dir: </label
+  ><input type="number" class="fit" id="modal-new_object-dir" placeholder="0deg" />
+  <input type="checkbox" id="modal-new_object-is_dynamic" checked>
+</div>
+<div class="ui-multilayered-select modal-new_object-disable_on_template" id="modal-new_object-ships">
+  <label>Test</label>
+  <div class="options">
+    
+  </div>
+</div><br>
+
+<div><label for="modal-new_object-img">Sprite</label></div>
+<div class="ui-multilayered-select modal-new_object-disable_on_template" id="modal-new_object-img">
+  <label>Test</label>
+  <div class="options">
+    
+  </div>
+</div><br>
+<div class="gridded modal-new_object-disable_on_template">
+  <label for="modal-new_object-img-color">Color:</label>
+  <div>
+    <input value="#ffffff" type="color" id="modal-new_object-img-color" class="small" />
+  </div>
+  
+  <label for="modal-new_object-img-size">Size: </label>
+  <div>
+    <input placeholder="200" id="modal-new_object-img-size" class="small" /><span>px</span>
+  </div>
+</div>
+
+<br>
+<span>Load template</span>
+<div>
+  <label for="modal-new_object-load_template" class="fit">
+    <input type="file" id="modal-new_object-load_template" />
+    Upload
+  </label>
+</div>
+<div class="modal-new_object-template_loaded" style="display: none;">
+  <div>
+    <label for="modal-new_object-template-keep_id">Keep ID</label>
+    <input type="checkbox" id="modal-new_object-template-keep_id" checked>
+  </div>
+  <button id="modal-new_object-template-reset">Reset</button>
+</div>
+
+<button id="modal-new_object-complete">Set</button>

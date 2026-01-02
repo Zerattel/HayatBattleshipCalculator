@@ -1,6 +1,8 @@
+import { addRecordStringAny } from "../../../libs/addRecordStringAny.js";
 import { EVENTS } from "../../events.js";
 import { load } from "../../save&load/load.js";
 import { registerClass } from "../../save&load/objectCollector.js";
+import { checkObjectRenderVisibility, getZIndexIfCorrectLayer, registerLayers } from "../layers/layersInfoCollector.js";
 
 export default class StandartObject {
   static LOAD_FALLBACK = {
@@ -39,11 +41,32 @@ export default class StandartObject {
     return this.name;
   }
 
-  draw(canvas, ctx, toCanvas, style) {
-    for (let i of Object.keys(this.children)) {
-      this.children[i].visible && this.children[i].draw(canvas, ctx, toCanvas, style);
+  draw(canvas, ctx, toCanvas, style) {}
+
+  getChildrenRenderRow(layers, renderRowAcc = null) {
+    const accumulator = renderRowAcc || {};
+    
+    for (let i in this.children) {
+      const obj = this.children[i];
+      
+      if (obj.visible) {
+        const z = getZIndexIfCorrectLayer(obj, layers);
+        if (z !== null) {
+          if (!accumulator[z]) accumulator[z] = [];
+          accumulator[z].push((canvas, ctx, toCanvas, style) => 
+            obj.draw(canvas, ctx, toCanvas, style)
+          );
+
+          if (obj.children) {
+            obj.getChildrenRenderRow(layers, accumulator);
+          }
+        }
+      }
     }
+    
+    return accumulator;
   }
+
 
   setChildren(id, object) {
     object.parent = this;
@@ -159,7 +182,18 @@ export default class StandartObject {
   }
 
 
+  onParentDestroy() {
+    for (let i of Object.keys(this.children)) {
+      this.children[i].onParentDestroy?.();
+    }
+  }
+
+
   destroy() {
+    for (let i of Object.keys(this.children)) {
+      this.children[i].onParentDestroy?.();
+    }
+
     document.dispatchEvent(
       new CustomEvent(EVENTS.MAP.DELETE, {
         detail: {
@@ -171,3 +205,4 @@ export default class StandartObject {
 }
 
 registerClass(StandartObject);
+registerLayers(StandartObject, [], 0);
