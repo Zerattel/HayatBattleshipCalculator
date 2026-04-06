@@ -184,12 +184,6 @@ function calculateHitChance(parent, target, module, currentContactBonus) {
     // 5. ИТОГ
     const chance = baseContactChance * Math.pow(0.5, trackingError + precisionError);
 
-    // === ДЕБАГ ЛОГ (оставим пока компактную версию для проверок) ===
-    log(
-        module.path,
-        `<style="color: #aaa;">[MATH DEBUG] AngVel: ${angularVelocityDeg.toFixed(2)} | Track: ${tracking} | R/S: ${signatureRatio.toFixed(2)} | Contact: ${currentContactBonus.toFixed(1)}`
-    );
-
     return chance;
 }
 let MODULES_CALCULATION_FUNCTIONS = {
