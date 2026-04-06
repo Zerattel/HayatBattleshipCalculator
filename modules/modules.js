@@ -166,7 +166,6 @@ function calculateHitChance(parent, target, module, currentContactBonus) {
     const { angularVelocity } = calculateRelativeData(parent, target);
     const tracking = moduleAddInfo.tracking || 1; 
     
-    // ИСПРАВЛЕНИЕ 2: Убираем конвертацию радиан, берем чистые данные движка
     const angularVelocityDeg = Math.abs(angularVelocity); 
     
     let trackingError = 0;
@@ -188,7 +187,7 @@ function calculateHitChance(parent, target, module, currentContactBonus) {
     // === ДЕБАГ ЛОГ (оставим пока компактную версию для проверок) ===
     log(
         module.path,
-        `<span style="color: #aaa;">[MATH DEBUG] AngVel: ${angularVelocityDeg.toFixed(2)} | Track: ${tracking} | R/S: ${signatureRatio.toFixed(2)} | Contact: ${currentContactBonus.toFixed(1)}</span>`
+        `<style="color: #aaa;">[MATH DEBUG] AngVel: ${angularVelocityDeg.toFixed(2)} | Track: ${tracking} | R/S: ${signatureRatio.toFixed(2)} | Contact: ${currentContactBonus.toFixed(1)}`
     );
 
     return chance;
@@ -225,7 +224,7 @@ LaserAttack: (modificator, module, parent, target) => {
     if (parent.state != "step 0" || module.functionsSharedData.perStep.processed) return 0;
 
     module.functionsSharedData.perStep.hit          = false;
-    module.functionsSharedData.perStep.effectivness = 0; // Сохранена опечатка оригинала, если на неё завязан другой код
+    module.functionsSharedData.perStep.effectivness = 0;
     module.functionsSharedData.perStep.damage       = 0;
     module.functionsSharedData.perStep.heating      = 0;
 
@@ -233,7 +232,7 @@ LaserAttack: (modificator, module, parent, target) => {
 
     // Считаем бонус контакта (Дайс + Модификаторы)
     const baseContact = parent.dices.contactQuality || 10;
-    const dynamicContactMod = parent.currentCharacteristics.constant.module_modifiers?.['sensors>contact>bonus'] || 0;
+    const dynamicContactMod = parent.currentCharacteristics.constant.module_modifiers['sensors>contact>bonus'] || 0;
     const currentContactBonus = baseContact + dynamicContactMod;
 
     // Вызываем новое ядро наведения
