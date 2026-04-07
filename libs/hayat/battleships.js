@@ -2,7 +2,7 @@ import { clamp } from "../clamp.js";
 
 const tonnage = {
   [-1]: "Субтело",
-  null: "Индустриальный",
+  null: "N/A",
   0: "Шаттл",
   1: "Корвет",
   2: "Фрегат",
