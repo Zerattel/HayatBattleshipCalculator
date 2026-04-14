@@ -150,7 +150,6 @@ function calculateHitChance(parent, target, module, currentContactBonus) {
     const moduleAddInfo = module.characteristics.additionalInfo;
     const isAutonomous = moduleAddInfo.resolution !== undefined;
     
-    // ИСПРАВЛЕНИЕ 1: Правильный путь к тоннажу стреляющего корабля
     const shipTonnage = parent.currentCharacteristics?.constant?.body?.tonnage ?? 4;
     const shipResolution = tonnageToResolution[shipTonnage] || 100;
     
