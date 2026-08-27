@@ -122,6 +122,13 @@ const baseBattleshipCharacteristics = {
       },
       /** радиус сигнатуры */
       signature: 0,
+      /** количество создаваемых помех */
+      jamming: {
+        /** сила помех */
+        strength: 0,
+        /** плотность помех */
+        density: 1,
+      },
       /** параметры если это субтело */
       subgrid: {
         size: 0,
@@ -207,6 +214,10 @@ const baseBattleshipCharacteristics = {
         /** резонансный диапазон */
         range: 0.4,
       },
+    },
+    dice_modifiers: {
+      contactQuality: 0,
+      maneuvering: 0,
     },
 
     // modulemodifier: {

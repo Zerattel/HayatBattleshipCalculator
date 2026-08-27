@@ -1,0 +1,77 @@
+{
+  "main": {
+    "name": "380mm Scheißkanone",
+    "type": "Стартовые площадки",
+    "category": "Высокомощные ускорители",
+    "class": "SubgridLauncherModule",
+
+    "size": 3,
+    "position": "external",
+    "tags": ["catapult", "subgrid", "mortar"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 3,
+
+  "interference": 0,
+
+  "launcher": {
+    "heading": 0,
+    "instances": [
+      {
+        "vector": [0, 300],
+
+        "headingOffset": 0,
+        "distanceOffset": 0,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "ExplosiveSubgridObject",
+          "dataRef": "380mm HE"
+        }
+      }
+    ]
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -12.5,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.04,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -25,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.08,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}

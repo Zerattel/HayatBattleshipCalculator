@@ -5,7 +5,7 @@ import { calc, point } from "../../../../../../libs/vector/point.js";
 import ENV from "../../../../../enviroments/env.js";
 import { registerClass } from "../../../../../save&load/objectCollector.js";
 import { registerLayers } from "../../../../layers/layersInfoCollector.js";
-import { registerEffect } from "../../../../map.js";
+import { effects, registerEffect } from "../../../../map.js";
 import BasicStepObject from "../../step/basicStepObject.js";
 import { DoubleTrailParticle } from "../../step/effects/particleSystem/particles/doubleTrailParticle.js";
 import { ParticleSystem } from "../../step/effects/particleSystem/particleSystem.js";
@@ -39,7 +39,7 @@ export class ShipEffectController extends BasicStepObject {
     const color = hexToRgb(this.parent.children[MAP_OBJECTS_IDS.SPRITE]?.color ?? "#00FFFF");
     console.log()
     const size = this.parent.size;
-    const angle = Math.atan2(-this.parent.velocity.y, this.parent.velocity.x) / Math.PI * 180 - 90;
+    const angle = Math.atan2(-this.parent.velocity.y, this.parent.velocity.x) / Math.PI * 180;
 
     const spacing = size / 2;
     const speed = this.parent.velocity.length;
@@ -72,8 +72,6 @@ export class ShipEffectController extends BasicStepObject {
       },
 
       velFunc: (p) => a,
-
-      rotFunc: (p) => p.direction,
     })
 
     registerEffect(this._afterlineParticleSystem);
@@ -149,64 +147,73 @@ export class ShipEffectController extends BasicStepObject {
     if (this.parent.forces?.length && this.combinedForcesLength > 0 || this.ignoreNoForces) {
       this.createThrurstPS();
     }
+  }
 
-    let weaponEffectsCounter = 0;
-    for (const module of this.parent.allModules) {
-      const effects = module.characteristics.effects;
-      if (!effects?.length) continue;
+  step(index, objectsData) {
+    let data = super.step(index, objectsData);
 
-      for (let i in effects) {
-        const effect = effects[i];
+    if (index === 0) {
+      let weaponEffectsCounter = 0;
+      for (const module of this.parent.allModules) {
+        const effects = module.characteristics.effects;
+        if (!effects?.length) continue;
 
-        if (!effect.activateOn.some(v => v.startsWith("pred:") ? v == module.previousState : v == module.state)) continue;
+        for (let i in effects) {
+          const effect = effects[i];
 
-        const object = createObject(effect.class, i, this, module, this.parent);
+          if (!effect.activateOn.some(v => v.startsWith("pred:") ? v == module.previousState : v == module.state)) continue;
 
-        const id = registerEffect(object);
+          const object = createObject(effect.class, i, this, module, this.parent);
 
-        if (object.isWeapon) {
-          this._moduleWeaponEffects[id] = weaponEffectsCounter;
-          weaponEffectsCounter += 1;
+          const id = registerEffect(object);
+
+          if (object.isWeapon) {
+            this._moduleWeaponEffects[id] = weaponEffectsCounter;
+            weaponEffectsCounter += 1;
+          }
         }
+      }
+
+      for (const id in this._moduleWeaponEffects) {
+        this._moduleWeaponOffsets[id] = ((this._moduleWeaponEffects[id] + 1) / (weaponEffectsCounter + 1)) * 180 - 90;
+      }
+
+      for (const id in this._moduleWeaponEffects) {
+        effects[id].next();
       }
     }
 
-    for (const id in this._moduleWeaponEffects) {
-      this._moduleWeaponOffsets[id] = ((this._moduleWeaponEffects[id] + 1) / (weaponEffectsCounter + 1)) * 180 - 90;
-    }
+    return data;
   }
 
   physicsSimulationStep(step, delta, objectsData) {
     if (!this._afterlineParticleSystem) {
       if (this.parent.velocity.length || (this.parent.forces?.length && this.combinedForcesLength > 0)) {
         this.createAfterlinePS();
-      } else {
-        return;
       }
+    } else {
+      const angle = Math.atan2(-this.parent.velocity.y, this.parent.velocity.x) / Math.PI * 180;
+      this._afterlineParticleSystem.direction = angle;
+      this._afterlineParticleSystem._x = this.parent._x;
+      this._afterlineParticleSystem._y = this.parent._y;
     }
 
-    const angle = Math.atan2(-this.parent.velocity.y, this.parent.velocity.x) / Math.PI * 180 - 90;
-
-    this._afterlineParticleSystem.direction = angle;
-    this._afterlineParticleSystem._x = this.parent._x;
-    this._afterlineParticleSystem._y = this.parent._y;
+    
 
 
     if (!this._thrustParticleSystem) {
       if (this.parent.forces?.length && this.combinedForcesLength > 0 || this.ignoreNoForces) {
         this.createThrurstPS();
-      } else {
-        return;
       }
+    } else {
+      const pos = getLocalPosition(this.parent, 0, -this.parent.size);
+
+      this._thrustParticleSystem.direction = this.parent._direction;
+      this._thrustParticleSystem._x = pos.x;
+      this._thrustParticleSystem._y = pos.y;
+      this._thrustParticleSystem.velocity.x = this.parent.velocity.x;
+      this._thrustParticleSystem.velocity.y = this.parent.velocity.y;
     }
-
-    const pos = getLocalPosition(this.parent, 0, -this.parent.size);
-
-    this._thrustParticleSystem.direction = this.parent._direction;
-    this._thrustParticleSystem._x = pos.x;
-    this._thrustParticleSystem._y = pos.y;
-    this._thrustParticleSystem.velocity.x = this.parent.velocity.x;
-    this._thrustParticleSystem.velocity.y = this.parent.velocity.y;
   }
 
   finalize(objectsData) {

@@ -16,6 +16,7 @@ import ENV from "../enviroments/env.js";
 import { EVENTS } from "../events.js";
 import { activeLayers } from "./render.js";
 import { settings } from "../settings/settings.js";
+import { SHIP_STATS_TRANSLATIONS } from "../../libs/hayat/translations.js";
 
 
 const states = {
@@ -66,8 +67,8 @@ export default function () {
   const createRecordingCanvas = () => {
     if (!recordingCanvas) {
       recordingCanvas = document.createElement('canvas');
-      recordingCanvas.width = 1600;
-      recordingCanvas.height = 1600;
+      recordingCanvas.width = settings.webhookVideoResolution;
+      recordingCanvas.height = settings.webhookVideoResolution;
       recordingCtx = recordingCanvas.getContext('2d');
     }
   }
@@ -79,6 +80,9 @@ export default function () {
     const mapCanvas = document.getElementById('map');
     const overlayCanvas = document.getElementById('overlay');
 
+    recordingCanvas.width = settings.webhookVideoResolution;
+    recordingCanvas.height = settings.webhookVideoResolution;
+
     if (!gridCanvas || !mapCanvas || !overlayCanvas) return;
 
     recordingCtx.clearRect(0, 0, recordingCanvas.width, recordingCanvas.height);
@@ -88,25 +92,40 @@ export default function () {
     recordingCtx.drawImage(mapCanvas, 0, 0, recordingCanvas.width, recordingCanvas.height);
     
     if (recordingStepNumber > 0) {
-      recordingCtx.font = 'bold 32px "Consolas", monospace';
+      const scale = recordingCanvas.width / 1600;
+
+      const fontSize = 32 * scale;
+      const x = 20 * scale;
+      const margin = 10 * scale;
+      const lineHeight = 30 * scale;
+
+      recordingCtx.font = `bold ${fontSize}px Consolas, monospace`;
       recordingCtx.textAlign = 'left';
       recordingCtx.textBaseline = 'top';
-
-      const x = 20;
-      const y = recordingCanvas.height - 110;
 
       const dt = ENV.STEP / ENV.PHYSICS_ENGINE_STEPS;
       const line1 = `Step ${recordingStepNumber} | ${(currentlySimulatedFrame * dt).toFixed(4)}s [${String(currentlySimulatedFrame).padStart(String(ENV.PHYSICS_ENGINE_STEPS).length, "0")}]`;
       const line2 = `────────────────────`;
       const line3 = `${ENV.CURRENT_VERSION} (sv ${ENV.SUPPORTED_SAVE_VERSION})`;
 
+      const metrics = [
+        recordingCtx.measureText(line1).width,
+        recordingCtx.measureText(line2).width,
+        recordingCtx.measureText(line3).width,
+      ];
+
+      const width = Math.max(...metrics) + margin * 2;
+      const height = fontSize * 3 + lineHeight * 2 + margin * 2;
+
+      const y = recordingCanvas.height - height - 20 * scale;
+
       recordingCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      recordingCtx.fillRect(x - 10, y - 10, 400, 95);
+      recordingCtx.fillRect(x - margin, y - margin, width, height);
 
       recordingCtx.fillStyle = '#fff';
       recordingCtx.fillText(line1, x, y);
-      recordingCtx.fillText(line2, x, y + 30);
-      recordingCtx.fillText(line3, x, y + 60);
+      recordingCtx.fillText(line2, x, y + lineHeight);
+      recordingCtx.fillText(line3, x, y + lineHeight * 2);
     }
 
     recordingCanvas.requestFrame?.();
@@ -443,8 +462,8 @@ export default function () {
     }
 
     const capacitor = {
-      current: object.currentCharacteristics.constant.capacitor.charge,
-      max: object.baseCharacteristics.constant.capacitor.charge
+      current: object.currentCharacteristics.dynamic.charge,
+      max: object.currentCharacteristics.constant.capacitor.charge
     }
     const temperature = {
       current: object.currentCharacteristics.dynamic.temperature,
@@ -459,20 +478,51 @@ export default function () {
     const formatModule = r => {
       const changeTask = object.tasks.find(v => v.id == "changeModuleState-"+r.uuid && v.data.uuid == r.uuid)
 
+      const module = r,
+        parent = object,
+        target = object.children[MAP_OBJECTS_IDS.CONTACT_CONTROLLER]?.target || null;
+
+      let reload = "";
+      if (module.characteristics.activation == "active" && module.characteristics.cycle && module.characteristics.reload) {
+        if (module.state == "active") {
+          reload = ` (цикл закончится через ${module.characteristics.cycle - (module.inStageSteps + 1)} ходов)`;
+        } else if (module.state == "online") {
+          reload = ` (перезарядка закончится через ${module.characteristics.reload - (module.inStageSteps + 1)} ходов)`
+        }
+      }
+
       return { 
         name: `${
           states[r.state] + (changeTask ? '>' + states[changeTask.data.state] : "")
-        } ${r.characteristics.main.name}`, 
+        } ${r.characteristics.main.name}${reload}`, 
         value: r.characteristics.modificators[r.state]
-          .map(v => `__${
-            v.characteristic.startsWith('constant.') ? 'const' : 'dnmc'
-          }__ | **${
-            v.target}${v.affectedLayers ? '['+v.affectedLayers.join(', ')+']' : ''
-          }** | ${v.characteristic.replaceAll('constant.', '')} | **${
-          v.modificationType == "percent" 
-            ? addPlus(Math.round((v.modificator - 1)*100))+"%" 
-            : addPlus(v.modificator)
-          }** | ${v.isAffectedByInterference ? '♒︎' : '══'}`)
+          .map(v => {
+            const modificator = v;
+
+            let res;
+            try {
+              let m = v.modificator;
+              if (/<\[[^\]]+]>/.test(m)) res = v.modificator;
+              else res = eval(m);
+            } catch {
+              res = v.modificator;
+            }
+
+
+            let val = res;
+            if (!Number.isNaN(val)) {
+              val = v.modificationType == "percent" 
+                ? addPlus(Math.round((val - 1)*100))+"%" 
+                : addPlus(val)
+            }
+
+
+            return `${v.isAffectedByInterference ? '♒︎' : '══'} ${
+              v.target !== 'this' ? "["+v.target+(
+                v.affectedLayers ? ' ('+v.affectedLayers.join(', ')+')' : ''
+              )+"]" : ''} ${SHIP_STATS_TRANSLATIONS[v.characteristic] ?? v.characteristic.replaceAll('constant.', '')}: **${
+                val}${res != v.modificator ? ' (calculated)' : ''}**`
+          })
           .join('\n'), 
         inline: false 
       }

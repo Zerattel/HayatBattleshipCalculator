@@ -12,6 +12,7 @@ import ShipStatsHUD from "../canvas/objects/map/ship/hud/shipStatsHud.js";
 import ShipObject from "../canvas/objects/map/ship/shipObject.js";
 import SubgridObject            from "../canvas/objects/map/ship/subgrid/subgridObject.js";
 import ContactSubgridObject     from "../canvas/objects/map/ship/subgrid/contact/contactSubgridObject.js";
+import DecoySubgridObject       from "../canvas/objects/map/ship/subgrid/contact/decoySubgridObject.js";
 import ExplosiveSubgridObject   from "../canvas/objects/map/ship/subgrid/contact/explosiveSubgridObject.js";
 import ShellSubgridObject       from "../canvas/objects/map/ship/subgrid/contact/shell/shellSubgridObject.js";
 import SelfguidedSubgridObject  from "../canvas/objects/map/ship/subgrid/contact/automatic/SelfguidedSubgridObject.js";
@@ -33,6 +34,7 @@ import { compareVersions } from "../../libs/utils.js";
 import ENV from "../enviroments/env.js";
 import { point } from "../../libs/vector/point.js";
 import { ShipEffectController } from "../canvas/objects/map/ship/hud/shipEffectController.js";
+import JammingShower from "../canvas/objects/map/ship/hud/jammingShower.js";
 
 const BATTLESHIP_ICONS = [
   "Fregate.svg",
@@ -47,6 +49,7 @@ const BATTLESHIP_ICONS = [
   "ind. KST.svg",
   "Apparatus.svg",
   "Projectail.svg",
+  "Decoy.svg",
   "Corvett.svg"
 ]
 
@@ -254,6 +257,7 @@ export default function init() {
         obj.setChildren(MAP_OBJECTS_IDS.CONTACT_CONTROLLER, new ContactController())
         obj.setChildren(MAP_OBJECTS_IDS.SHIP_STATS_HUD,     new ShipStatsHUD())
         obj.setChildren(MAP_OBJECTS_IDS.SHIP_EFFECTS_CONTROLLER, new ShipEffectController())
+        obj.setChildren(MAP_OBJECTS_IDS.JAMMING_HUD,        new JammingShower())
         obj.setChildren(MAP_OBJECTS_IDS.VECTOR_HUD,         new VectorHud())
         obj.setChildren(MAP_OBJECTS_IDS.SIGNATURE_HUD,      new SignatureShower())
         obj.setChildren(MAP_OBJECTS_IDS.DATA_HUD,           new BasicDataHud([
