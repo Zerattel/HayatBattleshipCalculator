@@ -236,7 +236,7 @@ export default class {
           states[r.state],
           changeTask ? `<label>${states[changeTask.data.state]}</label>` : '',
           r.characteristics.main.name,
-          r.fullType,
+          r.fullType + (r.characteristics.activation == "active" ? ` | (${r.functionsSharedData.uncleared?.activated ?? 0})` : ''),
           r.uuid,
           info ?? '',
           r.characteristics.modificators[r.state].map(

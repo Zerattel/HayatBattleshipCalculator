@@ -166,6 +166,12 @@ export default class BaseModule {
         this.inStageSteps = 0;
       }
     }
+
+    // Счётчик ходов в активном состоянии (для экономики). Считаем после смены состояния,
+    if (this.state == "active") {
+      this.functionsSharedData.uncleared ??= {};
+      this.functionsSharedData.uncleared.activated = (this.functionsSharedData.uncleared.activated ?? 0) + 1;
+    }
   }
 
   step(index, objectsData) {}
@@ -203,6 +209,15 @@ export default class BaseModule {
         current: () => this.state,
         func: (val) => {
           this.setState(val);
+        },
+      },
+      {
+        name: "activated",
+        type: "number",
+        current: () => this.functionsSharedData.uncleared?.activated ?? 0,
+        func: (val) => {
+          this.functionsSharedData.uncleared ??= {};
+          this.functionsSharedData.uncleared.activated = val;
         },
       },
       {
