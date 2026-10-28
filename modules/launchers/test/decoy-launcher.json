@@ -2,7 +2,7 @@
   "main": {
     "name": "Диспенсер ЛТЦ L",
     "type": "Стартовые площадки",
-    "category": "Диспенсеры ЛТЦ",
+    "category": "Постановщики активных помех",
     "class": "SubgridLauncherModule",
 
     "size": 1,

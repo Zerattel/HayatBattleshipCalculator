@@ -1,0 +1,128 @@
+{
+  "main": {
+    "name": "Дипольные отражатели S",
+    "type": "Стартовые площадки",
+    "category": "Постановщики активных помех",
+    "class": "SubgridLauncherModule",
+
+    "size": 1,
+    "position": "external",
+    "tags": ["catapult", "subgrid", "decoy"]
+  },
+  "activation": "active",
+  "cycle": 1,
+  "reload": 0,
+
+  "interference": 0,
+
+  "launcher": {
+    "heading": 0,
+    "instances": [
+      {
+        "vector": [0, 120],
+
+        "headingOffset": 30,
+        "distanceOffset": 10,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "DecoySubgridObject",
+          "dataRef": "dipole-s"
+        }
+      },
+      {
+        "vector": [0, 120],
+
+        "headingOffset": -30,
+        "distanceOffset": 10,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "DecoySubgridObject",
+          "dataRef": "dipole-s"
+        }
+      },
+      {
+        "vector": [0, 80],
+
+        "headingOffset": 50,
+        "distanceOffset": 10,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "DecoySubgridObject",
+          "dataRef": "dipole-s"
+        }
+      },
+      {
+        "vector": [0, 80],
+
+        "headingOffset": -50,
+        "distanceOffset": 10,
+        "subgridRotation": 0,
+
+        "fire": {
+          "type": "single",
+          "delay": 0
+        },
+
+        "subgrid": {
+          "class": "DecoySubgridObject",
+          "dataRef": "dipole-s"
+        }
+      }
+    ]
+  },
+
+  "modificators": {
+    "offline": [],
+    "online": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -5,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.03,
+        "isAffectedByInterference": false
+      }
+    ],
+    "active": [
+      {
+        "target": "this",
+        "characteristic": "constant.capacitor.generation",
+        "modificationType": "number",
+        "modificator": -5,
+        "isAffectedByInterference": false
+      },
+      {
+        "target": "this",
+        "characteristic": "constant.heating",
+        "modificationType": "number",
+        "modificator": 0.03,
+        "isAffectedByInterference": false
+      }
+    ],
+    "overload": []
+  }
+}
